@@ -29,7 +29,7 @@ public class CategoryMetadataFieldValuesService {
                 repository.save(category);
             }
         } catch (Exception e) {
-            System.out.println("Category is not added");
+            System.out.println("CategoryMetaDataFieldValues is not added");
             e.printStackTrace();
         }
     }

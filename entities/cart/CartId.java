@@ -7,21 +7,25 @@ import java.util.Objects;
 @Embeddable
 public class CartId implements Serializable {
 private long customerId;
-private int productVariationId;
+private long productVariationId;
+
+    //Getters
 
     public long getCustomerId() {
         return customerId;
     }
 
+    public long getProductVariationId() {
+        return productVariationId;
+    }
+
+    //Setters
+
     public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
 
-    public int getProductVariationId() {
-        return productVariationId;
-    }
-
-    public void setProductVariationId(int productVariationId) {
+    public void setProductVariationId(long productVariationId) {
         this.productVariationId = productVariationId;
     }
 

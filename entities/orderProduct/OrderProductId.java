@@ -6,22 +6,26 @@ import java.util.Objects;
 
 @Embeddable
 public class OrderProductId implements Serializable {
-    private int invoiceId;
-    private int productVariationId;
+    private long invoiceId;
+    private long productVariationId;
 
-    public int getInvoiceId() {
+    //Getters
+
+    public long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
-    public int getProductVariationId() {
+    public long getProductVariationId() {
         return productVariationId;
     }
 
-    public void setProductVariationId(int productVariationId) {
+    //Setters
+
+    public void setInvoiceId(long invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public void setProductVariationId(long productVariationId) {
         this.productVariationId = productVariationId;
     }
 

@@ -20,48 +20,51 @@ public class Cart {
     @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
 
-    private Boolean isWishListItem;
+    private Boolean wishListItem;
     private int quantity;
+
+    //Getters
 
     public CartId getCartId() {
         return cartId;
-    }
-
-    public void setCartId(CartId cartId) {
-        this.cartId = cartId;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public ProductVariation getProductVariation() {
         return productVariation;
     }
 
-    public void setProductVariation(ProductVariation productVariation) {
-        this.productVariation = productVariation;
-    }
-
     public Boolean getWishListItem() {
-        return isWishListItem;
-    }
-
-    public void setWishListItem(Boolean wishListItem) {
-        isWishListItem = wishListItem;
+        return wishListItem;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
+    //Setters
+
+    public void setCartId(CartId cartId) {
+        this.cartId = cartId;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setProductVariation(ProductVariation productVariation) {
+        this.productVariation = productVariation;
+    }
+
+    public void setWishListItem(Boolean wishListItem) {
+        this.wishListItem = wishListItem;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
 
 }

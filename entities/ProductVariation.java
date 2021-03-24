@@ -20,12 +20,9 @@ import java.util.Set;
         @TypeDef(name = "json", typeClass = JsonStringType.class),
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
-public class ProductVariation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class ProductVariation extends BaseDomain {
     private int quantityAvailable;
-    private boolean isActive;
+    private boolean active;
     private int price;
     private String primaryImageName;
 
@@ -43,36 +40,27 @@ public class ProductVariation {
     @OneToMany(mappedBy = "productVariation",cascade = CascadeType.ALL)
     private Set<Cart> cartSet;
 
+    //Constructors
+
     public ProductVariation() {
     }
 
-    public ProductVariation(int id) {
-        this.id = id;
+    public ProductVariation(long id) {
+        this.setId(id);
     }
+
+    //Getters
 
     public int getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public String getPrimaryImageName() {
         return primaryImageName;
     }
 
-    public void setPrimaryImageName(String primaryImageName) {
-        this.primaryImageName = primaryImageName;
-    }
-
-
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public int getQuantityAvailable() {
@@ -83,23 +71,38 @@ public class ProductVariation {
         return orderProductSet;
     }
 
-    public void setOrderProductSet(Set<OrderProduct> orderProductSet) {
-        this.orderProductSet = orderProductSet;
-    }
-    public void setQuantityAvailable(int quantityAvailable) {
-        this.quantityAvailable = quantityAvailable;
-    }
-
-    public boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
+    public boolean isActive() {
+        return active;
     }
 
     public JSONObject getMetadata() {
         return metadata;
+    }
+
+    //Setters
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setPrimaryImageName(String primaryImageName) {
+        this.primaryImageName = primaryImageName;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setOrderProductSet(Set<OrderProduct> orderProductSet) {
+        this.orderProductSet = orderProductSet;
+    }
+
+    public void setQuantityAvailable(int quantityAvailable) {
+        this.quantityAvailable = quantityAvailable;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setMetadata(JSONObject metadata) {

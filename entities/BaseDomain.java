@@ -1,4 +1,6 @@
-/*package com.Bootcamp.Project.Application.entities;
+package com.Bootcamp.Project.Application.entities;
+
+
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,7 +16,7 @@ import java.util.Date;
 public class BaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @CreationTimestamp
     private Date dateCreated;
@@ -22,27 +24,32 @@ public class BaseDomain {
     @UpdateTimestamp()
     private Date lastModified;
 
-    public int getId() {
-        return id;
-    }
+    //Getters
 
-    public void setId(int id) {
-        this.id = id;
+    public long getId() {
+        return id;
     }
 
     public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
     public Date getLastModified() {
         return lastModified;
+    }
+
+    //Setters
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
-}*/
+}

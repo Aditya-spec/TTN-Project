@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class Customer extends User {
     private int contact;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Set<ProductReview> productReviewSet;
+    private List<ProductReview> productReviewSet;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Invoice> invoiceList;
@@ -32,26 +33,33 @@ public class Customer extends User {
     public Customer() {
     }
 
-    public Customer(int id) {
+    public Customer(long id) {
         this.setId(id);
     }
 
-
+    //Getters
 
     public int getContact() {
         return contact;
     }
 
-    public Set<ProductReview> getProductReviewSet() {
+    public List<ProductReview> getProductReviewSet() {
         return productReviewSet;
-    }
-
-    public void setProductReviewSet(Set<ProductReview> productReviewSet) {
-        this.productReviewSet = productReviewSet;
     }
 
     public List<Invoice> getInvoiceList() {
         return invoiceList;
+    }
+
+    public Set<Cart> getCartSet() {
+        return cartSet;
+    }
+
+    //Setters
+
+
+    public void setProductReviewSet(List<ProductReview> productReviewSet) {
+        this.productReviewSet = productReviewSet;
     }
 
     public void setInvoiceList(List<Invoice> invoiceList) {
@@ -62,10 +70,6 @@ public class Customer extends User {
         this.contact = contact;
     }
 
-    public Set<Cart> getCartSet() {
-        return cartSet;
-    }
-
     public void setCartSet(Set<Cart> cartSet) {
         this.cartSet = cartSet;
     }
@@ -73,7 +77,7 @@ public class Customer extends User {
     public void setProductReview(ProductReview productReview) {
         if (productReview != null) {
             if (productReviewSet == null) {
-                productReviewSet = new HashSet<>();
+                productReviewSet = new ArrayList<>();
             }
             productReview.setCustomer(this);
             productReviewSet.add(productReview);

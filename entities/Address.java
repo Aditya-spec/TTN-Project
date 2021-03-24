@@ -9,10 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Component
-public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Address extends BaseDomain {
     private String city;
     private String state;
     private String country;
@@ -36,10 +33,6 @@ public class Address {
     }
 
     //Getters
-
-    public int getId() {
-        return id;
-    }
 
     public User getUser() {
         return user;
@@ -71,10 +64,6 @@ public class Address {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setCity(String city) {

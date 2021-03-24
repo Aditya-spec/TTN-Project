@@ -1,6 +1,5 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.entities.Category;
 import com.Bootcamp.Project.Application.entities.cart.Cart;
 import com.Bootcamp.Project.Application.repositories.CartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,18 +13,19 @@ import java.io.FileReader;
 @Service
 public class CartService {
     @Autowired
-private CartRepository repository;
-    public void create(){
+    private CartRepository repository;
+
+    public void create() {
         try {
             JSONParser parser = new JSONParser();
-            JSONArray cartitems = (JSONArray) parser.parse(new FileReader("/home/ttn/JsonData/CartData.json"));
-            for (Object cat : cartitems) {
+            JSONArray cartItems = (JSONArray) parser.parse(new FileReader("/home/ttn/JsonData/CartData.json"));
+            for (Object cat : cartItems) {
                 ObjectMapper mapper = new ObjectMapper();
                 Cart cart = mapper.readValue(cat.toString(), Cart.class);
-               repository.save(cart);
+                repository.save(cart);
             }
         } catch (Exception e) {
-            System.out.println("Category is not added");
+            System.out.println("Cart is not added");
             e.printStackTrace();
         }
     }

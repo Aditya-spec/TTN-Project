@@ -8,21 +8,25 @@ import java.util.Objects;
 public class ProductReviewId implements Serializable {
 
     private long customerId;
-    private int productId;
+    private long productId;
+
+    //Getters
 
     public long getCustomerId() {
         return customerId;
     }
 
+    public long getProductId() {
+        return productId;
+    }
+
+    //Setters
+
     public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

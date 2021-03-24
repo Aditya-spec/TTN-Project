@@ -6,22 +6,26 @@ import java.util.Objects;
 
 @Embeddable
 public class CMFId implements Serializable {
-private int categoryMetadataFieldId;
-private int categoryId;
+private long categoryMetadataFieldId;
+private long categoryId;
 
-    public int getCategoryMetadataField() {
+    //Getters
+
+    public long getCategoryMetadataField() {
         return categoryMetadataFieldId;
     }
 
-    public void setCategoryMetadataField(int categoryMetadataField) {
-        this.categoryMetadataFieldId = categoryMetadataField;
-    }
-
-    public int getCategoryId() {
+    public long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    //Setters
+
+    public void setCategoryMetadataField(long categoryMetadataField) {
+        this.categoryMetadataFieldId = categoryMetadataField;
+    }
+
+    public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -29,8 +33,8 @@ private int categoryId;
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CMFId that = (CMFId) o;
-        return categoryMetadataFieldId == that.categoryMetadataFieldId && categoryId == that.categoryId;
+        CMFId cmfId = (CMFId) o;
+        return categoryMetadataFieldId == cmfId.categoryMetadataFieldId && categoryId == cmfId.categoryId;
     }
 
     @Override

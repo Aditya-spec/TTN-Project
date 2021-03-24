@@ -9,15 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Invoice {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Invoice extends BaseDomain {
 
     private int amountPaid;
-/*
-    @Temporal(value = TemporalType.DATE)
-    private Date dateCreated;*/
 
     private String paymentMethod;
 
@@ -36,16 +30,11 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(int id) {
-        this.id = id;
+    public Invoice(long id) {
+        this.setId(id);
     }
-
 
     //Getters
-
-    public int getId() {
-        return id;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -55,10 +44,6 @@ public class Invoice {
         return amountPaid;
     }
 
-    /*public Date getDateCreated() {
-        return dateCreated;
-    }
-*/
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -70,21 +55,16 @@ public class Invoice {
     public Set<OrderProduct> getOrderProductSet() {
         return orderProductSet;
     }
+
     //Setters
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
-    public void setId(int id) { this.id = id; }
-
     public void setAmountPaid(int amountPaid) {
         this.amountPaid = amountPaid;
     }
-
-  /*  public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }*/
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;

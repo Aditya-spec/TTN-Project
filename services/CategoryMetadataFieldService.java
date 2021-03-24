@@ -26,7 +26,7 @@ public class CategoryMetadataFieldService {
                 categoryMetadataFieldRepository.save(categoryMetadataField);
             }
         } catch (Exception e) {
-            System.out.println("Metadata is not added");
+            System.out.println("CategoryMetadata is not added");
             e.printStackTrace();
         }
     }

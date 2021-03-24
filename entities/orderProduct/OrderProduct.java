@@ -17,46 +17,50 @@ public class OrderProduct {
 
     @ManyToOne
     @MapsId(value = "productVariationId" )
-    @JoinColumn(name = "variation_id")
+    @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
 
     private int quantity;
     private int price;
 
+    //Getters
+
     public OrderProductId getOrderProductId() {
         return orderProductId;
-    }
-
-    public void setOrderProductId(OrderProductId orderProductId) {
-        this.orderProductId = orderProductId;
     }
 
     public Invoice getInvoice() {
         return invoice;
     }
 
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
-    }
-
     public ProductVariation getProductVariation() {
         return productVariation;
-    }
-
-    public void setProductVariation(ProductVariation productVariation) {
-        this.productVariation = productVariation;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public int getPrice() {
         return price;
+    }
+
+    //Setters
+
+    public void setOrderProductId(OrderProductId orderProductId) {
+        this.orderProductId = orderProductId;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+    }
+
+    public void setProductVariation(ProductVariation productVariation) {
+        this.productVariation = productVariation;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void setPrice(int price) {

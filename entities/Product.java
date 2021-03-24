@@ -9,16 +9,13 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Product extends BaseDomain {
     private String name;
     private String description;
-    private Boolean isCancellable;
-    private Boolean isReturnable;
+  private Boolean cancellable;
+    private Boolean returnable;
     private String brand;
-    private Boolean isActive;
+    private Boolean active;
     private String primaryImageName;
 
     @ManyToOne
@@ -29,10 +26,10 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private Set<ProductReview> productReviewSet;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductReview> productReviewSet;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductVariation> productVariations;
 
     //Constructors
@@ -40,14 +37,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id) {
-        this.id = id;
+    public Product(long id) {
+        this.setId(id);
     }
-//Getters
 
-    public int getId() {
-        return id;
-    }
+    //Getters
 
     public Seller getSeller() {
         return seller;
@@ -69,66 +63,91 @@ public class Product {
         return description;
     }
 
-    public Boolean getIsCancellable() {
-        return isCancellable;
+    public Boolean getActive() {
+        return active;
     }
 
-    public Boolean getIsReturnable() {
-        return isReturnable;
+    public Boolean getCancellable() {
+        return cancellable;
+    }
+
+    public Boolean getReturnable() {
+        return returnable;
     }
 
     public String getBrand() {
         return brand;
     }
 
-    public Boolean getIsActive(){return isReturnable;}
+    public List<ProductReview> getProductReviewSet() {
+        return productReviewSet;
+    }
 
     public List<ProductVariation> getProductVariations() {
         return productVariations;
     }
 
+
     //Setters
 
-    public void setId(int id) { this.id = id; }
-
-    public void setSeller(Seller seller) { this.seller = seller; }
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
 
     public void setPrimaryImageName(String primaryImageName) {
         this.primaryImageName = primaryImageName;
     }
 
-    public void setCategory(Category category) { this.category = category; }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setIsCancellable(Boolean cancellable) { isCancellable = cancellable; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public void setIsReturnable(Boolean returnable) { isReturnable = returnable; }
+    public void setCancellable(Boolean cancellable) {
+        this.cancellable = cancellable;
+    }
 
-    public void setBrand(String brand) { this.brand = brand; }
+    public void setReturnable(Boolean returnable) {
+        this.returnable = returnable;
+    }
 
-    public void setIsActive(Boolean active) { isActive = active; }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setProductReviewSet(List<ProductReview> productReviewSet) {
+        this.productReviewSet = productReviewSet;
+    }
 
     public void setProductVariations(List<ProductVariation> productVariations) {
         this.productVariations = productVariations;
     }
 
-    public void setProductReview(ProductReview productReview){
-        if(productReview!=null){
-            if(productReviewSet==null){
-                productReviewSet=new HashSet<>();
+    public void setProductReview(ProductReview productReview) {
+        if (productReview != null) {
+            if (productReviewSet == null) {
+                productReviewSet = new ArrayList<>();
             }
             productReview.setProduct(this);
             productReviewSet.add(productReview);
         }
     }
 
-    public void setProductVariation(ProductVariation productVariation){
-        if(productVariation!=null){
-            if(productVariations==null){
-                productVariations=new ArrayList<>();
+    public void setProductVariation(ProductVariation productVariation) {
+        if (productVariation != null) {
+            if (productVariations == null) {
+                productVariations = new ArrayList<>();
             }
             productVariation.setProduct(this);
             productVariations.add(productVariation);

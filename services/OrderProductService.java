@@ -25,7 +25,7 @@ public void create(){
             repository.save(orderProduct);
         }
     } catch (Exception e) {
-        System.out.println("Category is not added");
+        System.out.println("OrderProduct is not added");
         e.printStackTrace();
     }
 }

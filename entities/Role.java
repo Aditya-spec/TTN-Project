@@ -1,18 +1,24 @@
 package com.Bootcamp.Project.Application.entities;
+/*
+import com.Bootcamp.Project.Application.enums.RoleAuthorized;*/
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Role extends BaseDomain{
+
     private String authorization;
+
+   /* @Enumerated(EnumType.STRING)
+    private RoleAuthorized roleAuthorized;
+*/
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 
     //Constructors
+
+
     public Role() {
     }
 
@@ -20,18 +26,22 @@ public class Role {
         this.authorization = authorization;
     }
 
+    /*public Role(RoleAuthorized roleAuthorized) {
+        this.roleAuthorized = roleAuthorized;
+    }*/
+
     //Getters
 
-    public long getId() {
-        return id;
+    /*public RoleAuthorized getRoleAuthorized() {
+        return roleAuthorized;
+    }
+*/
+    public List<User> getUsers() {
+        return users;
     }
 
     public String getAuthorization() {
         return authorization;
-    }
-
-    public List<User> getUsers() {
-        return users;
     }
 
     //Setters
@@ -40,11 +50,11 @@ public class Role {
         this.users = users;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }
+
+    /*public void setRoleAuthorized(RoleAuthorized roleAuthorized) {
+        this.roleAuthorized = roleAuthorized;
+    }*/
 }

@@ -7,10 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class CategoryMetadataField {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class CategoryMetadataField extends BaseDomain {
     private String name;
     @OneToMany(mappedBy = "categoryMetaField")
     private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet;
@@ -20,14 +17,11 @@ public class CategoryMetadataField {
     public CategoryMetadataField() {
     }
 
-    public CategoryMetadataField(int id) {
-        this.id = id;
+    public CategoryMetadataField(long id) {
+        this.setId(id);
     }
-//Getters
 
-    public int getId() {
-        return id;
-    }
+    //Getters
 
     public String getName() {
         return name;
@@ -39,10 +33,6 @@ public class CategoryMetadataField {
 
     //Setters
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -50,10 +40,11 @@ public class CategoryMetadataField {
     public void setCategoryMetadataFieldValuesSet(Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet) {
         this.categoryMetadataFieldValuesSet = categoryMetadataFieldValuesSet;
     }
-    public void setCategoryMetadataFieldValues(CategoryMetadataFieldValues data){
-        if(data!=null){
-            if(categoryMetadataFieldValuesSet==null){
-                categoryMetadataFieldValuesSet=new HashSet<>();
+
+    public void setCategoryMetadataFieldValues(CategoryMetadataFieldValues data) {
+        if (data != null) {
+            if (categoryMetadataFieldValuesSet == null) {
+                categoryMetadataFieldValuesSet = new HashSet<>();
             }
             data.setCategoryMetaField(this);
             categoryMetadataFieldValuesSet.add(data);

@@ -26,7 +26,7 @@ public class Seller extends User {
     public Seller() {
     }
 
-    public Seller(int id) {
+    public Seller(long id) {
         this.setId(id);
     }
 

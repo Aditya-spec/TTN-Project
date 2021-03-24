@@ -8,10 +8,7 @@ import java.util.Set;
 
 
 @Entity
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Category extends BaseDomain {
     private int parentId;
     private String name;
 
@@ -26,8 +23,8 @@ public class Category {
     public Category() {
     }
 
-    public Category(int id) {
-        this.id = id;
+    public Category(long id) {
+        this.setId(id);
     }
 
    //Getters
@@ -36,9 +33,6 @@ public class Category {
         return name;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public int getParentId() {
         return parentId;
@@ -57,8 +51,6 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
-
-    public void setId(int id) { this.id = id; }
 
     public void setParentId(int parentId) {
         this.parentId = parentId;

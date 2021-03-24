@@ -6,10 +6,7 @@ import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public abstract class User extends BaseDomain{
 
     @Embedded
     private Name name;
@@ -27,10 +24,8 @@ public abstract class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
+
     //Getters
-    public long getId() {
-        return id;
-    }
 
     public String getPassword() {
         return password; }
@@ -61,8 +56,6 @@ public abstract class User {
 
 
     //Setters
-
-    public void setId(long id) { this.id = id; }
 
     public void setPassword(String password) {
         this.password = password;

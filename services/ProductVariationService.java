@@ -28,7 +28,7 @@ public class ProductVariationService {
                 repository.save(productVariation);
             }
         } catch (Exception e) {
-            System.out.println("Category is not added");
+            System.out.println("ProductVariation is not added");
             e.printStackTrace();
         }
 
