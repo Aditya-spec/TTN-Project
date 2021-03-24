@@ -1,9 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.entities.Category;
-import com.Bootcamp.Project.Application.entities.Customer;
-import com.Bootcamp.Project.Application.entities.Product;
-import com.Bootcamp.Project.Application.entities.productReview.ProductReview;
+import com.Bootcamp.Project.Application.entities.ProductReview;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.ProductRepository;
 import com.Bootcamp.Project.Application.repositories.ProductReviewRepository;

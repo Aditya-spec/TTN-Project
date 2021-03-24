@@ -1,12 +1,8 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.Bootcamp.Project.Application.entities.productReview.ProductReview;
-
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Product extends BaseDomain {
@@ -37,7 +33,7 @@ public class Product extends BaseDomain {
     public Product() {
     }
 
-    public Product(long id) {
+    public Product(Long id) {
         this.setId(id);
     }
 

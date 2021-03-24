@@ -1,8 +1,8 @@
 package com.Bootcamp.Project.Application.entities;
 /*
-import com.Bootcamp.Project.Application.entities.orderProduct.OrderProduct;*/
+import com.Bootcamp.Project.Application.entities.OrderProduct;*/
 
-import com.Bootcamp.Project.Application.entities.orderProduct.OrderProduct;
+import com.Bootcamp.Project.Application.enums.PaymentMethod;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,7 +13,8 @@ public class Invoice extends BaseDomain {
 
     private int amountPaid;
 
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     @Embedded
     private OrderAddress orderAddress;
@@ -30,7 +31,7 @@ public class Invoice extends BaseDomain {
     public Invoice() {
     }
 
-    public Invoice(long id) {
+    public Invoice(Long id) {
         this.setId(id);
     }
 
@@ -44,7 +45,7 @@ public class Invoice extends BaseDomain {
         return amountPaid;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
@@ -66,7 +67,7 @@ public class Invoice extends BaseDomain {
         this.amountPaid = amountPaid;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 

@@ -2,7 +2,8 @@ package com.Bootcamp.Project.Application.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Label {
-    HOME,
-    OFFICE
+public enum PaymentMethod {
+    CASH,
+    CARD,
+    WALLET
 }

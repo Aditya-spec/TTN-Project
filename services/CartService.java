@@ -1,6 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.entities.cart.Cart;
+import com.Bootcamp.Project.Application.entities.Cart;
 import com.Bootcamp.Project.Application.repositories.CartRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;

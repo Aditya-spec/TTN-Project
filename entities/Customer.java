@@ -1,7 +1,5 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.Bootcamp.Project.Application.entities.cart.Cart;
-import com.Bootcamp.Project.Application.entities.productReview.ProductReview;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.CascadeType;
@@ -33,7 +31,7 @@ public class Customer extends User {
     public Customer() {
     }
 
-    public Customer(long id) {
+    public Customer(Long id) {
         this.setId(id);
     }
 

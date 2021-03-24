@@ -5,18 +5,16 @@ package com.Bootcamp.Project.Application.entities;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Date;
 
 
 @MappedSuperclass
 public class BaseDomain {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_generator")
+    @SequenceGenerator(name = "identity_generator", sequenceName = "identity_table", allocationSize = 1)
+    private Long id;
 
     @CreationTimestamp
     private Date dateCreated;
@@ -26,7 +24,7 @@ public class BaseDomain {
 
     //Getters
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -40,7 +38,7 @@ public class BaseDomain {
 
     //Setters
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,8 +1,6 @@
 package com.Bootcamp.Project.Application.entities;
 /*
-import com.Bootcamp.Project.Application.entities.orderProduct.OrderProduct;*/
-import com.Bootcamp.Project.Application.entities.cart.Cart;
-import com.Bootcamp.Project.Application.entities.orderProduct.OrderProduct;
+import com.Bootcamp.Project.Application.entities.OrderProduct;*/
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
@@ -45,7 +43,7 @@ public class ProductVariation extends BaseDomain {
     public ProductVariation() {
     }
 
-    public ProductVariation(long id) {
+    public ProductVariation(Long id) {
         this.setId(id);
     }
 

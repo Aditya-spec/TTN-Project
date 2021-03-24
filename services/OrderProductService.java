@@ -1,7 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.entities.Category;
-import com.Bootcamp.Project.Application.entities.orderProduct.OrderProduct;
+import com.Bootcamp.Project.Application.entities.OrderProduct;
 import com.Bootcamp.Project.Application.repositories.OrderProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;

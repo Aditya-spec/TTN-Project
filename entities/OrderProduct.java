@@ -1,33 +1,42 @@
-package com.Bootcamp.Project.Application.entities.orderProduct;
+package com.Bootcamp.Project.Application.entities;
 
+import com.Bootcamp.Project.Application.entities.BaseDomain;
 import com.Bootcamp.Project.Application.entities.Invoice;
+/*import com.Bootcamp.Project.Application.entities.OrderStatus;*/
 import com.Bootcamp.Project.Application.entities.ProductVariation;
 
 import javax.persistence.*;
 
 @Entity
-public class OrderProduct {
-    @EmbeddedId
-    private OrderProductId orderProductId=new OrderProductId();
+public class OrderProduct extends BaseDomain {
 
     @ManyToOne
-    @MapsId(value = "invoiceId")
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
     @ManyToOne
-    @MapsId(value = "productVariationId" )
     @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
+
+    @OneToOne(mappedBy = "orderProduct",cascade = CascadeType.ALL)
+    OrderStatus orderStatus;
+
 
     private int quantity;
     private int price;
 
+    //Constructors
+
+    public OrderProduct() {
+    }
+
+    public OrderProduct(Long id) {
+        this.setId(id);
+    }
+
+
     //Getters
 
-    public OrderProductId getOrderProductId() {
-        return orderProductId;
-    }
 
     public Invoice getInvoice() {
         return invoice;
@@ -45,11 +54,13 @@ public class OrderProduct {
         return price;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
     //Setters
 
-    public void setOrderProductId(OrderProductId orderProductId) {
-        this.orderProductId = orderProductId;
-    }
+
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
@@ -65,5 +76,9 @@ public class OrderProduct {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

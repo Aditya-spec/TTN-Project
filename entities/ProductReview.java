@@ -1,23 +1,21 @@
-package com.Bootcamp.Project.Application.entities.productReview;
+package com.Bootcamp.Project.Application.entities;
 
 
+import com.Bootcamp.Project.Application.entities.BaseDomain;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Product;
 
 import javax.persistence.*;
 
 @Entity
-public class ProductReview {
-    @EmbeddedId
-    private ProductReviewId id = new ProductReviewId();
+public class ProductReview extends BaseDomain {
 
-    @ManyToOne
-    @MapsId("customerId")
+   @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+
     @ManyToOne
-    @MapsId("productId")
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -34,9 +32,6 @@ public class ProductReview {
         return rating;
     }
 
-    public ProductReviewId getId() {
-        return id;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -56,7 +51,6 @@ public class ProductReview {
         this.rating = rating;
     }
 
-    public void setId(ProductReviewId id) { this.id = id; }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;

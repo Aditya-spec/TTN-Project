@@ -1,22 +1,19 @@
-package com.Bootcamp.Project.Application.entities.cart;
+package com.Bootcamp.Project.Application.entities;
 
+import com.Bootcamp.Project.Application.entities.BaseDomain;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.ProductVariation;
 
 import javax.persistence.*;
 
 @Entity
-public class Cart {
-    @EmbeddedId
-    private CartId cartId = new CartId();
+public class Cart extends BaseDomain {
 
-    @ManyToOne
-    @MapsId("customerId")
+   @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @ManyToOne
-    @MapsId(value = "productVariationId" )
     @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
 
@@ -25,9 +22,6 @@ public class Cart {
 
     //Getters
 
-    public CartId getCartId() {
-        return cartId;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -46,10 +40,6 @@ public class Cart {
     }
 
     //Setters
-
-    public void setCartId(CartId cartId) {
-        this.cartId = cartId;
-    }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;

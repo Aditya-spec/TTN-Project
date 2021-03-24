@@ -23,7 +23,7 @@ public class Category extends BaseDomain {
     public Category() {
     }
 
-    public Category(long id) {
+    public Category(Long id) {
         this.setId(id);
     }
 

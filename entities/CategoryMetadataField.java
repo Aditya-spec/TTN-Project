@@ -17,7 +17,7 @@ public class CategoryMetadataField extends BaseDomain {
     public CategoryMetadataField() {
     }
 
-    public CategoryMetadataField(long id) {
+    public CategoryMetadataField(Long id) {
         this.setId(id);
     }
 

@@ -10,14 +10,10 @@ public class Role extends BaseDomain{
 
     private String authorization;
 
-   /* @Enumerated(EnumType.STRING)
-    private RoleAuthorized roleAuthorized;
-*/
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 
     //Constructors
-
 
     public Role() {
     }
@@ -26,16 +22,7 @@ public class Role extends BaseDomain{
         this.authorization = authorization;
     }
 
-    /*public Role(RoleAuthorized roleAuthorized) {
-        this.roleAuthorized = roleAuthorized;
-    }*/
 
-    //Getters
-
-    /*public RoleAuthorized getRoleAuthorized() {
-        return roleAuthorized;
-    }
-*/
     public List<User> getUsers() {
         return users;
     }
@@ -54,7 +41,4 @@ public class Role extends BaseDomain{
         this.authorization = authorization;
     }
 
-    /*public void setRoleAuthorized(RoleAuthorized roleAuthorized) {
-        this.roleAuthorized = roleAuthorized;
-    }*/
 }

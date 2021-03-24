@@ -1,5 +1,7 @@
 package com.Bootcamp.Project.Application.entities;
 
+import com.Bootcamp.Project.Application.enums.ToStatus;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +50,7 @@ public abstract class User extends BaseDomain{
 
     public boolean getActive() {
         return active;
+
     }
 
     public Set<Role> getRoles() {

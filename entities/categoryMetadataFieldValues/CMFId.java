@@ -6,26 +6,26 @@ import java.util.Objects;
 
 @Embeddable
 public class CMFId implements Serializable {
-private long categoryMetadataFieldId;
-private long categoryId;
+private Long categoryMetadataFieldId;
+private Long categoryId;
 
     //Getters
 
-    public long getCategoryMetadataField() {
+    public Long getCategoryMetadataField() {
         return categoryMetadataFieldId;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
     //Setters
 
-    public void setCategoryMetadataField(long categoryMetadataField) {
+    public void setCategoryMetadataField(Long categoryMetadataField) {
         this.categoryMetadataFieldId = categoryMetadataField;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 

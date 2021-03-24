@@ -11,7 +11,6 @@ public class CategoryMetadataFieldValues {
     @EmbeddedId
     private CMFId id = new CMFId();
 
-
     @ManyToOne
     @MapsId(value = "categoryMetadataFieldId")
     @JoinColumn(name = "categoryMetadataField_Id")
