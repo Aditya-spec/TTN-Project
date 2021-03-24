@@ -29,6 +29,8 @@ public class OrderStatus extends BaseDomain {
         this.setId(id);
     }
 
+    //Getters
+
     public OrderProduct getOrderProduct() {
         return orderProduct;
     }

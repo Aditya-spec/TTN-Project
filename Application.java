@@ -11,7 +11,7 @@ public class Application {
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
-       /*UserService userService = applicationContext.getBean(UserService.class);
+      /* UserService userService = applicationContext.getBean(UserService.class);
         for (int i = 0; i < 3; i++) {
             userService.createUsingJson();
         }
@@ -20,33 +20,33 @@ public class Application {
         categoryService.createUsingJson();
 
         ProductService productService = applicationContext.getBean(ProductService.class);
-        productService.createProductUsingJson();
+        productService.createProductUsingJson();*/
 
-        CategoryMetadataFieldService categoryMetadataFieldService = applicationContext.getBean(CategoryMetadataFieldService.class);
+        /*CategoryMetadataFieldService categoryMetadataFieldService = applicationContext.getBean(CategoryMetadataFieldService.class);
         categoryMetadataFieldService.createCategoryMetadataFieldUsingJson();*/
 
 
-    /* CategoryMetadataFieldValuesService categoryMetadataFieldValuesService=applicationContext.getBean(CategoryMetadataFieldValuesService.class);
+     /*CategoryMetadataFieldValuesService categoryMetadataFieldValuesService=applicationContext.getBean(CategoryMetadataFieldValuesService.class);
         categoryMetadataFieldValuesService.createUsingJson();*/
 
 
         /*ProductVariationService productVariationService = applicationContext.getBean(ProductVariationService.class);
         productVariationService.createJson();*/
 
-       /* ProductReviewService productReviewService = applicationContext.getBean(ProductReviewService.class);
+        /*ProductReviewService productReviewService = applicationContext.getBean(ProductReviewService.class);
         productReviewService.create();*/
 
-     /*   InvoiceService invoiceService = applicationContext.getBean(InvoiceService.class);
+       /* InvoiceService invoiceService = applicationContext.getBean(InvoiceService.class);
         invoiceService.createJson();*/
 
-       /* OrderProductService orderProductService=applicationContext.getBean(OrderProductService.class);
+        /*OrderProductService orderProductService=applicationContext.getBean(OrderProductService.class);
         orderProductService.create();*/
 
 
-        OrderStatusService orderStatusService = applicationContext.getBean(OrderStatusService.class);
-        orderStatusService.create();
+       /* OrderStatusService orderStatusService = applicationContext.getBean(OrderStatusService.class);
+        orderStatusService.create();*/
 
-        /* CartService cartService = applicationContext.getBean(CartService.class);
-        cartService.create();*/
+         CartService cartService = applicationContext.getBean(CartService.class);
+        cartService.create();
     }
 }
