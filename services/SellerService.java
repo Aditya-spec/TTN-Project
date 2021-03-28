@@ -3,15 +3,19 @@ package com.Bootcamp.Project.Application.services;
 import com.Bootcamp.Project.Application.dtos.AddressDto;
 import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.SellerProfileDto;
+import com.Bootcamp.Project.Application.dtos.SellerUpdateDto;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
+import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,8 @@ public class SellerService {
     SellerRepository sellerRepository;
     @Autowired
     EmailService emailService;
+    @Autowired
+    AddressRepository addressRepository;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -71,11 +77,12 @@ public class SellerService {
         return addressDTO;
     }
 
-    public boolean updateSeller(String email, Map<Object, Object> fields) {
+    /*public boolean updateSeller(String email, Map<Object, Object> fields) {
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
             return false;
         }
+
         try {
             fields.forEach((k, v) -> {
                 Field field = ReflectionUtils.findField(Seller.class, (String) k);
@@ -87,7 +94,29 @@ public class SellerService {
         }
         sellerRepository.save(seller);
         return true;
+    }*/
+    public boolean updateSeller(String email, Map<Object, Object> fields) {
+        Seller seller = sellerRepository.findByEmail(email);
+        if (seller == null) {
+            return false;
+        }
+        SellerUpdateDto sellerUpdateDto=modelMapper.map(seller,SellerUpdateDto.class);
+        try {
+            fields.forEach((k, v) -> {
+                Field field = ReflectionUtils.findField(SellerUpdateDto.class, (String) k);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, sellerUpdateDto, v);
+            });
+        } catch (RuntimeException e) {
+            throw new InvalidFieldException("Invalid field");
+        }
+
+        seller=modelMapper.map(sellerUpdateDto,Seller.class);
+        sellerRepository.save(seller);
+        return true;
     }
+
+
 
 
         public boolean checkPassword(String password, String confirmPassword) {
@@ -111,5 +140,22 @@ public class SellerService {
     }
 
 
+    public ResponseEntity<String> updateAddress(Long id, Map<Object, Object> fields) {
+        Address address = addressRepository.getAddressById(id);
+        if (address == null ) {
+            return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            fields.forEach((k, v) -> {
+                Field field = ReflectionUtils.findField(Address.class, (String) k);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, address, v);
+            });
+        } catch (RuntimeException e) {
+            throw new InvalidFieldException("Invalid field ");
+        }
+        addressRepository.save(address);
+        return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
+    }
 }
 

@@ -47,4 +47,9 @@ public class SellerController {
             return new ResponseEntity<>("password cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PatchMapping("update-address/{id}")
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<Object, Object> fields){
+        return sellerService.updateAddress(id,fields);
+    }
 }

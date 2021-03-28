@@ -1,10 +1,9 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.PasswordDto;
-import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
-import com.Bootcamp.Project.Application.dtos.ShowAddressDto;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
+import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
@@ -79,7 +78,7 @@ public class CustomerService {
 
     }
 
-    public Boolean updateProfile(String email, Map<Object, Object> fields) {
+    /*public Boolean updateProfile(String email, Map<Object, Object> fields) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             return false;
@@ -93,6 +92,27 @@ public class CustomerService {
         } catch (RuntimeException e) {
             throw new InvalidFieldException("Invalid field");
         }
+        customerRepository.save(customer);
+        return true;
+    }*/
+
+    public boolean updateProfile(String email, Map<Object, Object> fields) {
+        Customer customer = customerRepository.findByEmail(email);
+        if (customer == null) {
+            return false;
+        }
+        CustomerUpdateDto customerUpdateDto=modelMapper.map(customer,CustomerUpdateDto.class);
+        try {
+            fields.forEach((k, v) -> {
+                Field field = ReflectionUtils.findField(SellerUpdateDto.class, (String) k);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, customerUpdateDto, v);
+            });
+        } catch (RuntimeException e) {
+            throw new InvalidFieldException("Invalid field");
+        }
+
+        customer=modelMapper.map(customerUpdateDto,Customer.class);
         customerRepository.save(customer);
         return true;
     }
@@ -134,6 +154,5 @@ public class CustomerService {
         }
         addressRepository.save(address);
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
-
     }
 }
