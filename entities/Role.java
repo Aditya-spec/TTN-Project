@@ -41,4 +41,8 @@ public class Role extends BaseDomain{
         this.authorization = authorization;
     }
 
+    //toString
+
+
+
 }

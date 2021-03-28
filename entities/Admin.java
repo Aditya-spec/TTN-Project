@@ -8,5 +8,5 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Entity
 @Component
 @PrimaryKeyJoinColumn(name = "id")
-public class Admin extends User{
+public class Admin extends User {
 }

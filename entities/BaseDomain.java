@@ -16,6 +16,8 @@ public class BaseDomain {
     @SequenceGenerator(name = "identity_generator", sequenceName = "identity_table", allocationSize = 1)
     private Long id;
 
+    private boolean deleted;
+
     @CreationTimestamp
     private Date dateCreated;
 
@@ -36,12 +38,19 @@ public class BaseDomain {
         return lastModified;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     //Setters
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;

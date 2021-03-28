@@ -5,21 +5,31 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+
 @SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
-      /* UserService userService = applicationContext.getBean(UserService.class);
-        for (int i = 0; i < 3; i++) {
-            userService.createUsingJson();
-        }
+       UserService userService =
+               applicationContext.getBean(UserService.class);
 
-        CategoryService categoryService = applicationContext.getBean(CategoryService.class);
+      //userService.createCustomer();
+     // userService.createUsingJson();
+       // userService.createUsingJson();
+    /* for (int i = 0; i < 3; i++) {
+            userService.createUsingJson();
+        }*//*
+
+
+
+
+
+       /* CategoryService categoryService = applicationContext.getBean(CategoryService.class);
         categoryService.createUsingJson();
 
-        ProductService productService = applicationContext.getBean(ProductService.class);
+           ProductService productService = applicationContext.getBean(ProductService.class);
         productService.createProductUsingJson();*/
 
         /*CategoryMetadataFieldService categoryMetadataFieldService = applicationContext.getBean(CategoryMetadataFieldService.class);
@@ -46,7 +56,7 @@ public class Application {
        /* OrderStatusService orderStatusService = applicationContext.getBean(OrderStatusService.class);
         orderStatusService.create();*/
 
-         CartService cartService = applicationContext.getBean(CartService.class);
-        cartService.create();
+        /* CartService cartService = applicationContext.getBean(CartService.class);
+        cartService.create();*/
     }
 }

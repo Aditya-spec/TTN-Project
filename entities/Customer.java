@@ -1,21 +1,23 @@
 package com.Bootcamp.Project.Application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.time.LocalTime;
+import java.util.*;
 
 @Entity
 @Component
 @PrimaryKeyJoinColumn(name = "id")
 public class Customer extends User {
-    private int contact;
+
+
+    private String contact;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<ProductReview> productReviewSet;
@@ -25,6 +27,11 @@ public class Customer extends User {
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private Set<Cart> cartSet;
+
+    private String activationToken;
+
+    private LocalTime expiresAt;
+
 
     //constructors
 
@@ -37,7 +44,7 @@ public class Customer extends User {
 
     //Getters
 
-    public int getContact() {
+    public String getContact() {
         return contact;
     }
 
@@ -53,7 +60,15 @@ public class Customer extends User {
         return cartSet;
     }
 
-    //Setters
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public LocalTime getExpiresAt() {
+        return expiresAt;
+    }
+
+//Setters
 
 
     public void setProductReviewSet(List<ProductReview> productReviewSet) {
@@ -64,12 +79,16 @@ public class Customer extends User {
         this.invoiceList = invoiceList;
     }
 
-    public void setContact(int contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 
     public void setCartSet(Set<Cart> cartSet) {
         this.cartSet = cartSet;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
     }
 
     public void setProductReview(ProductReview productReview) {
@@ -91,4 +110,24 @@ public class Customer extends User {
         }
     }
 
+    public void setExpiresAt(LocalTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "contact=" + contact +
+                ", productReviewSet=" + productReviewSet +
+                ", invoiceList=" + invoiceList +
+                ", cartSet=" + cartSet +
+                '}';
+    }
 }
+/*
+@NotEmpty(message = "Password is a mandatory field")
+@Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
+@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
+        message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
+*/
+

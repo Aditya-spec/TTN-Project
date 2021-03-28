@@ -17,11 +17,10 @@ public class Cart extends BaseDomain {
     @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
 
-    private Boolean wishListItem;
+    private Boolean wishListItem=false;
     private int quantity;
 
     //Getters
-
 
     public Customer getCustomer() {
         return customer;

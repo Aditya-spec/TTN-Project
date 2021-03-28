@@ -1,31 +1,48 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.Bootcamp.Project.Application.enums.ToStatus;
+/*
+import com.Bootcamp.Project.Application.passwordValidation.ValidPassword;
+*/
+/*
+import com.Bootcamp.Project.Application.passwordValidation.ValidPassword;*/
+/*
+import com.Bootcamp.Project.Application.token.ConfirmationToken;*/
+
+import com.Bootcamp.Project.Application.token.ConfirmationToken;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.time.LocalTime;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User extends BaseDomain{
+public class User extends BaseDomain{
 
-    @Embedded
     private Name name;
     private String email;
     private boolean active;
-    private boolean deleted;
+
+
+
     private String password;
+    private String resetToken;
+    private LocalTime resetTokenTime;
+    private int loginAttempt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Address> addressSet;
+    private List<Address> addressList;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<ConfirmationToken> confirmationTokenList;
 
     //Getters
 
@@ -40,20 +57,31 @@ public abstract class User extends BaseDomain{
         return email;
     }
 
-    public boolean getDeleted() {
-        return deleted;
-    }
-
-    public Set<Address> getAddressSet() {
-        return addressSet;
+    public List<Address> getAddressList() {
+        return addressList;
     }
 
     public boolean getActive() {
         return active;
-
     }
 
-    public Set<Role> getRoles() {
+    public List<ConfirmationToken> getConfirmationTokenList() {
+        return confirmationTokenList;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public LocalTime getResetTokenTime() {
+        return resetTokenTime;
+    }
+
+    public int getLoginAttempt() {
+        return loginAttempt;
+    }
+
+    public List<Role> getRoles() {
         return roles;
     }
 
@@ -76,31 +104,43 @@ public abstract class User extends BaseDomain{
         this.active = active;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 
-    public void setRoles(Set<Role> roleSet) {
-        if (roleSet != null) {
+    public void setResetTokenTime(LocalTime resetTokenTime) {
+        this.resetTokenTime = resetTokenTime;
+    }
+
+    public void setLoginAttempt(int loginAttempt) {
+        this.loginAttempt = loginAttempt;
+    }
+
+    public void setConfirmationTokenList(List<ConfirmationToken> confirmationTokenList) {
+        this.confirmationTokenList = confirmationTokenList;
+    }
+
+    public void setRoles(List<Role> roleList) {
+        if (roleList != null) {
             if (roles == null) {
-                roles = new HashSet<>();
+                roles = new ArrayList<>();
             }
-            for (Role r : roleSet) {
+            for (Role r : roleList) {
                 roles.add(r);
             }
         }
     }
 
-    public void setAddressSet(Set<Address> inputAddress) {
+    public void setAddressSet(List<Address> inputAddress) {
 
 
         if (inputAddress != null) {
-            if (addressSet == null) {
-                addressSet = new HashSet<>();
+            if (addressList == null) {
+                addressList = new ArrayList<>();
             }
             for (Address address : inputAddress) {
                 address.setUser(this);
-                addressSet.add(address);
+                addressList.add(address);
             }
         }
     }
@@ -108,11 +148,11 @@ public abstract class User extends BaseDomain{
 
     public void setAddress(Address address) {
         if (address != null) {
-            if (addressSet == null) {
-                addressSet = new HashSet<>();
+            if (addressList == null) {
+                addressList = new ArrayList<>();
             }
             address.setUser(this);
-            addressSet.add(address);
+            addressList.add(address);
         }
     }
 /*
@@ -125,6 +165,7 @@ public abstract class User extends BaseDomain{
         }
     }*/
 
+    //toString overridden
 }
 
 

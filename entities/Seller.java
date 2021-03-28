@@ -10,8 +10,12 @@ import java.util.Set;
 @Component
 @PrimaryKeyJoinColumn(name = "id")
 public class Seller extends User {
+
+    @Column(unique = true)
     private Long gstNumber;
+    @Column(unique = true)
     private String companyContact;
+    @Column(unique = true)
     private String companyName;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -54,7 +58,7 @@ public class Seller extends User {
 
     //Setters
 
-    @Override
+
     public void setAddress(Address address) {
         address.setUser(this);
         this.address = address;
