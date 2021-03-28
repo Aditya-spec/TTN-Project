@@ -24,6 +24,7 @@ public class User extends BaseDomain{
     private Name name;
     private String email;
     private boolean active;
+    private String imagePath;
 
 
 
@@ -85,8 +86,11 @@ public class User extends BaseDomain{
         return roles;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
 
-    //Setters
+//Setters
 
     public void setPassword(String password) {
         this.password = password;
@@ -120,6 +124,10 @@ public class User extends BaseDomain{
         this.confirmationTokenList = confirmationTokenList;
     }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public void setRoles(List<Role> roleList) {
         if (roleList != null) {
             if (roles == null) {
@@ -131,7 +139,7 @@ public class User extends BaseDomain{
         }
     }
 
-    public void setAddressSet(List<Address> inputAddress) {
+    public void setAddressList(List<Address> inputAddress) {
 
 
         if (inputAddress != null) {

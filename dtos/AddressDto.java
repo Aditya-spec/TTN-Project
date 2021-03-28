@@ -3,7 +3,7 @@ package com.Bootcamp.Project.Application.dtos;
 import com.Bootcamp.Project.Application.enums.Label;
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class AddressDto extends BaseDomainDto {
 private String city;
 private String state;

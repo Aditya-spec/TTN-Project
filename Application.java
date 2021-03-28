@@ -12,15 +12,15 @@ public class Application {
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
-       UserService userService =
-               applicationContext.getBean(UserService.class);
-
-      //userService.createCustomer();
-     // userService.createUsingJson();
-       // userService.createUsingJson();
-    /* for (int i = 0; i < 3; i++) {
+        UserService userService =
+                applicationContext.getBean(UserService.class);
+        /*userService.createSeller();
+        userService.createCustomer();
+        userService.createUsingJson();
+        userService.createUsingJson();
+        for (int i = 0; i < 3; i++) {
             userService.createUsingJson();
-        }*//*
+        }*/
 
 
 

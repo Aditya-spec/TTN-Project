@@ -16,4 +16,5 @@ public interface SellerRepository extends CrudRepository<Seller,Long> {
     List<Seller> fetchSellerByPage(Pageable sortById);
 
 
+    Seller findByEmail(String email);
 }

@@ -18,12 +18,14 @@ public class Seller extends User {
     @Column(unique = true)
     private String companyName;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 
     @OneToMany(mappedBy = "seller",cascade = CascadeType.ALL)
     private Set<Product> products;
+
+
 
     //Constructors
 

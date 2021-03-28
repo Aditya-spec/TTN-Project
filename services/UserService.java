@@ -109,14 +109,14 @@ public class UserService {
 
     @Transactional
     public void createCustomer() {
-        Customer customer=new Customer();
-        Name name=new Name();
-        Address address1=new Address();
+        Customer customer = new Customer();
+        Name name = new Name();
+        Address address1 = new Address();
         address1.setCity("delhi");
         address1.setAddressLine("111");
         address1.setLabel(Label.HOME);
         address1.setCountry("india");
-        Address address2=new Address();
+        Address address2 = new Address();
         address2.setCity("pattaya");
         address2.setAddressLine("222");
         address2.setLabel(Label.OFFICE);
@@ -126,13 +126,31 @@ public class UserService {
         customer.setEmail("delhi@gmail.com");
         customer.setContact("1005432");
         customer.setName(name);
-        List<Address> addressList=new ArrayList<>();
+        List<Address> addressList = new ArrayList<>();
         addressList.add(address1);
         addressList.add(address2);
         addressRepository.save(address1);
         addressRepository.save(address2);
-       customer.setAddressSet(addressList);
+        customer.setAddressList(addressList);
         userRepository.save(customer);
+    }
+
+    @Transactional
+    public void createSeller() {
+        Seller seller = new Seller();
+        Address address = new Address();
+        address.setAddressLine("9081");
+        address.setCountry("India");
+        address.setZipCode(5467);
+        address.setLabel(Label.OFFICE);
+        Name name = new Name();
+        name.setLastName("Sharma");
+        name.setFirstName("Charlie");
+        seller.setEmail("charlie@gmail.com");
+        seller.setName(name);
+        seller.setAddress(address);
+        addressRepository.save(address);
+        userRepository.save(seller);
     }
 }
 

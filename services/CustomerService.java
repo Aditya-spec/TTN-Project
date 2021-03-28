@@ -107,7 +107,7 @@ public class CustomerService {
 
     public boolean customerResetPassword(String email, PasswordDto passwordDto) {
         Customer customer = customerRepository.findByEmail(email);
-        if (customer == null) {
+        if (customer == null || customer.getActive()) {
             return false;
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -120,7 +120,7 @@ public class CustomerService {
 
     public ResponseEntity<String> updateAddress(Long id, Map<Object, Object> fields) {
         Address address = addressRepository.getAddressById(id);
-        if (address == null) {
+        if (address == null ) {
             return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
         }
         try {
