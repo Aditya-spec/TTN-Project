@@ -2,33 +2,28 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class CustomerUpdateDto {
     private Long id;
 
+    @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")
     private String firstName;
-
+    @Size(min = 2, max = 20, message = "your middleName should have 2 to 20 characters")
     private String middleName;
-
+    @Size(min = 2, max = 20, message = "your lastName should have 2 to 20 characters")
     private String lastName;
-
+    @Email
     private String email;
 
     private boolean active;
 
     private String imagePath;
 
-    private String city;
-
-    private String state;
-
-    private String country;
-
-    private String addressLine;
-
-    private int zipCode;
-
-    private Label label;
-
+    @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}", message = "enter a valid phone number")
     private String contact;
 
     public void setId(Long id) {
@@ -59,29 +54,6 @@ public class CustomerUpdateDto {
         this.imagePath = imagePath;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setAddressLine(String addressLine) {
-        this.addressLine = addressLine;
-    }
-
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public void setLabel(Label label) {
-        this.label = label;
-    }
 
     public void setContact(String contact) {
         this.contact = contact;

@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
+import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.ShowAddressDto;
 import com.Bootcamp.Project.Application.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class CustomerController {
 
     @PatchMapping("/change-password/{email}")
     public ResponseEntity<String> changePassword(@PathVariable String email, @RequestBody PasswordDto passwordDto){
-        if(customerService.checkPassword(passwordDto.getPassword(),passwordDto.getConfirmPassword())){
+        if(customerService.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())){
             return new ResponseEntity<>("Password and Confirm password do not match",HttpStatus.BAD_REQUEST);
         }
         if (customerService.customerResetPassword(email, passwordDto)) {

@@ -2,32 +2,48 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class SellerUpdateDto {
     private Long id;
 
+    @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")
     private String firstName;
-
+    @Size(min = 2, max = 20, message = "your middleName should have 2 to 20 characters")
     private String middleName;
-
+    @Size(min = 2, max = 20, message = "your lastName should have 2 to 20 characters")
     private String lastName;
 
+    @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}"
+            + "[A-Z]{1}[1-9A-Z]{1}"
+            + "Z[0-9A-Z]{1}$", message = "give in proper GST format")
     private Long gstNumber;
 
+    @Email
     private String email;
 
     private boolean active;
-
+    @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
 
+    @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}", message = "enter a valid phone number")
     private String companyContact;
 
     private String imagePath;
 
+    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String city;
+    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String state;
+    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String country;
+    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String addressLine;
+    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private int zipCode;
+
     private Label label;
 
     public Long getId() {

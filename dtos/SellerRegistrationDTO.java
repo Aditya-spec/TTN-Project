@@ -21,27 +21,27 @@ public class SellerRegistrationDTO {
     private String confirmPassword;
 
     @NotNull(message = "city name is required")
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Size(min = 3,max = 20,message = "city be between 3 to 20 characters")
     private String city;
     @NotNull(message = "state name is required")
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Size(min = 3,max = 20,message = "state be between 3 to 20 characters")
     private String state;
     @NotNull(message = "country name is required")
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Size(min = 3,max = 20,message = "country be between 3 to 20 characters")
     private String country;
     @NotNull(message = "addressLine  is required")
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Size(min = 3,max = 20,message = "addressLine be between 3 to 20 characters")
     private String addressLine;
     @NotNull(message = "zipCode  is required")
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Size(min = 3,max = 20,message = "zipCode be between 3 to 20 characters")
     private int zipCode;
 
     @NotEmpty(message = " first name is required ")
-    @Size(min = 2,max = 20,message = "must be between 2 to 20 characters")
+    @Size(min = 2,max = 20,message = "your firstName should have 2 to 20 characters")
     private String firstName;
 
     @NotNull(message = " first name is required ")
-    @Size(min = 2,max = 20,message = "must be between 2 to 20 characters")
+    @Size(min = 2,max = 20,message = "your lastName should have 2 to 20 characters")
     private String lastName;
 
 
@@ -57,6 +57,7 @@ public class SellerRegistrationDTO {
     private String gstNumber;
 
     @NotNull(message = "company name is required and should be unique")
+    @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
 
     public String getEmail() {

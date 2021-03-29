@@ -1,18 +1,12 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.AddressDto;
-import com.Bootcamp.Project.Application.dtos.PasswordDto;
-import com.Bootcamp.Project.Application.dtos.SellerProfileDto;
-import com.Bootcamp.Project.Application.dtos.SellerUpdateDto;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
-import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
-import javax.print.attribute.standard.Destination;
-import javax.xml.transform.Source;
 import java.lang.reflect.Field;
 import java.util.Map;
 

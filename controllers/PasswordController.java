@@ -1,6 +1,6 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.PasswordDto;
+import com.Bootcamp.Project.Application.dtos.PasswordTokenDto;
 import com.Bootcamp.Project.Application.services.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,11 @@ public class PasswordController {
     }
 
     @PutMapping("/reset")
-    public ResponseEntity<String> resetPassword( @RequestBody @Valid  PasswordDto passwordDto) {
-        if (!passwordService.checkPassword(passwordDto)) {
+    public ResponseEntity<String> resetPassword( @RequestBody @Valid PasswordTokenDto passwordTokenDto) {
+        if (!passwordService.checkPassword(passwordTokenDto)) {
             return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
         }
-        if (passwordService.setNewPassword(passwordDto)) {
+        if (passwordService.setNewPassword(passwordTokenDto)) {
             return new ResponseEntity<>("password updated successfully", HttpStatus.OK);
         } else
             return new ResponseEntity<>("Either User Doesn't exist or token is not valid", HttpStatus.BAD_REQUEST);

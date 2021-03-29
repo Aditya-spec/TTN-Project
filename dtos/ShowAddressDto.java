@@ -2,12 +2,21 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
+import javax.validation.constraints.NotNull;
+
 public class ShowAddressDto {
+
+    @NotNull(message = "pls add City name")
     private String city;
+    @NotNull(message = "pls add State name")
     private String state;
+    @NotNull(message = "pls add Country name")
     private String country;
+    @NotNull(message = "pls add AddressLine name")
     private String addressLine;
+    @NotNull(message = "pls add Zipcode name")
     private int zipCode;
+    @NotNull(message = "pls add Address type")
     private Label label;
 
     public String getCity() {

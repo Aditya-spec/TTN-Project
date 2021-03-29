@@ -3,7 +3,6 @@ package com.Bootcamp.Project.Application.services;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
-import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
@@ -104,7 +103,7 @@ public class CustomerService {
         CustomerUpdateDto customerUpdateDto=modelMapper.map(customer,CustomerUpdateDto.class);
         try {
             fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(SellerUpdateDto.class, (String) k);
+                Field field = ReflectionUtils.findField(CustomerUpdateDto.class, (String) k);
                 field.setAccessible(true);
                 ReflectionUtils.setField(field, customerUpdateDto, v);
             });
@@ -153,6 +152,7 @@ public class CustomerService {
             throw new InvalidFieldException("Invalid field ");
         }
         addressRepository.save(address);
+
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
     }
 }
