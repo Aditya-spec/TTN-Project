@@ -46,7 +46,7 @@ public class RegistrationService {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-    public Boolean registerCustomer(CustomerRegistrationDTO customerRegistrationDTO) {
+    /*public Boolean registerCustomer(CustomerRegistrationDTO customerRegistrationDTO) {
         Customer customer = modelMapper.map(customerRegistrationDTO, Customer.class);
         customer.setActive(false);
         String encodedPassword = passwordEncoder.encode(customer.getPassword());
@@ -63,7 +63,27 @@ public class RegistrationService {
         String topic = "Registration Done!!";
         emailService.sendMail(customer.getEmail(), topic, body);
         return true;
+    }*/
+
+    public Boolean registerCustomer(CustomerRegistrationDTO customerRegistrationDTO) {
+        Customer customer = modelMapper.map(customerRegistrationDTO, Customer.class);
+        customer.setActive(false);
+        String encodedPassword = passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
+
+        Role role = roleRepository.findByAuthorization("ROLE_CUSTOMER").get(1);
+        customer.setRoles(Arrays.asList(role));
+        customer.setActivationToken(UUID.randomUUID().toString());
+        customer.setExpiresAt(LocalTime.now().plusMinutes(15));
+        customerRepository.save(customer);
+
+        String body = " Please active your account using this link" +
+                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer" + customer.getActivationToken();
+        String topic = "Registration Done!!";
+        emailService.sendMail(customer.getEmail(), topic, body);
+        return true;
     }
+
 
     public Boolean activateCustomer(String token) {
         Customer registeredCustomer = customerRepository.findByActivationToken(token);
@@ -131,7 +151,7 @@ public class RegistrationService {
         seller.setActive(false);
         String encodedPassword = passwordEncoder.encode(seller.getPassword());
         seller.setPassword(encodedPassword);
-        Role role=roleRepository.findById(2l).get();
+        Role role = roleRepository.findByAuthorization("ROLE_SELLER").get(1);
         seller.setRoles(Arrays.asList(role));
         sellerRepository.save(seller);
         String body="Your account has been registered, please wait for activation mail";

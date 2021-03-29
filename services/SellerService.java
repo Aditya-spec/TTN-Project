@@ -35,9 +35,6 @@ public class SellerService {
         if (seller == null) {
             System.out.println("seller is null");
         }
-
-
-
         SellerProfileDto sellerProfileDto = mapSeller(seller);
         AddressDto addressDto = mapAddress(seller.getAddress());
         sellerProfileDto.setAddressDto(addressDto);

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RoleRepository extends CrudRepository<Role,Long> {
 
+    List<Role> findByAuthorization(String role_customer);
 }
