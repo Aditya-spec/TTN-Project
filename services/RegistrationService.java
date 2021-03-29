@@ -51,6 +51,7 @@ public class RegistrationService {
         customer.setActive(false);
         String encodedPassword = passwordEncoder.encode(customer.getPassword());
         customer.setPassword(encodedPassword);
+
         Role role = roleRepository.findById(4l).get();
         customer.setRoles(Arrays.asList(role));
         customer.setActivationToken(UUID.randomUUID().toString());

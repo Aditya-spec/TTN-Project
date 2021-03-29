@@ -1,5 +1,6 @@
 package com.Bootcamp.Project.Application.controllers;
 
+import com.Bootcamp.Project.Application.dtos.CustomerProfileDto;
 import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
 import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.ShowAddressDto;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class CustomerController {
     }
 
     @GetMapping("/view-profile/{email}")
-    public RegisteredCustomerDto showProfile(@PathVariable String email) {
+    public CustomerProfileDto showProfile(@PathVariable String email) {
         return customerService.showProfile(email);
     }
 
@@ -34,7 +36,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add-address/{email}")
-    public ResponseEntity<String> addAddress(@PathVariable String email, @RequestBody ShowAddressDto showAddressDto) {
+    public ResponseEntity<String> addAddress(@PathVariable String email, @Valid @RequestBody ShowAddressDto showAddressDto) {
         if (customerService.addAddress(email, showAddressDto)) {
             return new ResponseEntity<>("address added successfully", HttpStatus.OK);
         }
@@ -73,7 +75,4 @@ public class CustomerController {
     public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<Object, Object> fields){
         return customerService.updateAddress(id,fields);
     }
-
-
-
 }

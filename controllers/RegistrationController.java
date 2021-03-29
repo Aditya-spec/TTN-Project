@@ -33,7 +33,7 @@ public class RegistrationController {
 
 
     @PostMapping("/customer")
-    public ResponseEntity<String> registerCustomer(@RequestBody CustomerRegistrationDTO customerRegistrationDTO) {
+    public ResponseEntity<String> registerCustomer( @Valid @RequestBody CustomerRegistrationDTO customerRegistrationDTO) {
         String result = customValidation.checkCustomerValidation(customerRegistrationDTO);
         if (result != null) {
             System.out.println(customerRegistrationDTO);
@@ -61,7 +61,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/customer/resendActivationLink")
-    public ResponseEntity<String> resendActivationToken(@Valid @ModelAttribute("customerEmailDto") @RequestBody CustomerEmailDto customerEmailDto) {
+    public ResponseEntity<String> resendActivationToken(@Valid  @RequestBody CustomerEmailDto customerEmailDto) {
         if (registrationService.resendActivationLink(customerEmailDto.getEmail())) {
             return new ResponseEntity<>("new activation token has been sent via email", HttpStatus.OK);
         }

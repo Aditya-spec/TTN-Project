@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class CustomerProfileEditDto {
+public class CustomerProfileDto {
 
     @Email(message = "enter a valid email")
     private String email;
@@ -17,6 +17,8 @@ public class CustomerProfileEditDto {
 
     @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}",message = "enter a valid phone number")
     private String contactNumber;
+
+    private String imagePath;
 
     public String getEmail() {
         return email;
@@ -56,5 +58,13 @@ public class CustomerProfileEditDto {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

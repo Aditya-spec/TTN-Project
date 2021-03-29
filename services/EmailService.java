@@ -33,7 +33,7 @@ public class EmailService {
         simpleMailMessage.setText("Your account has been registered, please wait for activation");
         javaMailSender.send(simpleMailMessage);
 
-    }*/
+    }
 
     @Async
     public void resetPasswordMail(String to, String resetToken) {
@@ -42,5 +42,5 @@ public class EmailService {
         simpleMailMessage.setTo(to);
 
 
-    }
+    }*/
 }

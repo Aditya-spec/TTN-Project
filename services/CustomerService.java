@@ -34,13 +34,13 @@ public class CustomerService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    public RegisteredCustomerDto showProfile(String email) {
+    public CustomerProfileDto showProfile(String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new NotFoundException("no customer for this email exists");
         }
-        RegisteredCustomerDto registeredCustomerDto = modelMapper.map(customer, RegisteredCustomerDto.class);
-        return registeredCustomerDto;
+        CustomerProfileDto customerProfileDto = modelMapper.map(customer, CustomerProfileDto.class);
+        return customerProfileDto;
     }
 
     public List<ShowAddressDto> showAddresses(String email) {
@@ -100,18 +100,18 @@ public class CustomerService {
         if (customer == null) {
             return false;
         }
-        CustomerUpdateDto customerUpdateDto=modelMapper.map(customer,CustomerUpdateDto.class);
+        CustomerProfileDto customerProfileDto=modelMapper.map(customer,CustomerProfileDto.class);
         try {
             fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(CustomerUpdateDto.class, (String) k);
+                Field field = ReflectionUtils.findField(CustomerProfileDto.class, (String) k);
                 field.setAccessible(true);
-                ReflectionUtils.setField(field, customerUpdateDto, v);
+                ReflectionUtils.setField(field, customerProfileDto, v);
             });
         } catch (RuntimeException e) {
             throw new InvalidFieldException("Invalid field");
         }
 
-        customer=modelMapper.map(customerUpdateDto,Customer.class);
+        customer=modelMapper.map(customerProfileDto,Customer.class);
         customerRepository.save(customer);
         return true;
     }
