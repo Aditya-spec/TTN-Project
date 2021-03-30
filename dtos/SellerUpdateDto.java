@@ -2,6 +2,7 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -19,12 +20,13 @@ public class SellerUpdateDto {
     @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}"
             + "[A-Z]{1}[1-9A-Z]{1}"
             + "Z[0-9A-Z]{1}$", message = "give in proper GST format")
-    private Long gstNumber;
+    private String gstNumber;
 
     @Email
     private String email;
 
     private boolean active;
+
     @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
 
@@ -33,7 +35,7 @@ public class SellerUpdateDto {
 
     private String imagePath;
 
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    /*@Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String city;
     @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String state;
@@ -41,10 +43,10 @@ public class SellerUpdateDto {
     private String country;
     @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String addressLine;
-    @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
+    @Digits(integer = 6, fraction = 0,message = "zipCode must be of 6 digits")
     private int zipCode;
 
-    private Label label;
+    private Label label;*/
 
     public Long getId() {
         return id;
@@ -78,11 +80,11 @@ public class SellerUpdateDto {
         this.lastName = lastName;
     }
 
-    public Long getGstNumber() {
+    public String getGstNumber() {
         return gstNumber;
     }
 
-    public void setGstNumber(Long gstNumber) {
+    public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
     }
 
@@ -126,7 +128,7 @@ public class SellerUpdateDto {
         this.imagePath = imagePath;
     }
 
-    public String getCity() {
+   /* public String getCity() {
         return city;
     }
 
@@ -172,5 +174,5 @@ public class SellerUpdateDto {
 
     public void setLabel(Label label) {
         this.label = label;
-    }
+    }*/
 }

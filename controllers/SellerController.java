@@ -1,13 +1,16 @@
 package com.Bootcamp.Project.Application.controllers;
 
+import com.Bootcamp.Project.Application.dtos.AddressUpdateDto;
 import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.SellerProfileDto;
+import com.Bootcamp.Project.Application.dtos.SellerUpdateDto;
 import com.Bootcamp.Project.Application.services.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -29,8 +32,8 @@ public class SellerController {
     }
 
     @PatchMapping("/update-profile/{email}")
-    public ResponseEntity<String> updateSeller(@PathVariable String email, @RequestBody Map<Object, Object> fields){
-        if(sellerService.updateSeller(email,fields)){
+    public ResponseEntity<String> updateSeller(@PathVariable String email, @Valid @RequestBody SellerUpdateDto sellerUpdateDto){
+        if(sellerService.updateSeller(email,sellerUpdateDto)){
             return new ResponseEntity<>("fields updated successfully",HttpStatus.OK);
         }
         return new ResponseEntity<>("fields cannot be updated", HttpStatus.BAD_REQUEST);
@@ -49,7 +52,7 @@ public class SellerController {
     }
 
     @PatchMapping("update-address/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<Object, Object> fields){
-        return sellerService.updateAddress(id,fields);
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody AddressUpdateDto addressUpdateDto){
+        return sellerService.updateAddress(id,addressUpdateDto);
     }
 }

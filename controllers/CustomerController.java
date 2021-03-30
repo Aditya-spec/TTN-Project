@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
+import com.Bootcamp.Project.Application.dtos.AddressUpdateDto;
 import com.Bootcamp.Project.Application.dtos.CustomerProfileDto;
-import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
 import com.Bootcamp.Project.Application.dtos.PasswordDto;
 import com.Bootcamp.Project.Application.dtos.ShowAddressDto;
 import com.Bootcamp.Project.Application.services.CustomerService;
@@ -51,13 +51,20 @@ public class CustomerController {
         return new ResponseEntity<>("address couldn't be deleted", HttpStatus.BAD_REQUEST);
     }
 
-    @PatchMapping("/update-profile/{email}")
-    public ResponseEntity<String> updateCustomer(@PathVariable String email, @RequestBody Map<Object, Object> fields){
+   /* @PatchMapping("/update-profile/{email}")
+    public ResponseEntity<String> updateCustomer(@PathVariable String email, @Valid @RequestBody Map<Object, Object> fields){
        if(customerService.updateProfile(email,fields)) {
            return new ResponseEntity<>("fields updated successfully",HttpStatus.OK);
        }
        return new ResponseEntity<>("fields cannot be updated",HttpStatus.BAD_REQUEST);
-    }
+    }*/
+    @PatchMapping("/update-profile/{email}")
+    public ResponseEntity<String> updateCustomer(@PathVariable String email, @Valid @RequestBody CustomerProfileDto customerProfileDto){
+       if(customerService.updateProfile(email,  customerProfileDto)) {
+           return new ResponseEntity<>("fields updated successfully",HttpStatus.OK);
+       }
+       return new ResponseEntity<>("fields cannot be updated",HttpStatus.BAD_REQUEST);
+   }
 
     @PatchMapping("/change-password/{email}")
     public ResponseEntity<String> changePassword(@PathVariable String email, @RequestBody PasswordDto passwordDto){
@@ -72,7 +79,7 @@ public class CustomerController {
     }
 
     @PatchMapping("update-address/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<Object, Object> fields){
-        return customerService.updateAddress(id,fields);
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @Valid @RequestBody AddressUpdateDto addressUpdateDto){
+        return customerService.updateAddress(id,addressUpdateDto);
     }
 }

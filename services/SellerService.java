@@ -2,6 +2,7 @@ package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
+import com.Bootcamp.Project.Application.entities.Name;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
@@ -84,7 +85,7 @@ public class SellerService {
         sellerRepository.save(seller);
         return true;
     }*/
-    public boolean updateSeller(String email, Map<Object, Object> fields) {
+    /*public boolean updateSeller(String email, Map<Object, Object> fields) {
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
             return false;
@@ -103,17 +104,53 @@ public class SellerService {
         seller=modelMapper.map(sellerUpdateDto,Seller.class);
         sellerRepository.save(seller);
         return true;
+    }*/
+    public boolean updateSeller(String email, SellerUpdateDto sellerUpdateDto) {
+        Seller seller = sellerRepository.findByEmail(email);
+        if (seller == null) {
+            return false;
+        }
+        // seller=modelMapper.map(sellerUpdateDto,Seller.class);
+        seller = mapSeller(sellerUpdateDto, seller);
+        sellerRepository.save(seller);
+        return true;
+    }
+
+    private Seller mapSeller(SellerUpdateDto sellerUpdateDto, Seller seller) {
+        if (sellerUpdateDto.getCompanyContact() != null) {
+            seller.setCompanyName(sellerUpdateDto.getCompanyContact());
+        }
+        if (sellerUpdateDto.getCompanyName() != null) {
+            seller.setCompanyName(sellerUpdateDto.getCompanyName());
+        }
+        Name name = new Name();
+
+        if (sellerUpdateDto.getFirstName() != null) {
+            name.setFirstName(sellerUpdateDto.getFirstName());
+        }
+        if (sellerUpdateDto.getLastName() != null) {
+            name.setLastName(sellerUpdateDto.getLastName());
+        }
+        if (sellerUpdateDto.getMiddleName() != null) {
+            name.setMiddleName(sellerUpdateDto.getMiddleName());
+        }
+        seller.setName(name);
+        if (sellerUpdateDto.getGstNumber() != null) {
+            seller.setGstNumber(sellerUpdateDto.getGstNumber());
+        }
+        if (sellerUpdateDto.getImagePath() != null) {
+            seller.setImagePath(sellerUpdateDto.getImagePath());
+        }
+        return seller;
     }
 
 
-
-
-        public boolean checkPassword(String password, String confirmPassword) {
-            if (password.equals(confirmPassword)) {
-                return false;
-            }
-            return true;
+    public boolean checkPassword(String password, String confirmPassword) {
+        if (password.equals(confirmPassword)) {
+            return false;
         }
+        return true;
+    }
 
     public boolean customerResetPassword(String email, PasswordDto passwordDto) {
         Seller seller = sellerRepository.findByEmail(email);
@@ -129,22 +166,37 @@ public class SellerService {
     }
 
 
-    public ResponseEntity<String> updateAddress(Long id, Map<Object, Object> fields) {
+
+    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
         Address address = addressRepository.getAddressById(id);
-        if (address == null ) {
+        if (address == null) {
             return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
         }
-        try {
-            fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(Address.class, (String) k);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, address, v);
-            });
-        } catch (RuntimeException e) {
-            throw new InvalidFieldException("Invalid field ");
-        }
+        address = mapAddress(address, addressUpdateDto);
         addressRepository.save(address);
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
+    }
+
+    private Address mapAddress(Address address, AddressUpdateDto addressUpdateDto) {
+        if (addressUpdateDto.getAddressLine() != null) {
+            address.setAddressLine(addressUpdateDto.getAddressLine());
+        }
+        if (addressUpdateDto.getCity() != null) {
+            address.setCity(addressUpdateDto.getCity());
+        }
+        if (addressUpdateDto.getState() != null) {
+            address.setState(addressUpdateDto.getState());
+        }
+        if (addressUpdateDto.getCountry() != null) {
+            address.setCountry(addressUpdateDto.getCountry());
+        }
+        if (addressUpdateDto.getLabel() != null) {
+            address.setLabel(addressUpdateDto.getLabel());
+        }
+        if (addressUpdateDto.getZipCode() != 0) {
+            address.setZipCode(addressUpdateDto.getZipCode());
+        }
+        return address;
     }
 }
 

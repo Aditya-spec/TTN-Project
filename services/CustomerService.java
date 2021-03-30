@@ -3,6 +3,7 @@ package com.Bootcamp.Project.Application.services;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
+import com.Bootcamp.Project.Application.entities.Name;
 import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
@@ -77,25 +78,8 @@ public class CustomerService {
 
     }
 
-    /*public Boolean updateProfile(String email, Map<Object, Object> fields) {
-        Customer customer = customerRepository.findByEmail(email);
-        if (customer == null) {
-            return false;
-        }
-        try {
-            fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(Customer.class, (String) k);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, customer, v);
-            });
-        } catch (RuntimeException e) {
-            throw new InvalidFieldException("Invalid field");
-        }
-        customerRepository.save(customer);
-        return true;
-    }*/
 
-    public boolean updateProfile(String email, Map<Object, Object> fields) {
+    /*public boolean updateProfile(String email, Map<Object, Object> fields) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             return false;
@@ -114,7 +98,41 @@ public class CustomerService {
         customer=modelMapper.map(customerProfileDto,Customer.class);
         customerRepository.save(customer);
         return true;
+    }*/
+
+    public boolean updateProfile(String email, CustomerProfileDto customerProfileDto) {
+        Customer customer=customerRepository.findByEmail(email);
+        if (customer == null) {
+            return false;
+        }
+       customer=mapCustomer(customerProfileDto,customer);
+        customerRepository.save(customer);
+        return true;
     }
+    private Customer mapCustomer(CustomerProfileDto customerProfileDto, Customer customer) {
+        Name name = customer.getName();
+        if (customerProfileDto.getFirstName() != null) {
+            name.setFirstName(customerProfileDto.getFirstName());
+        }
+        if (customerProfileDto.getLastName() != null) {
+            name.setLastName(customerProfileDto.getLastName());
+        }
+
+        if (customerProfileDto.getMiddleName() != null) {
+            name.setMiddleName(customerProfileDto.getMiddleName());
+        }
+        customer.setName(name);
+
+        if (customerProfileDto.getContactNumber() != null) {
+            customer.setContact(customerProfileDto.getContactNumber());
+        }
+
+        if (customerProfileDto.getImagePath() != null) {
+            customer.setImagePath(customerProfileDto.getImagePath());
+        }
+        return customer;
+    }
+
 
     public boolean checkPassword(String password, String confirmPassword) {
         if (password.equals(confirmPassword)) {
@@ -137,9 +155,9 @@ public class CustomerService {
         return true;
     }
 
-    public ResponseEntity<String> updateAddress(Long id, Map<Object, Object> fields) {
+    /*public ResponseEntity<String> updateAddress(Long id, Map<Object, Object> fields) {
         Address address = addressRepository.getAddressById(id);
-        if (address == null ) {
+        if (address == null) {
             return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
         }
         try {
@@ -154,5 +172,41 @@ public class CustomerService {
         addressRepository.save(address);
 
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
+    }*/
+
+    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
+        Address address = addressRepository.getAddressById(id);
+        if (address == null) {
+            return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
+        }
+        address=mapAddress(address,addressUpdateDto);
+
+        addressRepository.save(address);
+
+        return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
     }
+    private Address mapAddress(Address address, AddressUpdateDto addressUpdateDto) {
+        if (addressUpdateDto.getAddressLine() != null) {
+            address.setAddressLine(addressUpdateDto.getAddressLine());
+        }
+        if (addressUpdateDto.getCity() != null) {
+            address.setCity(addressUpdateDto.getCity());
+        }
+        if (addressUpdateDto.getState() != null) {
+            address.setState(addressUpdateDto.getState());
+        }
+        if (addressUpdateDto.getCountry() != null) {
+            address.setCountry(addressUpdateDto.getCountry());
+        }
+        if (addressUpdateDto.getLabel() != null) {
+            address.setLabel(addressUpdateDto.getLabel());
+        }
+        if (addressUpdateDto.getZipCode() != 0) {
+            address.setZipCode(addressUpdateDto.getZipCode());
+        }
+        return address;
+    }
+   /* mapAddress(targetAddress.get(), addressDTO);*/
+
+
 }

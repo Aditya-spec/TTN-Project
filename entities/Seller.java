@@ -12,7 +12,7 @@ import java.util.Set;
 public class Seller extends User {
 
     @Column(unique = true)
-    private Long gstNumber;
+    private String gstNumber;
     @Column(unique = true)
     private String companyContact;
     @Column(unique = true)
@@ -46,7 +46,7 @@ public class Seller extends User {
         return products;
     }
 
-    public Long getGstNumber() {
+    public String getGstNumber() {
         return gstNumber;
     }
 
@@ -70,7 +70,7 @@ public class Seller extends User {
         this.products = products;
     }
 
-    public void setGstNumber(Long gstNumber) {
+    public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
     }
 

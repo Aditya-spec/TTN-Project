@@ -19,7 +19,7 @@ public class SellerProfileDto {
     @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}"
             + "[A-Z]{1}[1-9A-Z]{1}"
             + "Z[0-9A-Z]{1}$", message = "give in proper GST format")
-    private Long gstNumber;
+    private String gstNumber;
 
     @Email
     private String email;
@@ -140,11 +140,11 @@ public class SellerProfileDto {
         return imagePath;
     }
 
-    public Long getGstNumber() {
+    public String getGstNumber() {
         return gstNumber;
     }
 
-    public void setGstNumber(Long gstNumber) {
+    public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
     }
 
