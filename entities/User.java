@@ -34,7 +34,7 @@ public class User extends BaseDomain{
     private int loginAttempt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Address> addressList;
+    private List<Address> addressList=new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -140,7 +140,6 @@ public class User extends BaseDomain{
     }
 
     public void setAddressList(List<Address> inputAddress) {
-
 
         if (inputAddress != null) {
             if (addressList == null) {

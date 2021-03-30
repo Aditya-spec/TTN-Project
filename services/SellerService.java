@@ -2,9 +2,7 @@ package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
-import com.Bootcamp.Project.Application.entities.Name;
 import com.Bootcamp.Project.Application.entities.Seller;
-import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import org.modelmapper.ModelMapper;
@@ -14,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
-import java.util.Map;
 
 @Service
 public class SellerService {
@@ -31,19 +26,19 @@ public class SellerService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    public SellerProfileDto showProfile(String email) {
+    public SellerProfileDTO showProfile(String email) {
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
             System.out.println("seller is null");
         }
-        SellerProfileDto sellerProfileDto = mapSeller(seller);
-        AddressDto addressDto = mapAddress(seller.getAddress());
+        SellerProfileDTO sellerProfileDto = mapSeller(seller);
+        AddressDTO addressDto = mapAddress(seller.getAddress());
         sellerProfileDto.setAddressDto(addressDto);
         return sellerProfileDto;
     }
 
-    private SellerProfileDto mapSeller(Seller seller) {
-        SellerProfileDto sellerProfileDto = new SellerProfileDto();
+    private SellerProfileDTO mapSeller(Seller seller) {
+        SellerProfileDTO sellerProfileDto = new SellerProfileDTO();
         sellerProfileDto.setCompanyName(seller.getCompanyName());
         sellerProfileDto.setCompanyContact(seller.getCompanyContact());
         sellerProfileDto.setId(seller.getId());
@@ -55,8 +50,8 @@ public class SellerService {
         return sellerProfileDto;
     }
 
-    private AddressDto mapAddress(Address address) {
-        AddressDto addressDTO = new AddressDto();
+    private AddressDTO mapAddress(Address address) {
+        AddressDTO addressDTO = new AddressDTO();
         addressDTO.setZipCode(address.getZipCode());
         addressDTO.setAddressLine(address.getAddressLine());
         addressDTO.setState(address.getState());
@@ -67,58 +62,20 @@ public class SellerService {
         return addressDTO;
     }
 
-    /*public boolean updateSeller(String email, Map<Object, Object> fields) {
-        Seller seller = sellerRepository.findByEmail(email);
-        if (seller == null) {
-            return false;
-        }
 
-        try {
-            fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(Seller.class, (String) k);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, seller, v);
-            });
-        } catch (RuntimeException e) {
-            throw new InvalidFieldException("Invalid field");
-        }
-        sellerRepository.save(seller);
-        return true;
-    }*/
-    /*public boolean updateSeller(String email, Map<Object, Object> fields) {
-        Seller seller = sellerRepository.findByEmail(email);
-        if (seller == null) {
-            return false;
-        }
-        SellerUpdateDto sellerUpdateDto=modelMapper.map(seller,SellerUpdateDto.class);
-        try {
-            fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(SellerUpdateDto.class, (String) k);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, sellerUpdateDto, v);
-            });
-        } catch (RuntimeException e) {
-            throw new InvalidFieldException("Invalid field");
-        }
-
-        seller=modelMapper.map(sellerUpdateDto,Seller.class);
-        sellerRepository.save(seller);
-        return true;
-    }*/
-    public boolean updateSeller(String email, SellerUpdateDto sellerUpdateDto) {
+    public boolean updateSeller(String email, SellerUpdateDTO sellerUpdateDto) {
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
             return false;
         }
         // seller=modelMapper.map(sellerUpdateDto,Seller.class);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(sellerUpdateDto,seller);
+        modelMapper.map(sellerUpdateDto, seller);
         sellerRepository.save(seller);
 
         return true;
     }
 
-    
 
     public boolean checkPassword(String password, String confirmPassword) {
         if (password.equals(confirmPassword)) {
@@ -127,7 +84,7 @@ public class SellerService {
         return true;
     }
 
-    public boolean customerResetPassword(String email, PasswordDto passwordDto) {
+    public boolean customerResetPassword(String email, PasswordDTO passwordDto) {
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null || seller.getActive()) {
             return false;
@@ -141,8 +98,7 @@ public class SellerService {
     }
 
 
-
-    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
+    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDTO addressUpdateDto) {
         Address address = addressRepository.getAddressById(id);
         if (address == null) {
             return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
@@ -152,7 +108,7 @@ public class SellerService {
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
     }
 
-    private Address mapAddress(Address address, AddressUpdateDto addressUpdateDto) {
+    private Address mapAddress(Address address, AddressUpdateDTO addressUpdateDto) {
         if (addressUpdateDto.getAddressLine() != null) {
             address.setAddressLine(addressUpdateDto.getAddressLine());
         }

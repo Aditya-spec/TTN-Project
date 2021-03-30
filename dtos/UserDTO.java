@@ -3,23 +3,22 @@ package com.Bootcamp.Project.Application.dtos;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
-public abstract class UserDto extends BaseDomainDto {
-    private NameDto name;
+public abstract class UserDTO extends BaseDomainDTO {
+    private NameDTO name;
     private String email;
     private boolean active;
     private boolean deleted;
     private String password;
-    private List<AddressDto> addressDtoList;
-    private List<RoleDto> roleDtoList;
+    private List<AddressDTO> addressDTOList;
+    private List<RoleDTO> roleDTOList;
 
-    public NameDto getName() {
+    public NameDTO getName() {
         return name;
     }
 
-    public void setName(NameDto name) {
+    public void setName(NameDTO name) {
         this.name = name;
     }
 
@@ -55,19 +54,19 @@ public abstract class UserDto extends BaseDomainDto {
         this.password = password;
     }
 
-    public List<AddressDto> getAddressDtoList() {
-        return addressDtoList;
+    public List<AddressDTO> getAddressDtoList() {
+        return addressDTOList;
     }
 
-    public void setAddressDtoList(List<AddressDto> addressDtoList) {
-        this.addressDtoList = addressDtoList;
+    public void setAddressDtoList(List<AddressDTO> addressDTOList) {
+        this.addressDTOList = addressDTOList;
     }
 
-    public List<RoleDto> getRoleDtoList() {
-        return roleDtoList;
+    public List<RoleDTO> getRoleDtoList() {
+        return roleDTOList;
     }
 
-    public void setRoleDtoList(List<RoleDto> roleDtoList) {
-        this.roleDtoList = roleDtoList;
+    public void setRoleDtoList(List<RoleDTO> roleDTOList) {
+        this.roleDTOList = roleDTOList;
     }
 }

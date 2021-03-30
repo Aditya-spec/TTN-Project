@@ -1,9 +1,7 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.CustomerDto;
-import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
-import com.Bootcamp.Project.Application.dtos.RegisteredSellerDto;
-import com.Bootcamp.Project.Application.dtos.SellerDto;
+import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDTO;
+import com.Bootcamp.Project.Application.dtos.RegisteredSellerDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Role;
 import com.Bootcamp.Project.Application.entities.Seller;
@@ -44,45 +42,45 @@ public class AdminService {
     Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
 
 
-      /*public List<RegisteredCustomerDto> getCustomers() {
+      /*public List<RegisteredCustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
 
         List<Customer> customerList = (List<Customer>) customerRepository.findAll(sortById);
         System.out.println(customerList);
 
-        List<RegisteredCustomerDto> registeredCustomerDtoList
-                = modelMapper.map(customerList, new TypeToken<List<RegisteredCustomerDto>>() {
+        List<RegisteredCustomerDTO> registeredCustomerDtoList
+                = modelMapper.map(customerList, new TypeToken<List<RegisteredCustomerDTO>>() {
         }.getType());
 
         System.out.println(registeredCustomerDtoList);
         return registeredCustomerDtoList;
     }*/
 
-     /*public List<CustomerDto> getCustomers() {
+     /*public List<CustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchAllCustomer();
         System.out.println(customerList);
 
-        List<CustomerDto> customerDtoList
-                = modelMapper.map(customerList, new TypeToken<List<CustomerDto>>() {
+        List<CustomerDTO> customerDtoList
+                = modelMapper.map(customerList, new TypeToken<List<CustomerDTO>>() {
         }.getType());
 
         System.out.println(customerDtoList);
         return customerDtoList;
     }*/
 
-    public List<RegisteredCustomerDto> getCustomers() {
+    public List<RegisteredCustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
         if (customerList == null) {
             throw new NotFoundException("No customer registered");
         }
 
-        List<RegisteredCustomerDto> registeredCustomerDtoList
-                = modelMapper.map(customerList, new TypeToken<List<RegisteredCustomerDto>>() {
+        List<RegisteredCustomerDTO> registeredCustomerDTOList
+                = modelMapper.map(customerList, new TypeToken<List<RegisteredCustomerDTO>>() {
         }.getType());
 
-        return registeredCustomerDtoList;
+        return registeredCustomerDTOList;
     }
 
 
@@ -94,30 +92,30 @@ public class AdminService {
 
 
 
-    /*public List<SellerDto> getSellers() {
+    /*public List<SellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
-        List<SellerDto> sellerDtoList
-                = modelMapper.map(sellerList, new TypeToken<List<SellerDto>>() {
+        List<SellerDTO> sellerDtoList
+                = modelMapper.map(sellerList, new TypeToken<List<SellerDTO>>() {
         }.getType());
         return sellerDtoList;
 
     }*/
 
 
-    public List<RegisteredSellerDto> getSellers() {
+    public List<RegisteredSellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
         if (sellerList == null) {
             throw new NotFoundException("No seller registered");
         }
 
-        List<RegisteredSellerDto> registeredSellerDtoList
-                = modelMapper.map(sellerList, new TypeToken<List<RegisteredSellerDto>>() {
+        List<RegisteredSellerDTO> registeredSellerDTOList
+                = modelMapper.map(sellerList, new TypeToken<List<RegisteredSellerDTO>>() {
         }.getType());
 
-        System.out.println(registeredSellerDtoList);
-        return registeredSellerDtoList;
+        System.out.println(registeredSellerDTOList);
+        return registeredSellerDTOList;
     }
 
 

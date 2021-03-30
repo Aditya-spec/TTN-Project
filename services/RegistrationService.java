@@ -127,7 +127,6 @@ public class RegistrationService {
 
             return false;
         }
-
         long id = user.getId();
         Customer customer = customerRepository.findById(id);
 
@@ -154,6 +153,8 @@ public class RegistrationService {
         Role role = roleRepository.findByAuthorization("ROLE_SELLER").get(1);
         seller.setRoles(Arrays.asList(role));
         sellerRepository.save(seller);
+       /* System.out.println(sellerRegistrationDTO.getSellerAddressDTO().getCountry());
+        System.out.println(seller.getAddress().getCountry());*/
         String body="Your account has been registered, please wait for activation mail";
         emailService.sendMail(seller.getEmail(),"Account registered",body);
         return true;

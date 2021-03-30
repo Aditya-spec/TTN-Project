@@ -1,25 +1,25 @@
 package com.Bootcamp.Project.Application.dtos;
 
-public class CartDto extends BaseDomainDto {
-    private CustomerDto customerDto;
-    private ProductVariationDto productVariationDto;
+public class CartDTO extends BaseDomainDTO {
+    private CustomerDTO customerDto;
+    private ProductVariationDTO productVariationDto;
 
     private Boolean wishListItem;
     private int quantity;
 
-    public CustomerDto getCustomerDto() {
+    public CustomerDTO getCustomerDto() {
         return customerDto;
     }
 
-    public void setCustomerDto(CustomerDto customerDto) {
+    public void setCustomerDto(CustomerDTO customerDto) {
         this.customerDto = customerDto;
     }
 
-    public ProductVariationDto getProductVariationDto() {
+    public ProductVariationDTO getProductVariationDto() {
         return productVariationDto;
     }
 
-    public void setProductVariationDto(ProductVariationDto productVariationDto) {
+    public void setProductVariationDto(ProductVariationDTO productVariationDto) {
         this.productVariationDto = productVariationDto;
     }
 

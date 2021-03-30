@@ -1,31 +1,36 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+public class RegisteredCustomerDTO {
+    private Long CustomerId;
 
-public class CustomerProfileDto {
-
-    @Email(message = "enter a valid email")
-    private String email;
-    @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")
     private String firstName;
-    @Size(min = 2, max = 20, message = "your middleName should have 2 to 20 characters")
+
     private String middleName;
-    @Size(min = 2, max = 20, message = "your lastName should have 2 to 20 characters")
+
     private String lastName;
 
-    @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}",message = "enter a valid phone number")
+    private String email;
+
     private String contactNumber;
+
+    private boolean active;
 
     private String imagePath;
 
-    public String getEmail() {
-        return email;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Long getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        CustomerId = customerId;
     }
 
     public String getFirstName() {
@@ -52,6 +57,14 @@ public class CustomerProfileDto {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getContactNumber() {
         return contactNumber;
     }
@@ -60,11 +73,15 @@ public class CustomerProfileDto {
         this.contactNumber = contactNumber;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setActive(boolean active) {
+        this.active = active;
     }
+
+
+
+
 }

@@ -1,13 +1,11 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
-import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
 

@@ -20,7 +20,7 @@ public class SellerRegistrationDTO {
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})", message = "Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")
     private String confirmPassword;
 
-    @NotNull(message = "city name is required")
+    /*@NotNull(message = "city name is required")
     @Size(min = 3,max = 20,message = "city be between 3 to 20 characters")
     private String city;
     @NotNull(message = "state name is required")
@@ -33,9 +33,8 @@ public class SellerRegistrationDTO {
     @Size(min = 3,max = 20,message = "addressLine be between 3 to 20 characters")
     private String addressLine;
     @NotNull(message = "zipCode  is required")
-    @Size(min = 3,max = 20,message = "zipCode be between 3 to 20 characters")
     private int zipCode;
-
+*/
     @NotEmpty(message = " first name is required ")
     @Size(min = 2,max = 20,message = "your firstName should have 2 to 20 characters")
     private String firstName;
@@ -59,6 +58,16 @@ public class SellerRegistrationDTO {
     @NotNull(message = "company name is required and should be unique")
     @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
+
+    private SellerAddressDTO sellerAddressDTO;
+
+    public SellerAddressDTO getSellerAddressDTO() {
+        return sellerAddressDTO;
+    }
+
+    public void setSellerAddressDTO(SellerAddressDTO sellerAddressDTO) {
+        this.sellerAddressDTO = sellerAddressDTO;
+    }
 
     public String getEmail() {
         return email;
@@ -100,7 +109,7 @@ public class SellerRegistrationDTO {
         this.companyName = companyName;
     }
 
-    public String getCity() {
+    /*public String getCity() {
         return city;
     }
 
@@ -138,7 +147,7 @@ public class SellerRegistrationDTO {
 
     public void setZipCode(int zipCode) {
         this.zipCode = zipCode;
-    }
+    }*/
 
     public String getFirstName() {
         return firstName;

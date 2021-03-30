@@ -67,6 +67,4 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .csrf().disable();
     }
 
-
-
 }

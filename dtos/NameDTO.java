@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Component
-public class NameDto {
+public class NameDTO {
 
     @NotEmpty(message = "first name is required")
     private String firstName;
@@ -42,7 +42,7 @@ public class NameDto {
 
     @Override
     public String toString() {
-        return "NameDto{" +
+        return "NameDTO{" +
                 "firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +

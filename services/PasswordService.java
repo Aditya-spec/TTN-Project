@@ -1,6 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.PasswordTokenDto;
+import com.Bootcamp.Project.Application.dtos.PasswordTokenDTO;
 import com.Bootcamp.Project.Application.entities.User;
 import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
@@ -37,13 +37,13 @@ public class PasswordService {
         }
     }
 
-    public Boolean checkPassword(PasswordTokenDto passwordTokenDto) {
+    public Boolean checkPassword(PasswordTokenDTO passwordTokenDto) {
         if (passwordTokenDto.getPassword().equals(passwordTokenDto.getConfirmPassword()))
             return true;
         else return false;
     }
 
-    public Boolean setNewPassword(PasswordTokenDto passwordTokenDto) {
+    public Boolean setNewPassword(PasswordTokenDTO passwordTokenDto) {
         User user = userRepository.findByResetToken(passwordTokenDto.getToken());
         if (user == null) {
             user.setActive(false);

@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class SellerProfileDto {
+public class SellerProfileDTO {
     private Long id;
 
     @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")
@@ -46,13 +46,13 @@ public class SellerProfileDto {
 
     private Label label;
 
-    private AddressDto addressDto;
+    private AddressDTO addressDto;
 
-    public AddressDto getAddressDto() {
+    public AddressDTO getAddressDto() {
         return addressDto;
     }
 
-    public void setAddressDto(AddressDto addressDto) {
+    public void setAddressDto(AddressDTO addressDto) {
         this.addressDto = addressDto;
     }
 

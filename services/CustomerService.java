@@ -4,7 +4,6 @@ import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Name;
-import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
 import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
@@ -16,12 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CustomerService {
@@ -35,34 +31,36 @@ public class CustomerService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    public CustomerProfileDto showProfile(String email) {
+    public CustomerProfileDTO showProfile(String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new NotFoundException("no customer for this email exists");
         }
-        CustomerProfileDto customerProfileDto = modelMapper.map(customer, CustomerProfileDto.class);
+        CustomerProfileDTO customerProfileDto = modelMapper.map(customer, CustomerProfileDTO.class);
         return customerProfileDto;
     }
 
-    public List<ShowAddressDto> showAddresses(String email) {
+    public List<ShowAddressDTO> showAddresses(String email) {
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
         if (addressList == null) {
             throw new NotFoundException("No Address is stored");
         }
-        Type setType = new TypeToken<List<ShowAddressDto>>() {
+        Type setType = new TypeToken<List<ShowAddressDTO>>() {
         }.getType();
-        List<ShowAddressDto> showAddressDtoList = modelMapper.map(addressList, setType);
-        return showAddressDtoList;
+        List<ShowAddressDTO> showAddressDTOList = modelMapper.map(addressList, setType);
+        return showAddressDTOList;
     }
 
-    public Boolean addAddress(String email, ShowAddressDto showAddressDto) {
+    public Boolean addAddress(String email, ShowAddressDTO showAddressDto) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new NotFoundException("no customer for this email exists");
         }
         Address address = modelMapper.map(showAddressDto, Address.class);
-        customer.getAddressList().add(address);
+        customer.setAddress(address);
+        customerRepository.save(customer);
+       /* addressRepository.save(address);*/
         return true;
     }
 
@@ -84,10 +82,10 @@ public class CustomerService {
         if (customer == null) {
             return false;
         }
-        CustomerProfileDto customerProfileDto=modelMapper.map(customer,CustomerProfileDto.class);
+        CustomerProfileDTO customerProfileDto=modelMapper.map(customer,CustomerProfileDTO.class);
         try {
             fields.forEach((k, v) -> {
-                Field field = ReflectionUtils.findField(CustomerProfileDto.class, (String) k);
+                Field field = ReflectionUtils.findField(CustomerProfileDTO.class, (String) k);
                 field.setAccessible(true);
                 ReflectionUtils.setField(field, customerProfileDto, v);
             });
@@ -100,7 +98,7 @@ public class CustomerService {
         return true;
     }*/
 
-    public boolean updateProfile(String email, CustomerProfileDto customerProfileDto) {
+    public boolean updateProfile(String email, CustomerProfileDTO customerProfileDto) {
         Customer customer=customerRepository.findByEmail(email);
         if (customer == null) {
             return false;
@@ -109,7 +107,7 @@ public class CustomerService {
         customerRepository.save(customer);
         return true;
     }
-    private Customer mapCustomer(CustomerProfileDto customerProfileDto, Customer customer) {
+    private Customer mapCustomer(CustomerProfileDTO customerProfileDto, Customer customer) {
         Name name = customer.getName();
         if (customerProfileDto.getFirstName() != null) {
             name.setFirstName(customerProfileDto.getFirstName());
@@ -123,8 +121,8 @@ public class CustomerService {
         }
         customer.setName(name);
 
-        if (customerProfileDto.getContactNumber() != null) {
-            customer.setContact(customerProfileDto.getContactNumber());
+        if (customerProfileDto.getContact() != null) {
+            customer.setContact(customerProfileDto.getContact());
         }
 
         if (customerProfileDto.getImagePath() != null) {
@@ -142,7 +140,7 @@ public class CustomerService {
     }
 
 
-    public boolean customerResetPassword(String email, PasswordDto passwordDto) {
+    public boolean customerResetPassword(String email, PasswordDTO passwordDto) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null || customer.getActive()) {
             return false;
@@ -174,7 +172,7 @@ public class CustomerService {
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
     }*/
 
-    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
+    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDTO addressUpdateDto) {
         Address address = addressRepository.getAddressById(id);
         if (address == null) {
             return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
@@ -185,7 +183,7 @@ public class CustomerService {
 
         return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
     }
-    private Address mapAddress(Address address, AddressUpdateDto addressUpdateDto) {
+    private Address mapAddress(Address address, AddressUpdateDTO addressUpdateDto) {
         if (addressUpdateDto.getAddressLine() != null) {
             address.setAddressLine(addressUpdateDto.getAddressLine());
         }

@@ -5,7 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class SellerUpdateDto {
+public class SellerUpdateDTO {
     private Long id;
 
     @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")

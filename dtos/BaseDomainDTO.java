@@ -2,7 +2,7 @@ package com.Bootcamp.Project.Application.dtos;
 
 import java.util.Date;
 
-public class BaseDomainDto {
+public class BaseDomainDTO {
     private Long id;
     private Date dateCreated;
     private Date lastModified;

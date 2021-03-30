@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDto;
-import com.Bootcamp.Project.Application.dtos.RegisteredSellerDto;
+import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDTO;
+import com.Bootcamp.Project.Application.dtos.RegisteredSellerDTO;
 import com.Bootcamp.Project.Application.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,13 +25,13 @@ public class AdminController {
 
 
     @GetMapping("/get/customers")
-    public ResponseEntity<List<RegisteredCustomerDto>> getAllCustomer() {
+    public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomer() {
         return new ResponseEntity<>(adminService.getCustomers(), HttpStatus.OK);
     }
 
 
     @GetMapping("/get/sellers")
-    public ResponseEntity<List<RegisteredSellerDto>> getAllSeller() {
+    public ResponseEntity<List<RegisteredSellerDTO>> getAllSeller() {
         return new ResponseEntity<>(adminService.getSellers(), HttpStatus.OK);
     }
 
@@ -49,16 +49,16 @@ public class AdminController {
 www.yoursite.com?myparam1={id1}&myparam2={id2} */
 
      /*@GetMapping("/get/sellers")
-    public List<SellerDto> getAllSeller( ){
-        //List<CustomerDto> customerDtos = adminService.getCustomers();
-        List<SellerDto> sellerDtoList = adminService.getSellers();
+    public List<SellerDTO> getAllSeller( ){
+        //List<CustomerDTO> customerDtos = adminService.getCustomers();
+        List<SellerDTO> sellerDtoList = adminService.getSellers();
         return sellerDtoList;
 
     }*/
 
     /* @GetMapping("/get/customers")
-    public List<CustomerDto> getAllCustomer( ){
-        List<CustomerDto> customerDtoList = adminService.getCustomers();
+    public List<CustomerDTO> getAllCustomer( ){
+        List<CustomerDTO> customerDtoList = adminService.getCustomers();
     return customerDtoList;
     }*/
 

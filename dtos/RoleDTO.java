@@ -2,9 +2,9 @@ package com.Bootcamp.Project.Application.dtos;
 
 import java.util.List;
 
-public class RoleDto {
+public class RoleDTO {
     private String authorization;
-    private List<UserDto> userDtoList;
+    private List<UserDTO> userDtoList;
 
     public String getAuthorization() {
         return authorization;
@@ -14,11 +14,11 @@ public class RoleDto {
         this.authorization = authorization;
     }
 
-    public List<UserDto> getUserDtoList() {
+    public List<UserDTO> getUserDtoList() {
         return userDtoList;
     }
 
-    public void setUserDtoList(List<UserDto> userDtoList) {
+    public void setUserDtoList(List<UserDTO> userDtoList) {
         this.userDtoList = userDtoList;
     }
 }

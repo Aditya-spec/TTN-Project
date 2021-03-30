@@ -2,18 +2,18 @@ package com.Bootcamp.Project.Application.dtos;
 
 import java.util.Set;
 
-public class SellerDto extends UserDto{
-    private AddressDto addressDto;
+public class SellerDTO extends UserDTO {
+    private AddressDTO addressDto;
     private Long gstNumber;
     private String companyContact;
     private String companyName;
-    private Set<ProductDto> productDtoSet;
+    private Set<ProductDTO> productDTOSet;
 
-    public AddressDto getAddressDto() {
+    public AddressDTO getAddressDto() {
         return addressDto;
     }
 
-    public void setAddressDto(AddressDto addressDto) {
+    public void setAddressDto(AddressDTO addressDto) {
         this.addressDto = addressDto;
     }
 
@@ -41,11 +41,11 @@ public class SellerDto extends UserDto{
         this.companyName = companyName;
     }
 
-    public Set<ProductDto> getProductDtoSet() {
-        return productDtoSet;
+    public Set<ProductDTO> getProductDtoSet() {
+        return productDTOSet;
     }
 
-    public void setProductDtoSet(Set<ProductDto> productDtoSet) {
-        this.productDtoSet = productDtoSet;
+    public void setProductDtoSet(Set<ProductDTO> productDTOSet) {
+        this.productDTOSet = productDTOSet;
     }
 }

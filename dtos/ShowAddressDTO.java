@@ -2,22 +2,21 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-public class AddressUpdateDto {
-    @Size(min=3,max=25,message = "city must have characters between 2 to 20")
+public class ShowAddressDTO {
+
+    @NotNull(message = "pls add City name")
     private String city;
-    @Size(min=3,max=25,message = "state must have characters between 2 to 20")
+    @NotNull(message = "pls add State name")
     private String state;
-    @Size(min=3,max=25,message = "country must have characters between 2 to 20")
+    @NotNull(message = "pls add Country name")
     private String country;
-    @Size(min=3,max=25,message = "addressLine must have characters between 2 to 20")
+    @NotNull(message = "pls add AddressLine name")
     private String addressLine;
-    @Digits(integer = 6, fraction = 0,message = "zipCode must be of 6 digits")
+    @NotNull(message = "pls add Zipcode name")
     private int zipCode;
-
+    @NotNull(message = "pls add Address type")
     private Label label;
 
     public String getCity() {

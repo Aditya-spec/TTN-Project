@@ -2,7 +2,7 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
-public class RegisteredSellerDto {
+public class RegisteredSellerDTO {
     private Long SellerId;
 
     private String firstName;

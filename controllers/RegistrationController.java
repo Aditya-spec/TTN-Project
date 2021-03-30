@@ -1,6 +1,6 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.CustomerEmailDto;
+import com.Bootcamp.Project.Application.dtos.CustomerEmailDTO;
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
@@ -61,7 +61,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/customer/resendActivationLink")
-    public ResponseEntity<String> resendActivationToken(@Valid  @RequestBody CustomerEmailDto customerEmailDto) {
+    public ResponseEntity<String> resendActivationToken(@Valid  @RequestBody CustomerEmailDTO customerEmailDto) {
         if (registrationService.resendActivationLink(customerEmailDto.getEmail())) {
             return new ResponseEntity<>("new activation token has been sent via email", HttpStatus.OK);
         }
@@ -79,9 +79,5 @@ public class RegistrationController {
         }
         return new ResponseEntity<>("seller not created", HttpStatus.BAD_REQUEST);
     }
-
-
-
-
 
 }

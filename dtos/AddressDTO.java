@@ -4,7 +4,8 @@ import com.Bootcamp.Project.Application.enums.Label;
 
 import javax.validation.constraints.NotNull;
 
-public class ShowAddressDto {
+
+public class AddressDTO extends BaseDomainDTO {
 
     @NotNull(message = "pls add City name")
     private String city;
@@ -18,6 +19,9 @@ public class ShowAddressDto {
     private int zipCode;
     @NotNull(message = "pls add Address type")
     private Label label;
+
+
+    private UserDTO user;
 
     public String getCity() {
         return city;
@@ -65,5 +69,13 @@ public class ShowAddressDto {
 
     public void setLabel(Label label) {
         this.label = label;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 }

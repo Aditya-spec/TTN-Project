@@ -3,7 +3,7 @@ package com.Bootcamp.Project.Application.dtos;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-public class PasswordTokenDto {
+public class PasswordTokenDTO {
 
     @NotEmpty(message = "password is mandatory ")
     @Pattern(regexp="((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})",message="Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")

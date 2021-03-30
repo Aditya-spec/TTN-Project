@@ -1,9 +1,9 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.AddressUpdateDto;
-import com.Bootcamp.Project.Application.dtos.PasswordDto;
-import com.Bootcamp.Project.Application.dtos.SellerProfileDto;
-import com.Bootcamp.Project.Application.dtos.SellerUpdateDto;
+import com.Bootcamp.Project.Application.dtos.AddressUpdateDTO;
+import com.Bootcamp.Project.Application.dtos.PasswordDTO;
+import com.Bootcamp.Project.Application.dtos.SellerProfileDTO;
+import com.Bootcamp.Project.Application.dtos.SellerUpdateDTO;
 import com.Bootcamp.Project.Application.services.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/seller")
@@ -27,12 +26,12 @@ public class SellerController {
     }
 
     @GetMapping("/view-profile/{email}")
-    public SellerProfileDto viewProfile(@PathVariable String email){
+    public SellerProfileDTO viewProfile(@PathVariable String email){
         return sellerService.showProfile(email);
     }
 
     @PatchMapping("/update-profile/{email}")
-    public ResponseEntity<String> updateSeller(@PathVariable String email, @Valid @RequestBody SellerUpdateDto sellerUpdateDto){
+    public ResponseEntity<String> updateSeller(@PathVariable String email, @Valid @RequestBody SellerUpdateDTO sellerUpdateDto){
         if(sellerService.updateSeller(email,sellerUpdateDto)){
             return new ResponseEntity<>("fields updated successfully",HttpStatus.OK);
         }
@@ -40,7 +39,7 @@ public class SellerController {
     }
 
     @PatchMapping("/change-password/{email}")
-    public ResponseEntity<String> changePassword(@PathVariable String email, @RequestBody PasswordDto passwordDto){
+    public ResponseEntity<String> changePassword(@PathVariable String email, @Valid @RequestBody PasswordDTO passwordDto){
         if(sellerService.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())){
             return new ResponseEntity<>("Password and Confirm password do not match",HttpStatus.BAD_REQUEST);
         }
@@ -52,7 +51,7 @@ public class SellerController {
     }
 
     @PatchMapping("update-address/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody AddressUpdateDto addressUpdateDto){
+    public ResponseEntity<String> updatePassword(@PathVariable Long id,@Valid @RequestBody AddressUpdateDTO addressUpdateDto){
         return sellerService.updateAddress(id,addressUpdateDto);
     }
 }

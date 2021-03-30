@@ -1,7 +1,5 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
@@ -33,7 +31,6 @@ public class CustomerRegistrationDTO {
     @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}", message = "enter a valid phone number")
     @NotNull(message = "contact number required")
     private String contact;
-
 
 
     public String getEmail() {
