@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -30,7 +31,7 @@ public class User extends BaseDomain{
 
     private String password;
     private String resetToken;
-    private LocalTime resetTokenTime;
+    private LocalDateTime resetTokenTime;
     private int loginAttempt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -74,7 +75,7 @@ public class User extends BaseDomain{
         return resetToken;
     }
 
-    public LocalTime getResetTokenTime() {
+    public LocalDateTime getResetTokenTime() {
         return resetTokenTime;
     }
 
@@ -112,7 +113,7 @@ public class User extends BaseDomain{
         this.resetToken = resetToken;
     }
 
-    public void setResetTokenTime(LocalTime resetTokenTime) {
+    public void setResetTokenTime(LocalDateTime resetTokenTime) {
         this.resetTokenTime = resetTokenTime;
     }
 

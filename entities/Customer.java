@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class Customer extends User {
 
     private String activationToken;
 
-    private LocalTime expiresAt;
+    private LocalDateTime expiresAt;
 
 
     //constructors
@@ -62,11 +63,11 @@ public class Customer extends User {
         return activationToken;
     }
 
-    public LocalTime getExpiresAt() {
+    public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-//Setters
+    //Setters
 
 
     public void setProductReviewSet(List<ProductReview> productReviewSet) {
@@ -108,7 +109,9 @@ public class Customer extends User {
         }
     }
 
-    public void setExpiresAt(LocalTime expiresAt) {
+
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 

@@ -32,6 +32,5 @@ public class PasswordController {
             return new ResponseEntity<>("password updated successfully", HttpStatus.OK);
         } else
             return new ResponseEntity<>(" Token is not valid", HttpStatus.BAD_REQUEST);
-
     }
 }

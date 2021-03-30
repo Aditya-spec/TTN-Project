@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class RegistrationService {
         customerRepository.save(customer);
 
         String body = " Please active your account using this link" +
-                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer" + customer.getActivationToken();
+                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + customer.getActivationToken();
         String topic = "Registration Done!!";
         emailService.sendMail(customer.getEmail(), topic, body);
         return true;
@@ -74,12 +75,13 @@ public class RegistrationService {
         Role role = roleRepository.findByAuthorization("ROLE_CUSTOMER").get(1);
         customer.setRoles(Arrays.asList(role));
         customer.setActivationToken(UUID.randomUUID().toString());
-        customer.setExpiresAt(LocalTime.now().plusMinutes(15));
+        customer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
         customerRepository.save(customer);
 
         String body = " Please active your account using this link" +
-                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer" + customer.getActivationToken();
+                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + customer.getActivationToken();
         String topic = "Registration Done!!";
+        System.out.println(body);
         emailService.sendMail(customer.getEmail(), topic, body);
         return true;
     }
@@ -87,15 +89,15 @@ public class RegistrationService {
 
     public Boolean activateCustomer(String token) {
         Customer registeredCustomer = customerRepository.findByActivationToken(token);
-        LocalTime currentTime = LocalTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         if (currentTime.isAfter(registeredCustomer.getExpiresAt())) {
             registeredCustomer.setActive(false);
             registeredCustomer.setActivationToken(UUID.randomUUID().toString());
-            registeredCustomer.setExpiresAt(LocalTime.now().plusMinutes(15));
+            registeredCustomer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
             customerRepository.save(registeredCustomer);
 
             String body = " Please active your account using this link" +
-                    " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer" + registeredCustomer.getActivationToken();
+                    " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + registeredCustomer.getActivationToken();
 
             emailService.sendMail(registeredCustomer.getEmail(), "Resending activation link", body);
             return false;
@@ -137,10 +139,11 @@ public class RegistrationService {
             return false;
         }
         customer.setActivationToken(UUID.randomUUID().toString());
-        customer.setExpiresAt(LocalTime.now().plusMinutes(15));
+        customer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
         customerRepository.save(customer);
         String body = " Please active your account using this link" +
-                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer" + customer.getActivationToken();
+                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + customer.getActivationToken();
+
         emailService.sendMail(user.getEmail(), "Resending activation Link", body);
         return true;
     }

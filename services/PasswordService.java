@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class PasswordService {
             throw new NotFoundException("user with email " + email + " does not exist");
         } else {
             user.setResetToken(UUID.randomUUID().toString());
-            user.setResetTokenTime(LocalTime.now().plusMinutes(15));
+            user.setResetTokenTime(LocalDateTime.now().plusMinutes(15));
             userRepository.save(user);
             String body = " Please generate new Password using this link" +
                     " which will be valid for 15 minutes only = \n http://localhost:8080/password/reset/" + user.getResetToken();
@@ -49,7 +50,7 @@ public class PasswordService {
             user.setActive(false);
             return false;
         }
-        LocalTime currentTime = LocalTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         if (currentTime.isAfter(user.getResetTokenTime())) {
             user.setActive(false);
             return false;
