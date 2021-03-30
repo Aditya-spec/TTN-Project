@@ -111,39 +111,14 @@ public class SellerService {
             return false;
         }
         // seller=modelMapper.map(sellerUpdateDto,Seller.class);
-        seller = mapSeller(sellerUpdateDto, seller);
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(sellerUpdateDto,seller);
         sellerRepository.save(seller);
+
         return true;
     }
 
-    private Seller mapSeller(SellerUpdateDto sellerUpdateDto, Seller seller) {
-        if (sellerUpdateDto.getCompanyContact() != null) {
-            seller.setCompanyName(sellerUpdateDto.getCompanyContact());
-        }
-        if (sellerUpdateDto.getCompanyName() != null) {
-            seller.setCompanyName(sellerUpdateDto.getCompanyName());
-        }
-        Name name = new Name();
-
-        if (sellerUpdateDto.getFirstName() != null) {
-            name.setFirstName(sellerUpdateDto.getFirstName());
-        }
-        if (sellerUpdateDto.getLastName() != null) {
-            name.setLastName(sellerUpdateDto.getLastName());
-        }
-        if (sellerUpdateDto.getMiddleName() != null) {
-            name.setMiddleName(sellerUpdateDto.getMiddleName());
-        }
-        seller.setName(name);
-        if (sellerUpdateDto.getGstNumber() != null) {
-            seller.setGstNumber(sellerUpdateDto.getGstNumber());
-        }
-        if (sellerUpdateDto.getImagePath() != null) {
-            seller.setImagePath(sellerUpdateDto.getImagePath());
-        }
-        return seller;
-    }
-
+    
 
     public boolean checkPassword(String password, String confirmPassword) {
         if (password.equals(confirmPassword)) {
