@@ -17,14 +17,23 @@ public class RegisteredSellerDTO {
 
     private String companyName;
 
-    private String city;
+    private AddressDTO addressDTO;
+
+    public AddressDTO getAddressDTO() {
+        return addressDTO;
+    }
+
+    public void setAddressDTO(AddressDTO addressDTO) {
+        this.addressDTO = addressDTO;
+    }
+    /*private String city;
     private String state;
     private String country;
     private String addressLine;
     private int zipCode;
-    private Label label;
+    private Label label;*/
 
-    public String getCity() {
+   /* public String getCity() {
         return city;
     }
 
@@ -70,7 +79,7 @@ public class RegisteredSellerDTO {
 
     public void setLabel(Label label) {
         this.label = label;
-    }
+    }*/
 
     private String contactNumber;
 
@@ -129,8 +138,6 @@ public class RegisteredSellerDTO {
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
-
-
 
     public String getContactNumber() {
         return contactNumber;

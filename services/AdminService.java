@@ -1,13 +1,14 @@
 package com.Bootcamp.Project.Application.services;
 
+import com.Bootcamp.Project.Application.dtos.AddressDTO;
 import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDTO;
 import com.Bootcamp.Project.Application.dtos.RegisteredSellerDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Role;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.entities.User;
-import com.Bootcamp.Project.Application.exceptionHandling.InvalidFieldException;
-import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +75,8 @@ public class AdminService {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
         if (customerList == null) {
-            throw new NotFoundException("No customer registered");
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            //throw new NotFoundException("No customer registered");
         }
 
         List<RegisteredCustomerDTO> registeredCustomerDTOList
@@ -82,15 +85,6 @@ public class AdminService {
 
         return registeredCustomerDTOList;
     }
-
-
-
-
-
-
-
-
-
 
     /*public List<SellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
@@ -102,17 +96,24 @@ public class AdminService {
 
     }*/
 
-
     public List<RegisteredSellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
         if (sellerList == null) {
-            throw new NotFoundException("No seller registered");
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            // throw new NotFoundException("No seller registered");
         }
 
-        List<RegisteredSellerDTO> registeredSellerDTOList
+        List<RegisteredSellerDTO> registeredSellerDTOList = new ArrayList<>();
+        for (Seller seller : sellerList) {
+            AddressDTO addressDTO=modelMapper.map(seller.getAddress(),AddressDTO.class);
+            RegisteredSellerDTO registeredSellerDTO = modelMapper.map(seller, RegisteredSellerDTO.class);
+            registeredSellerDTO.setAddressDTO(addressDTO);
+            registeredSellerDTOList.add(registeredSellerDTO);
+        }
+        /*List<RegisteredSellerDTO> registeredSellerDTOList
                 = modelMapper.map(sellerList, new TypeToken<List<RegisteredSellerDTO>>() {
-        }.getType());
+        }.getType());*/
 
         System.out.println(registeredSellerDTOList);
         return registeredSellerDTOList;
@@ -136,7 +137,8 @@ public class AdminService {
                 ReflectionUtils.setField(field, user, v);
             });
         } catch (RuntimeException e) {
-            throw new InvalidFieldException("Field is not present");
+            throw new EcommerceException(ErrorCode.INVALID_FIELDS);
+            // throw new InvalidFieldException("Field is not present");
         }
         userRepository.save(user);
         String body = "Your account is activated now!!";
@@ -166,7 +168,8 @@ public class AdminService {
                 ReflectionUtils.setField(field, user, v);
             });
         } catch (RuntimeException e) {
-            throw new InvalidFieldException("Invalid Field");
+            throw new EcommerceException(ErrorCode.INVALID_FIELDS);
+            //throw new InvalidFieldException("Invalid Field");
         }
         userRepository.save(user);
         String body = "Your account is deactivated now!!";

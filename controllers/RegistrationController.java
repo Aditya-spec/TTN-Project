@@ -4,8 +4,9 @@ import com.Bootcamp.Project.Application.dtos.CustomerEmailDTO;
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.CustomValidation;
-import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.services.RegistrationService;
 import com.Bootcamp.Project.Application.services.EmailService;
@@ -57,7 +58,8 @@ public class RegistrationController {
                 return new ResponseEntity<>("token has been expired, new token has been mailed", HttpStatus.BAD_REQUEST);
             }
         }
-        throw new NotFoundException("invalid token");
+       throw new EcommerceException(ErrorCode.INVALID_TOKEN);
+        // throw new NotFoundException("invalid token");
     }
 
     @PostMapping("/customer/resendActivationLink")

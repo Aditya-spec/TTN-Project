@@ -1,3 +1,4 @@
+/*
 package com.Bootcamp.Project.Application.exceptionHandling;
 
 public class PasswordNotMatch extends RuntimeException{
@@ -9,3 +10,4 @@ public class PasswordNotMatch extends RuntimeException{
         super(message);
     }
 }
+*/

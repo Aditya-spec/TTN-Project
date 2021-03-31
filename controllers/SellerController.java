@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -25,21 +26,25 @@ public class SellerController {
         return "Seller home";
     }
 
-    @GetMapping("/view-profile/{email}")
-    public SellerProfileDTO viewProfile(@PathVariable String email){
+    @GetMapping("/view-profile")
+    public SellerProfileDTO viewProfile(HttpServletRequest request)
+    {
+    String email=request.getUserPrincipal().getName();
         return sellerService.showProfile(email);
     }
 
-    @PatchMapping("/update-profile/{email}")
-    public ResponseEntity<String> updateSeller(@PathVariable String email, @Valid @RequestBody SellerUpdateDTO sellerUpdateDto){
+    @PatchMapping("/update-profile")
+    public ResponseEntity<String> updateSeller(HttpServletRequest request, @Valid @RequestBody SellerUpdateDTO sellerUpdateDto){
+        String email=request.getUserPrincipal().getName();
         if(sellerService.updateSeller(email,sellerUpdateDto)){
             return new ResponseEntity<>("fields updated successfully",HttpStatus.OK);
         }
         return new ResponseEntity<>("fields cannot be updated", HttpStatus.BAD_REQUEST);
     }
 
-    @PatchMapping("/change-password/{email}")
-    public ResponseEntity<String> changePassword(@PathVariable String email, @Valid @RequestBody PasswordDTO passwordDto){
+    @PatchMapping("/change-password")
+    public ResponseEntity<String> changePassword(HttpServletRequest request, @Valid @RequestBody PasswordDTO passwordDto){
+        String email=request.getUserPrincipal().getName();
         if(sellerService.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())){
             return new ResponseEntity<>("Password and Confirm password do not match",HttpStatus.BAD_REQUEST);
         }

@@ -21,7 +21,7 @@ public class AddressDTO extends BaseDomainDTO {
     private Label label;
 
 
-    private UserDTO user;
+ /*   private UserDTO user;*/
 
     public String getCity() {
         return city;
@@ -71,11 +71,11 @@ public class AddressDTO extends BaseDomainDTO {
         this.label = label;
     }
 
-    public UserDTO getUser() {
+   /* public UserDTO getUser() {
         return user;
     }
 
     public void setUser(UserDTO user) {
         this.user = user;
-    }
+    }*/
 }

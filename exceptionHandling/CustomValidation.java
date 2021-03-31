@@ -22,12 +22,14 @@ public class CustomValidation {
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
 
         if (!sellerRegistrationDTO.getPassword().equals(sellerRegistrationDTO.getConfirmPassword())) {
+
             return " error: password and confirm-password do not match";
         }
 
         for (Seller seller : sellerList) {
             if (sellerRegistrationDTO.getEmail().equals(seller.getEmail())) {
-                return "error: email already exist";
+
+                 return "error: email already exist";
             }
 
 
@@ -51,7 +53,8 @@ public class CustomValidation {
         List<Customer> customerList = customerRepository.fetchAllCustomer();
 
         if (!customerRegistrationDTO.getPassword().equals(customerRegistrationDTO.getConfirmPassword())) {
-            return "error: password and confirm-password did not match";
+          // throw new EcommerceException(ErrorCode.PASSWORDS_NOT_SAME);
+             return "error: password and confirm-password did not match";
         }
 
         for (Customer customer : customerList) {

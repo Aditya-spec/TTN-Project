@@ -1,7 +1,8 @@
 package com.Bootcamp.Project.Application.configuration;
 
 
-import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +27,8 @@ public class AppUserDetailsService implements UserDetailsService {
         try {
             return userDao.loadUserByEmail(email);
         } catch (Exception e) {
-            throw new NotFoundException("User not found with email: " + email);
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            //throw new NotFoundException("User not found with email: " + email);
         }
     }
 

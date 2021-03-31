@@ -1,42 +1,42 @@
 package com.Bootcamp.Project.Application.exceptionHandling;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.Date;
 
 public class ExceptionResponse {
-    private Date timeStamp;
-    private String message;
-    private String details;
 
-    public Date getTimeStamp() {
-        return timeStamp;
+    private String errorDesc;
+    private HttpStatus status;
+    private Date date  ;
+
+    public ExceptionResponse(Date date,String errorDesc, HttpStatus status) {
+        this.errorDesc = errorDesc;
+        this.status = status;
+        this.date=date;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public String getErrorDesc() {
+        return errorDesc;
     }
 
-    public String getMessage() {
-        return message;
+    public void setErrorDesc(String errorDesc) {
+        this.errorDesc = errorDesc;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public HttpStatus getStatus() {
+        return status;
     }
 
-    public String getDetails() {
-        return details;
+    public void setStatus(HttpStatus status) {
+        this.status = status;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public Date getDate() {
+        return date;
     }
 
-    public ExceptionResponse(Date timeStamp, String message, String details) {
-        super();
-        this.timeStamp = timeStamp;
-        this.message = message;
-        this.details = details;
-
-
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

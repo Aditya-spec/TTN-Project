@@ -2,7 +2,6 @@ package com.Bootcamp.Project.Application.configuration;
 
 import com.Bootcamp.Project.Application.entities.Role;
 import com.Bootcamp.Project.Application.entities.User;
-import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

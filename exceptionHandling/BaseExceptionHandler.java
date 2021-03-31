@@ -1,5 +1,6 @@
 package com.Bootcamp.Project.Application.exceptionHandling;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,19 @@ import java.util.Date;
 @ControllerAdvice
 public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(EcommerceException.class)
+    public final ResponseEntity<Object> eCommerceException(EcommerceException exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), exception.errorCode.getErrorDesc(),exception.errorCode.getStatusCode());
+        return new ResponseEntity(exceptionResponse, exception.errorCode.getStatusCode());
+    }
+   /* @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(PasswordNotMatch.class)
-    public final ResponseEntity<Object> handlePasswordDontMatch(NotFoundException ex, WebRequest request) {
+    public final ResponseEntity<Object> handlePasswordDontMatch(PasswordNotMatch ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
@@ -40,6 +46,6 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
+    }*/
 
 }

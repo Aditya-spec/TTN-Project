@@ -4,7 +4,8 @@ import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Name;
-import com.Bootcamp.Project.Application.exceptionHandling.NotFoundException;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import org.modelmapper.ModelMapper;
@@ -34,7 +35,8 @@ public class CustomerService {
     public CustomerProfileDTO showProfile(String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
-            throw new NotFoundException("no customer for this email exists");
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            //throw new NotFoundException("no customer for this email exists");
         }
         CustomerProfileDTO customerProfileDto = modelMapper.map(customer, CustomerProfileDTO.class);
         return customerProfileDto;
@@ -44,7 +46,8 @@ public class CustomerService {
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
         if (addressList == null) {
-            throw new NotFoundException("No Address is stored");
+            throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
+            //throw new NotFoundException("No Address is stored");
         }
         Type setType = new TypeToken<List<ShowAddressDTO>>() {
         }.getType();
@@ -55,7 +58,8 @@ public class CustomerService {
     public Boolean addAddress(String email, ShowAddressDTO showAddressDto) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
-            throw new NotFoundException("no customer for this email exists");
+           throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            // throw new NotFoundException("no customer for this email exists");
         }
         Address address = modelMapper.map(showAddressDto, Address.class);
         customer.setAddress(address);
@@ -67,7 +71,8 @@ public class CustomerService {
     public boolean deleteAddress(Long id) {
         Address address = addressRepository.findById(id).orElse(null);
         if (address == null) {
-            throw new NotFoundException("address doesn't exist");
+           throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
+            // throw new NotFoundException("address doesn't exist");
         }
         address.setDeleted(true);
         addressRepository.save(address);

@@ -1,3 +1,4 @@
+/*
 package com.Bootcamp.Project.Application.exceptionHandling;
 
 public class InvalidFieldException extends RuntimeException{
@@ -8,3 +9,4 @@ public class InvalidFieldException extends RuntimeException{
         super(message);
     }
 }
+*/
