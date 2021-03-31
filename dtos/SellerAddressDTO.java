@@ -1,3 +1,4 @@
+/*
 package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
@@ -71,3 +72,4 @@ public class SellerAddressDTO {
         this.zipCode = zipCode;
     }
 }
+*/

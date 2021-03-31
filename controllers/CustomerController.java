@@ -1,9 +1,6 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.AddressUpdateDTO;
-import com.Bootcamp.Project.Application.dtos.CustomerProfileDTO;
-import com.Bootcamp.Project.Application.dtos.PasswordDTO;
-import com.Bootcamp.Project.Application.dtos.ShowAddressDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,15 +29,15 @@ public class CustomerController {
     }
 
     @GetMapping("/view-addresses")
-    public List<ShowAddressDTO> showAddressList(HttpServletRequest request) {
+    public List<AddressDTO> showAddressList(HttpServletRequest request) {
         String email = request.getUserPrincipal().getName();
         return customerService.showAddresses(email);
     }
 
     @PostMapping("/add-address")
-    public ResponseEntity<String> addAddress(HttpServletRequest request, @Valid @RequestBody ShowAddressDTO showAddressDto) {
+    public ResponseEntity<String> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
-        if (customerService.addAddress(email, showAddressDto)) {
+        if (customerService.addAddress(email, addressDTO)) {
             return new ResponseEntity<>("address added successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("address can't be updated", HttpStatus.BAD_REQUEST);

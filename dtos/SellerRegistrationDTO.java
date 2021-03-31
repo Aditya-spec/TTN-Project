@@ -1,6 +1,5 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import com.Bootcamp.Project.Application.enums.Label;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
@@ -59,14 +58,14 @@ public class SellerRegistrationDTO {
     @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
 
-    private SellerAddressDTO sellerAddressDTO;
+    private AddressDTO addressDTO;
 
-    public SellerAddressDTO getSellerAddressDTO() {
-        return sellerAddressDTO;
+    public AddressDTO getAddressDTO() {
+        return addressDTO;
     }
 
-    public void setSellerAddressDTO(SellerAddressDTO sellerAddressDTO) {
-        this.sellerAddressDTO = sellerAddressDTO;
+    public void setAddressDTO(AddressDTO addressDTO) {
+        this.addressDTO = addressDTO;
     }
 
     public String getEmail() {

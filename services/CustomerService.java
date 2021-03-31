@@ -42,26 +42,26 @@ public class CustomerService {
         return customerProfileDto;
     }
 
-    public List<ShowAddressDTO> showAddresses(String email) {
+    public List<AddressDTO> showAddresses(String email) {
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
         if (addressList == null) {
             throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
             //throw new NotFoundException("No Address is stored");
         }
-        Type setType = new TypeToken<List<ShowAddressDTO>>() {
+        Type setType = new TypeToken<List<AddressDTO>>() {
         }.getType();
-        List<ShowAddressDTO> showAddressDTOList = modelMapper.map(addressList, setType);
+        List<AddressDTO> showAddressDTOList = modelMapper.map(addressList, setType);
         return showAddressDTOList;
     }
 
-    public Boolean addAddress(String email, ShowAddressDTO showAddressDto) {
+    public Boolean addAddress(String email, AddressDTO addressDTO) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
             // throw new NotFoundException("no customer for this email exists");
         }
-        Address address = modelMapper.map(showAddressDto, Address.class);
+        Address address = modelMapper.map(addressDTO, Address.class);
         customer.setAddress(address);
         customerRepository.save(customer);
        /* addressRepository.save(address);*/

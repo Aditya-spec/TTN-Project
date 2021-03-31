@@ -106,7 +106,7 @@ public class AdminService {
 
         List<RegisteredSellerDTO> registeredSellerDTOList = new ArrayList<>();
         for (Seller seller : sellerList) {
-            AddressDTO addressDTO=modelMapper.map(seller.getAddress(),AddressDTO.class);
+            AddressDTO addressDTO = modelMapper.map(seller.getAddress(), AddressDTO.class);
             RegisteredSellerDTO registeredSellerDTO = modelMapper.map(seller, RegisteredSellerDTO.class);
             registeredSellerDTO.setAddressDTO(addressDTO);
             registeredSellerDTOList.add(registeredSellerDTO);
@@ -177,7 +177,5 @@ public class AdminService {
         emailService.sendMail(user.getEmail(), topic, body);
         return new ResponseEntity<>("account is deactivated successfully", HttpStatus.OK);
     }
-
-
 }
 

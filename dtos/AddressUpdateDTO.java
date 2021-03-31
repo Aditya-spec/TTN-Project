@@ -1,6 +1,7 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class AddressUpdateDTO {
     @Size(min=3,max=25,message = "addressLine must have characters between 2 to 20")
     private String addressLine;
     @Digits(integer = 6, fraction = 0,message = "zipCode must be of 6 digits")
+    @Length(min = 6,max = 6,message = "zip code must be of 6 digits")
     private int zipCode;
 
     private Label label;
