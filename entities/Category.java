@@ -9,7 +9,8 @@ import java.util.Set;
 
 @Entity
 public class Category extends BaseDomain {
-    private int parentId;
+
+    private Long parentId;
     private String name;
 
     @OneToMany(mappedBy = "category")
@@ -27,14 +28,14 @@ public class Category extends BaseDomain {
         this.setId(id);
     }
 
-   //Getters
+    //Getters
 
     public String getName() {
         return name;
     }
 
 
-    public int getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
@@ -52,7 +53,7 @@ public class Category extends BaseDomain {
         this.name = name;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
@@ -67,17 +68,17 @@ public class Category extends BaseDomain {
     public void setProduct(Product product) {
         if (product != null) {
             if (products == null) {
-            products=new HashSet<>();
+                products = new HashSet<>();
             }
             product.setCategory(this);
             this.getProducts().add(product);
         }
     }
 
-    public void setCategoryMetadataFieldValues(CategoryMetadataFieldValues data){
-        if(data!=null){
-            if(categoryMetadataFieldValuesSet==null){
-                categoryMetadataFieldValuesSet=new HashSet<>();
+    public void setCategoryMetadataFieldValues(CategoryMetadataFieldValues data) {
+        if (data != null) {
+            if (categoryMetadataFieldValuesSet == null) {
+                categoryMetadataFieldValuesSet = new HashSet<>();
             }
             data.setCategory(this);
             categoryMetadataFieldValuesSet.add(data);

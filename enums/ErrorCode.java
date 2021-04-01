@@ -16,6 +16,10 @@ public enum ErrorCode {
     PASSWORDS_NOT_SAME("Password and Confirm password do not match",HttpStatus.BAD_REQUEST),
     INVALID_FIELDS("Field is not present",HttpStatus.BAD_REQUEST),
     INVALID_TOKEN("Your Token is Invalid, Please enter a valid token",HttpStatus.FORBIDDEN),
+    ALREADY_EXISTS("given data already exists in the system",HttpStatus.BAD_REQUEST),
+    PARENT_CATEGORY_NOT_EXISTS("Parent category for given category do not exists",HttpStatus.BAD_REQUEST),
+    NO_DATA("No data to show",HttpStatus.NOT_FOUND),
+    NOT_FOUND("not found",HttpStatus.BAD_REQUEST),
     USER_IS_ADMIN("Cannot make changes, this user is Admin",HttpStatus.BAD_REQUEST);
 
 

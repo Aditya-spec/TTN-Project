@@ -5,10 +5,10 @@ import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
-import com.Bootcamp.Project.Application.exceptionHandling.CustomValidation;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
-import com.Bootcamp.Project.Application.services.RegistrationService;
+import com.Bootcamp.Project.Application.services.RegistrationImpl;
 import com.Bootcamp.Project.Application.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class RegistrationController {
     @Autowired
     EmailService emailService;
     @Autowired
-    RegistrationService registrationService;
+    RegistrationImpl registrationImpl;
     @Autowired
     Customer customer;
     @Autowired
@@ -41,7 +41,7 @@ public class RegistrationController {
             return new ResponseEntity<>(result, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (registrationService.registerCustomer(customerRegistrationDTO)) {
+        if (registrationImpl.registerCustomer(customerRegistrationDTO)) {
             return new ResponseEntity<>("the customer has been registered, please click on the mailed link to activate ",
                     HttpStatus.CREATED);
         }
@@ -51,8 +51,8 @@ public class RegistrationController {
 
     @PutMapping("/activate/customer/{token}")
     public ResponseEntity<String> customerActivation(@PathVariable String token) {
-        if (registrationService.findCustomerByToken(token)) {
-            if (registrationService.activateCustomer(token)) {
+        if (registrationImpl.findCustomerByToken(token)) {
+            if (registrationImpl.activateCustomer(token)) {
                 return new ResponseEntity<>("customer has been activated", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("token has been expired, new token has been mailed", HttpStatus.BAD_REQUEST);
@@ -64,7 +64,7 @@ public class RegistrationController {
 
     @PostMapping("/customer/resendActivationLink")
     public ResponseEntity<String> resendActivationToken(@Valid  @RequestBody CustomerEmailDTO customerEmailDto) {
-        if (registrationService.resendActivationLink(customerEmailDto.getEmail())) {
+        if (registrationImpl.resendActivationLink(customerEmailDto.getEmail())) {
             return new ResponseEntity<>("new activation token has been sent via email", HttpStatus.OK);
         }
         return new ResponseEntity<>("invalid details", HttpStatus.BAD_REQUEST);
@@ -76,7 +76,7 @@ public class RegistrationController {
         if (result != null) {
             return new ResponseEntity<>(result, HttpStatus.NOT_ACCEPTABLE);
         }
-        if (registrationService.registerSeller(sellerRegistrationDTO)) {
+        if (registrationImpl.registerSeller(sellerRegistrationDTO)) {
             return new ResponseEntity<>("seller has been registered,please wait for confirmation mail", HttpStatus.CREATED);
         }
         return new ResponseEntity<>("seller not created", HttpStatus.BAD_REQUEST);

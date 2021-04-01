@@ -5,6 +5,7 @@ import com.Bootcamp.Project.Application.entities.User;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Service
-public class PasswordService {
+public class PasswordImpl implements PasswordService {
 
     @Autowired
     UserRepository userRepository;

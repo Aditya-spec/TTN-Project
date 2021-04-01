@@ -8,9 +8,10 @@ import java.util.Set;
 
 @Entity
 public class CategoryMetadataField extends BaseDomain {
+    @Column(unique = true)
     private String name;
     @OneToMany(mappedBy = "categoryMetaField")
-    private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet;
+    private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet=new HashSet<>();
 
     //Constructors
 

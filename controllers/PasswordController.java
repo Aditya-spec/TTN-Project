@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.PasswordTokenDTO;
-import com.Bootcamp.Project.Application.services.PasswordService;
+import com.Bootcamp.Project.Application.services.PasswordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,11 @@ import javax.validation.Valid;
 @RequestMapping("/password")
 public class PasswordController {
     @Autowired
-    PasswordService passwordService;
+    PasswordImpl passwordImpl;
 
     @PostMapping(path = "/generate/token")
     public ResponseEntity<String> generatePassword(@RequestParam String email) {
-        if (passwordService.generatePassword(email)) {
+        if (passwordImpl.generatePassword(email)) {
             return new ResponseEntity("email has been sent to reset the password", HttpStatus.OK);
         }
         return new ResponseEntity("not able to generate token", HttpStatus.BAD_REQUEST);
@@ -25,10 +25,10 @@ public class PasswordController {
 
     @PutMapping("/reset")
     public ResponseEntity<String> resetPassword( @RequestBody @Valid PasswordTokenDTO passwordTokenDto) {
-        if (!passwordService.checkPassword(passwordTokenDto)) {
+        if (!passwordImpl.checkPassword(passwordTokenDto)) {
             return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
         }
-        if (passwordService.setNewPassword(passwordTokenDto)) {
+        if (passwordImpl.setNewPassword(passwordTokenDto)) {
             return new ResponseEntity<>("password updated successfully", HttpStatus.OK);
         } else
             return new ResponseEntity<>(" Token is not valid", HttpStatus.BAD_REQUEST);

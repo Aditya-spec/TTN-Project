@@ -26,7 +26,7 @@ public class Application {
 
 
 
-       /* CategoryService categoryService = applicationContext.getBean(CategoryService.class);
+       /* CategoryImpl categoryService = applicationContext.getBean(CategoryImpl.class);
         categoryService.createUsingJson();
 
            ProductService productService = applicationContext.getBean(ProductService.class);

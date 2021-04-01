@@ -10,6 +10,7 @@ import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.RoleRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.RegistrationService;
 import com.Bootcamp.Project.Application.token.ConfirmationToken;
 import com.Bootcamp.Project.Application.token.ConfirmationTokenRepository;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Service
-public class RegistrationService {
+public class RegistrationImpl implements RegistrationService {
 
     @Autowired
     RoleRepository roleRepository;

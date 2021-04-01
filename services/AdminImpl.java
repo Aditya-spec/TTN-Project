@@ -12,6 +12,7 @@ import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.AdminService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AdminService {
+public class AdminImpl implements AdminService {
     @Autowired
     CustomerRepository customerRepository;
     @Autowired

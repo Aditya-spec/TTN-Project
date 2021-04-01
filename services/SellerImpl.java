@@ -5,6 +5,7 @@ import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.SellerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class SellerService {
+public class SellerImpl implements SellerService {
 
     @Autowired
     SellerRepository sellerRepository;

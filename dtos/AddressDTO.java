@@ -21,7 +21,6 @@ public class AddressDTO extends BaseDomainDTO {
     @Size(min = 3,max = 20,message = "addressLine be between 3 to 20 characters")
     private String addressLine;
     @NotNull(message = "pls add Zipcode name")
-    @NotNull(message = "zipCode  is required")
     private int zipCode;
     @NotNull(message = "pls add Address type")
     private Label label;

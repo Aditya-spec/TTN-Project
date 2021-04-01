@@ -1,8 +1,8 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.RegisteredCustomerDTO;
-import com.Bootcamp.Project.Application.dtos.RegisteredSellerDTO;
-import com.Bootcamp.Project.Application.services.AdminService;
+import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.services.AdminImpl;
+import com.Bootcamp.Project.Application.services.CategoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,9 @@ import java.util.Map;
 public class AdminController {
 
     @Autowired
-    AdminService adminService;
+    AdminImpl adminImpl;
+    @Autowired
+    CategoryImpl categoryImpl;
 
     @GetMapping("/home")
     public String adminHome() {
@@ -26,26 +28,59 @@ public class AdminController {
 
     @GetMapping("/get/customers")
     public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomer() {
-        return new ResponseEntity<>(adminService.getCustomers(), HttpStatus.OK);
+        return new ResponseEntity<>(adminImpl.getCustomers(), HttpStatus.OK);
     }
 
 
     @GetMapping("/get/sellers")
     public ResponseEntity<List<RegisteredSellerDTO>> getAllSeller() {
-        return new ResponseEntity<>(adminService.getSellers(), HttpStatus.OK);
+        return new ResponseEntity<>(adminImpl.getSellers(), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/activate-user/{id}")
     public ResponseEntity<String> activateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
-        return adminService.activateUser(id, fields);
+        return adminImpl.activateUser(id, fields);
     }
 
 
     @PatchMapping("/deactivate-user/{id}")
     public ResponseEntity<String> deactivateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
-        return adminService.deactivateUser(id, fields);
+        return adminImpl.deactivateUser(id, fields);
     }
-/*
+
+    @PostMapping("/add-metadataField")
+    public ResponseEntity<String> addMetadata(@RequestParam String metaDataField ){
+        String result=categoryImpl.addMetadata(metaDataField);
+        return new ResponseEntity<>(result,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/view-metaDataField")
+    public List<CategoryMetadataDTO> showMetaDataFields(){
+       return categoryImpl.showMetaData();
+    }
+
+
+    @PostMapping("/add-category")
+    public ResponseEntity<String> addCategory(@RequestBody CategoryAddDTO categoryAddDTO) {
+        String result = categoryImpl.addCategory(categoryAddDTO);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/view-categories")
+    public List<CategoryResponseDTO> viewCategories() {
+        return categoryImpl.showCategories();
+    }
+
+    @GetMapping("/view-category/{id}")
+    public CategoryResponseDTO viewCategory(@PathVariable Long id) {
+        return categoryImpl.showCategory(id);
+    }
+
+
+
+
+
+    /*
 www.yoursite.com?myparam1={id1}&myparam2={id2} */
 
      /*@GetMapping("/get/sellers")

@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
-import com.Bootcamp.Project.Application.services.CustomerService;
+import com.Bootcamp.Project.Application.services.CustomerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/customer")
 public class CustomerController {
     @Autowired
-    CustomerService customerService;
+    CustomerImpl customerImpl;
 
     @GetMapping("/home")
     public String indexPremium() {
@@ -25,19 +25,19 @@ public class CustomerController {
     @GetMapping("/view-profile")
     public CustomerProfileDTO showProfile(HttpServletRequest request) {
         String email = request.getUserPrincipal().getName();
-        return customerService.showProfile(email);
+        return customerImpl.showProfile(email);
     }
 
     @GetMapping("/view-addresses")
     public List<AddressDTO> showAddressList(HttpServletRequest request) {
         String email = request.getUserPrincipal().getName();
-        return customerService.showAddresses(email);
+        return customerImpl.showAddresses(email);
     }
 
     @PostMapping("/add-address")
     public ResponseEntity<String> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
-        if (customerService.addAddress(email, addressDTO)) {
+        if (customerImpl.addAddress(email, addressDTO)) {
             return new ResponseEntity<>("address added successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("address can't be updated", HttpStatus.BAD_REQUEST);
@@ -45,7 +45,7 @@ public class CustomerController {
 
     @DeleteMapping("/delete-address")
     public ResponseEntity<String> deleteAddress(@RequestParam Long id) {
-        if (customerService.deleteAddress(id)) {
+        if (customerImpl.deleteAddress(id)) {
             return new ResponseEntity<>("address deleted successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("address couldn't be deleted", HttpStatus.BAD_REQUEST);
@@ -54,7 +54,7 @@ public class CustomerController {
     @PatchMapping("/update-profile")
     public ResponseEntity<String> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {
         String email=request.getUserPrincipal().getName();
-        if (customerService.updateProfile(email, customerProfileDto)) {
+        if (customerImpl.updateProfile(email, customerProfileDto)) {
             return new ResponseEntity<>("fields updated successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("fields cannot be updated", HttpStatus.BAD_REQUEST);
@@ -63,10 +63,10 @@ public class CustomerController {
     @PatchMapping("/change-password")
     public ResponseEntity<String> changePassword(HttpServletRequest request, @RequestBody PasswordDTO passwordDto) {
         String email=request.getUserPrincipal().getName();
-        if (customerService.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
+        if (customerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
             return new ResponseEntity<>("Password and Confirm password do not match", HttpStatus.BAD_REQUEST);
         }
-        if (customerService.customerResetPassword(email, passwordDto)) {
+        if (customerImpl.customerResetPassword(email, passwordDto)) {
             return new ResponseEntity<>("password has been updated successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("password cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,6 +75,6 @@ public class CustomerController {
 
     @PatchMapping("update-address")
     public ResponseEntity<String> updatePassword(@RequestParam Long id,HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
-        return customerService.updateAddress(id, addressUpdateDto);
+        return customerImpl.updateAddress(id, addressUpdateDto);
     }
 }

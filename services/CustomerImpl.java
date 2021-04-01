@@ -8,6 +8,7 @@ import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
-public class CustomerService {
+public class CustomerImpl implements CustomerService {
 
     @Autowired
     CustomerRepository customerRepository;

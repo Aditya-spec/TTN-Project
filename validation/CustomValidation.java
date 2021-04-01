@@ -1,4 +1,4 @@
-package com.Bootcamp.Project.Application.exceptionHandling;
+package com.Bootcamp.Project.Application.validation;
 
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
