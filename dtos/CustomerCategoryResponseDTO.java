@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CustomerCategoryResponseDTO {
     private String name;
-    private List<CategoryAddDTO> childCategory;
+    private List<CategoryAddDTO> childrenCategoryList;
 
     public String getName() {
         return name;
@@ -14,11 +14,11 @@ public class CustomerCategoryResponseDTO {
         this.name = name;
     }
 
-    public List<CategoryAddDTO> getChildCategory() {
-        return childCategory;
+    public List<CategoryAddDTO> getChildrenCategoryList() {
+        return childrenCategoryList;
     }
 
-    public void setChildCategory(List<CategoryAddDTO> childCategory) {
-        this.childCategory = childCategory;
+    public void setChildrenCategoryList(List<CategoryAddDTO> childrenCategoryList) {
+        this.childrenCategoryList = childrenCategoryList;
     }
 }

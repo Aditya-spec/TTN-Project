@@ -70,7 +70,7 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/oauth").permitAll()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/seller/**/**").hasAnyRole("SELLER")
-                .antMatchers("/customer/**/**").permitAll()
+                .antMatchers("/customer/**/**").hasAnyRole("CUSTOMER")
                 .antMatchers("/doLogout").hasAnyRole("ADMIN", "SELLER", "CUSTOMER")
                 .anyRequest().authenticated()
                 .and()

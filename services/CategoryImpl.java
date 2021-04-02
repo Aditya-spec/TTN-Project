@@ -313,7 +313,7 @@ public class CategoryImpl implements CategoryService {
             }
             List<CategoryAddDTO> categoryAddDTOList = findCategoryParent(category.getId());
             SellerCategoryResponseDTO sellerCategoryResponseDTO = new SellerCategoryResponseDTO();
-            sellerCategoryResponseDTO.setParent(categoryAddDTOList);
+            sellerCategoryResponseDTO.setParentList(categoryAddDTOList);
             sellerCategoryResponseDTO.setName(category.getName());
             sellerCategoryResponseDTO.setFieldValues(fieldList);
             sellerCategoryResponseDTOList.add(sellerCategoryResponseDTO);
@@ -328,12 +328,14 @@ public class CategoryImpl implements CategoryService {
         if (categoryList == null) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
+
         List<CustomerCategoryResponseDTO> customerCategoryResponseDTOList = new ArrayList<>();
         for (Category category : categoryList) {
             CustomerCategoryResponseDTO customerCategoryResponseDTO = new CustomerCategoryResponseDTO();
+
             List<CategoryAddDTO> categoryChildren = findCategoryChildren(category.getId());
             customerCategoryResponseDTO.setName(category.getName());
-            customerCategoryResponseDTO.setChildCategory(categoryChildren);
+            customerCategoryResponseDTO.setChildrenCategoryList(categoryChildren);
             customerCategoryResponseDTOList.add(customerCategoryResponseDTO);
         }
         return customerCategoryResponseDTOList;
@@ -348,7 +350,7 @@ public class CategoryImpl implements CategoryService {
         CustomerCategoryResponseDTO customerCategoryResponseDTO = new CustomerCategoryResponseDTO();
         List<CategoryAddDTO> categoryAddDTOList = findCategoryChildren(category.get().getId());
         customerCategoryResponseDTO.setName(category.get().getName());
-        customerCategoryResponseDTO.setChildCategory(categoryAddDTOList);
+        customerCategoryResponseDTO.setChildrenCategoryList(categoryAddDTOList);
         return customerCategoryResponseDTO;
     }
 

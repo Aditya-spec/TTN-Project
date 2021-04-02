@@ -56,7 +56,7 @@ public class CustomerController {
 
     @PatchMapping("/update-profile")
     public ResponseEntity<String> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {
-        String email=request.getUserPrincipal().getName();
+        String email = request.getUserPrincipal().getName();
         if (customerImpl.updateProfile(email, customerProfileDto)) {
             return new ResponseEntity<>("fields updated successfully", HttpStatus.OK);
         }
@@ -65,7 +65,7 @@ public class CustomerController {
 
     @PatchMapping("/change-password")
     public ResponseEntity<String> changePassword(HttpServletRequest request, @RequestBody PasswordDTO passwordDto) {
-        String email=request.getUserPrincipal().getName();
+        String email = request.getUserPrincipal().getName();
         if (customerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
             return new ResponseEntity<>("Password and Confirm password do not match", HttpStatus.BAD_REQUEST);
         }
@@ -77,17 +77,17 @@ public class CustomerController {
     }
 
     @PatchMapping("update-address")
-    public ResponseEntity<String> updatePassword(@RequestParam Long id,HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
+    public ResponseEntity<String> updatePassword(@RequestParam Long id, HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
         return customerImpl.updateAddress(id, addressUpdateDto);
     }
 
     @GetMapping("/view-categories")
-    public List<CustomerCategoryResponseDTO> showCategories(){
+    public List<CustomerCategoryResponseDTO> showCategories() {
         return categoryImpl.showCustomerCategories();
     }
 
     @GetMapping("view-categories/{id}")
-    public CustomerCategoryResponseDTO showCategoriesParam(@PathVariable Long id){
+    public CustomerCategoryResponseDTO showCategoriesParam(@PathVariable Long id) {
         return categoryImpl.showCustomerCategoriesParam(id);
     }
 }

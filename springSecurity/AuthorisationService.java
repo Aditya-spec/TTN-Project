@@ -61,7 +61,9 @@ public class AuthorisationService {
         } else {
             if (user.getFailedAttempt() > 0) {
                 userService.resetFailedAttempts(user.getEmail());
+            
             }
+
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =

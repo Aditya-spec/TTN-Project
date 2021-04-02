@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SellerCategoryResponseDTO {
     private String name;
-    private List<CategoryAddDTO> parent;
+    private List<CategoryAddDTO> parentList;
     private List<CMDResponseDTO> fieldValues;
 
     public String getName() {
@@ -15,12 +15,12 @@ public class SellerCategoryResponseDTO {
         this.name = name;
     }
 
-    public List<CategoryAddDTO> getParent() {
-        return parent;
+    public List<CategoryAddDTO> getParentList() {
+        return parentList;
     }
 
-    public void setParent(List<CategoryAddDTO> parent) {
-        this.parent = parent;
+    public void setParentList(List<CategoryAddDTO> parentList) {
+        this.parentList = parentList;
     }
 
     public List<CMDResponseDTO> getFieldValues() {

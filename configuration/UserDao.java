@@ -28,6 +28,9 @@ public class UserDao {
         if(!user.getActive()){
             throw new EcommerceException(ErrorCode.USER_NOT_ACTIVE);
         }
+        if ((!user.isAccountNonLocked())){
+            throw new EcommerceException(ErrorCode.USER_IS_LOCKED);
+        }
 
         if (email != null) {
             List<Role> rolesList = user.getRoles();
