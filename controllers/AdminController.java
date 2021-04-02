@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -49,19 +50,19 @@ public class AdminController {
     }
 
     @PostMapping("/add-metadataField")
-    public ResponseEntity<String> addMetadata(@RequestParam String metaDataField ){
-        String result=categoryImpl.addMetadata(metaDataField);
-        return new ResponseEntity<>(result,HttpStatus.CREATED);
+    public ResponseEntity<String> addMetadata(@RequestParam String metaDataField) {
+        String result = categoryImpl.addMetadata(metaDataField);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @GetMapping("/view-metaDataField")
-    public List<CategoryMetadataFieldDTO> showMetaDataFields(){
-       return categoryImpl.showMetaData();
+    public List<CategoryMetadataFieldDTO> showMetaDataFields() {
+        return categoryImpl.showMetaData();
     }
 
 
     @PostMapping("/add-category")
-    public ResponseEntity<String> addCategory(@RequestBody CategoryAddDTO categoryAddDTO) {
+    public ResponseEntity<String> addCategory( @Valid @RequestBody CategoryAddDTO categoryAddDTO) {
         String result = categoryImpl.addCategory(categoryAddDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -76,13 +77,25 @@ public class AdminController {
         return categoryImpl.showCategory(id);
     }
 
-    @PostMapping("/add-metaValues")
-    public ResponseEntity<String> addMetaValues(@RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO){
-        String result=categoryImpl.addMetadataValues(categoryMetadataFieldValuesDTO);
-        return new ResponseEntity<>(result,HttpStatus.CREATED);
+    @PutMapping("/update-category")
+    public ResponseEntity<String> updateCategory(@RequestParam Long id, String updatedName) {
+        String result = categoryImpl.updateCategory(id, updatedName);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    @PostMapping("/add-metaValues")
+    public ResponseEntity<String> addMetaValues( @Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
+        String result = categoryImpl.addMetadataValues(categoryMetadataFieldValuesDTO);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
+
+    @PutMapping("/update-metaValues")
+    public ResponseEntity<String> update( @Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
+        String result = categoryImpl.updateMetadataValues(categoryMetadataFieldValuesDTO);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+}
 
 
 

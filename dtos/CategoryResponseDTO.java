@@ -8,13 +8,13 @@ public class CategoryResponseDTO {
     private String name;
     private List<CategoryAddDTO> parentCategory;
     private List<CategoryAddDTO> childCategory;
-    private List<CMDResponse> fieldValues =new ArrayList<>();
+    private List<CMDResponseDTO> fieldValues =new ArrayList<>();
 
-    public List<CMDResponse> getFieldValues() {
+    public List<CMDResponseDTO> getFieldValues() {
         return fieldValues;
     }
 
-    public void setFieldValues(List<CMDResponse> fieldValues) {
+    public void setFieldValues(List<CMDResponseDTO> fieldValues) {
         this.fieldValues = fieldValues;
     }
 

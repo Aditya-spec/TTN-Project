@@ -13,6 +13,7 @@ public class CategoryMetadataFieldValuesDTO {
     @NotNull(message = "category cannot be nll")
     private Long categoryId;
 
+    @NotNull(message = "MetadataField values need to be present")
     private List<String> fieldValues=new ArrayList<>();
 
     public Long getCategoryMetadataFieldId() {

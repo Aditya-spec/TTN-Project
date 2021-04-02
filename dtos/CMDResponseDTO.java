@@ -2,7 +2,7 @@ package com.Bootcamp.Project.Application.dtos;
 
 import java.util.List;
 
-public class CMDResponse {
+public class CMDResponseDTO {
     private String name;
     private List<String> values;
 

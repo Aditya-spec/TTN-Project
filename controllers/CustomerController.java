@@ -1,6 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.CustomerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     CustomerImpl customerImpl;
+    @Autowired
+    CategoryImpl categoryImpl;
 
     @GetMapping("/home")
     public String indexPremium() {
@@ -76,5 +79,15 @@ public class CustomerController {
     @PatchMapping("update-address")
     public ResponseEntity<String> updatePassword(@RequestParam Long id,HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
         return customerImpl.updateAddress(id, addressUpdateDto);
+    }
+
+    @GetMapping("/view-categories")
+    public List<CustomerCategoryResponseDTO> showCategories(){
+        return categoryImpl.showCustomerCategories();
+    }
+
+    @GetMapping("view-categories/{id}")
+    public CustomerCategoryResponseDTO showCategoriesParam(@PathVariable Long id){
+        return categoryImpl.showCustomerCategoriesParam(id);
     }
 }

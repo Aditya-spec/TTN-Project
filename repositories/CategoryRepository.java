@@ -22,4 +22,9 @@ public interface CategoryRepository extends CrudRepository<Category,Long> {
     Optional<List<Category>> findNextChildren(@Param("parent_id") Long parent_id);
 
 
+    @Query(value = "select * from category where id NOT IN(select parent_id from category)",nativeQuery = true)
+    List<Category> fetchLeafCategories();
+
+    @Query(value = "from Category c where c.parentId=0")
+    List<Category> fetchAllRootCategories(Pageable sortById);
 }

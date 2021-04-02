@@ -1,9 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
-import com.Bootcamp.Project.Application.dtos.AddressUpdateDTO;
-import com.Bootcamp.Project.Application.dtos.PasswordDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProfileDTO;
-import com.Bootcamp.Project.Application.dtos.SellerUpdateDTO;
+import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/seller")
@@ -19,6 +18,9 @@ public class SellerController {
 
     @Autowired
     private SellerImpl sellerImpl;
+    @Autowired
+    CategoryImpl categoryImpl;
+
 
 
     @GetMapping("/home")
@@ -58,5 +60,11 @@ public class SellerController {
     @PatchMapping("update-address/{id}")
     public ResponseEntity<String> updatePassword(@PathVariable Long id,@Valid @RequestBody AddressUpdateDTO addressUpdateDto){
         return sellerImpl.updateAddress(id,addressUpdateDto);
+    }
+
+    @GetMapping("/view-categories")
+    public List<SellerCategoryResponseDTO> showCategories(){
+
+        return categoryImpl.showSellerCategories();
     }
 }

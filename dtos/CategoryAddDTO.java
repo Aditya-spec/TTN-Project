@@ -15,13 +15,13 @@ public class CategoryAddDTO {
     private String name;
 
     @JsonIgnore
-    private List<CMDResponse> categoryMetadataFieldDTOSet =new ArrayList<>();
+    private List<CMDResponseDTO> categoryMetadataFieldDTOSet =new ArrayList<>();
 
-    public List<CMDResponse> getCategoryMetadataFieldDTOSet() {
+    public List<CMDResponseDTO> getCategoryMetadataFieldDTOSet() {
         return categoryMetadataFieldDTOSet;
     }
 
-    public void setCategoryMetadataFieldDTOSet(List<CMDResponse> categoryMetadataFieldDTOSet) {
+    public void setCategoryMetadataFieldDTOSet(List<CMDResponseDTO> categoryMetadataFieldDTOSet) {
         this.categoryMetadataFieldDTOSet = categoryMetadataFieldDTOSet;
     }
 

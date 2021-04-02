@@ -10,4 +10,7 @@ import java.util.List;
 public interface CMFVRepository extends CrudRepository<CategoryMetadataFieldValues, Long> {
     @Query(value = "select * from category_metadata_field_values c where c.category_id=:id",nativeQuery = true)
     List<CategoryMetadataFieldValues> fetchByCategoryId(@Param("id") Long id);
+
+    @Query(value = "select * from  category_metadata_field_values c where c.category_id=:catId and c.category_metadata_field_id=:metaId",nativeQuery = true)
+    CategoryMetadataFieldValues fetchObject(@Param("catId") Long catId ,@Param("metaId") Long metaId);
 }
