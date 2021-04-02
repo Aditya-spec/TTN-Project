@@ -11,8 +11,6 @@ import com.Bootcamp.Project.Application.repositories.RoleRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.RegistrationService;
-import com.Bootcamp.Project.Application.token.ConfirmationToken;
-import com.Bootcamp.Project.Application.token.ConfirmationTokenRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,14 +32,12 @@ public class RegistrationImpl implements RegistrationService {
     @Autowired
     EmailService emailService;
     @Autowired
-    ConfirmationTokenRepository confirmationTokenRepository;
-    @Autowired
     UserRepository userRepository;
     @Autowired
     SellerRepository sellerRepository;
 
 
-    ConfirmationToken confirmationToken = null;
+
 
     ModelMapper modelMapper = new ModelMapper();
 

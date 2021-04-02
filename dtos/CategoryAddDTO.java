@@ -1,8 +1,11 @@
 package com.Bootcamp.Project.Application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CategoryAddDTO {
 
@@ -11,14 +14,15 @@ public class CategoryAddDTO {
     @NotNull(message = "Category name cannot be null")
     private String name;
 
-    private Set<CategoryMetadataDTO> categoryMetadataDTOSet=new HashSet<>();
+    @JsonIgnore
+    private List<CMDResponse> categoryMetadataFieldDTOSet =new ArrayList<>();
 
-    public Set<CategoryMetadataDTO> getCategoryMetadataDTOSet() {
-        return categoryMetadataDTOSet;
+    public List<CMDResponse> getCategoryMetadataFieldDTOSet() {
+        return categoryMetadataFieldDTOSet;
     }
 
-    public void setCategoryMetadataDTOSet(Set<CategoryMetadataDTO> categoryMetadataDTOSet) {
-        this.categoryMetadataDTOSet = categoryMetadataDTOSet;
+    public void setCategoryMetadataFieldDTOSet(List<CMDResponse> categoryMetadataFieldDTOSet) {
+        this.categoryMetadataFieldDTOSet = categoryMetadataFieldDTOSet;
     }
 
     public Long getParentId() {

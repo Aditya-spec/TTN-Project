@@ -5,6 +5,7 @@ import com.Bootcamp.Project.Application.entities.CategoryMetadataField;
 import org.json.simple.JSONArray;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class CategoryMetadataFieldValues {
@@ -21,7 +22,7 @@ public class CategoryMetadataFieldValues {
     @JoinColumn(name = "category_Id")
     private Category category;
 
-    private JSONArray fieldValues;
+    private String fieldValues;
 
     //Getters
 
@@ -37,7 +38,9 @@ public class CategoryMetadataFieldValues {
         return category;
     }
 
-    public JSONArray getFieldValues() { return fieldValues; }
+    public String getFieldValues() {
+        return fieldValues;
+    }
 
     //Setters
 
@@ -52,5 +55,7 @@ public class CategoryMetadataFieldValues {
         this.category = category;
     }
 
-    public void setFieldValues(JSONArray fieldValues) { this.fieldValues = fieldValues; }
+    public void setFieldValues(String fieldValues) {
+        this.fieldValues = fieldValues;
+    }
 }

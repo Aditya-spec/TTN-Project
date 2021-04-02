@@ -1,21 +1,11 @@
 package com.Bootcamp.Project.Application.entities;
 
-/*
-import com.Bootcamp.Project.Application.passwordValidation.ValidPassword;
-*/
-/*
-import com.Bootcamp.Project.Application.passwordValidation.ValidPassword;*/
-/*
-import com.Bootcamp.Project.Application.token.ConfirmationToken;*/
 
-import com.Bootcamp.Project.Application.token.ConfirmationToken;
+
+
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Entity
@@ -32,7 +22,12 @@ public class User extends BaseDomain{
     private String password;
     private String resetToken;
     private LocalDateTime resetTokenTime;
-    private int loginAttempt;
+
+
+
+    private boolean accountNonLocked=true;
+    private int failedAttempt;
+    private Date lockTime;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address> addressList=new ArrayList<>();
@@ -43,8 +38,7 @@ public class User extends BaseDomain{
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<ConfirmationToken> confirmationTokenList;
+
 
     //Getters
 
@@ -67,11 +61,7 @@ public class User extends BaseDomain{
         return active;
     }
 
-    public List<ConfirmationToken> getConfirmationTokenList() {
-        return confirmationTokenList;
-    }
-
-    public String getResetToken() {
+      public String getResetToken() {
         return resetToken;
     }
 
@@ -79,8 +69,20 @@ public class User extends BaseDomain{
         return resetTokenTime;
     }
 
-    public int getLoginAttempt() {
-        return loginAttempt;
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public int getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
     }
 
     public List<Role> getRoles() {
@@ -92,6 +94,19 @@ public class User extends BaseDomain{
     }
 
 //Setters
+
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public void setFailedAttempt(int failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
+    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -117,15 +132,9 @@ public class User extends BaseDomain{
         this.resetTokenTime = resetTokenTime;
     }
 
-    public void setLoginAttempt(int loginAttempt) {
-        this.loginAttempt = loginAttempt;
-    }
 
-    public void setConfirmationTokenList(List<ConfirmationToken> confirmationTokenList) {
-        this.confirmationTokenList = confirmationTokenList;
-    }
 
-    public void setImagePath(String imagePath) {
+       public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
 

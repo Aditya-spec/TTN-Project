@@ -55,7 +55,7 @@ public class AdminController {
     }
 
     @GetMapping("/view-metaDataField")
-    public List<CategoryMetadataDTO> showMetaDataFields(){
+    public List<CategoryMetadataFieldDTO> showMetaDataFields(){
        return categoryImpl.showMetaData();
     }
 
@@ -76,6 +76,13 @@ public class AdminController {
         return categoryImpl.showCategory(id);
     }
 
+    @PostMapping("/add-metaValues")
+    public ResponseEntity<String> addMetaValues(@RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO){
+        String result=categoryImpl.addMetadataValues(categoryMetadataFieldValuesDTO);
+        return new ResponseEntity<>(result,HttpStatus.CREATED);
+    }
+
+    }
 
 
 
@@ -97,6 +104,6 @@ www.yoursite.com?myparam1={id1}&myparam2={id2} */
     return customerDtoList;
     }*/
 
-}
+
 
 

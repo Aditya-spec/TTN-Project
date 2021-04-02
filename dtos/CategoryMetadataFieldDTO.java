@@ -1,17 +1,19 @@
 package com.Bootcamp.Project.Application.dtos;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class CategoryMetadataDTO {
+public class CategoryMetadataFieldDTO {
     private String name;
-    Set<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet=new HashSet<>();
+    List<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet=new ArrayList<>();
 
-    public Set<CategoryMetadataFieldValuesDTO> getCategoryMetadataFieldValuesDTOSet() {
+    public List<CategoryMetadataFieldValuesDTO> getCategoryMetadataFieldValuesDTOSet() {
         return categoryMetadataFieldValuesDTOSet;
     }
 
-    public void setCategoryMetadataFieldValuesDTOSet(Set<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet) {
+    public void setCategoryMetadataFieldValuesDTOSet(List<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet) {
         this.categoryMetadataFieldValuesDTOSet = categoryMetadataFieldValuesDTOSet;
     }
 

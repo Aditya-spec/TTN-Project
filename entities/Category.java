@@ -3,7 +3,9 @@ package com.Bootcamp.Project.Application.entities;
 import com.Bootcamp.Project.Application.entities.categoryMetadataFieldValues.CategoryMetadataFieldValues;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -13,7 +15,7 @@ public class Category extends BaseDomain {
     private Long parentId;
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",fetch = FetchType.EAGER)
     private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
@@ -61,8 +63,8 @@ public class Category extends BaseDomain {
         this.products = products;
     }
 
-    public void setCategoryMetadataFieldValuesSetSet(Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSetSet) {
-        this.categoryMetadataFieldValuesSet = categoryMetadataFieldValuesSetSet;
+    public void setCategoryMetadataFieldValuesSet(Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet) {
+        this.categoryMetadataFieldValuesSet = categoryMetadataFieldValuesSet;
     }
 
     public void setProduct(Product product) {

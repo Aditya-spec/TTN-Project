@@ -1,54 +1,48 @@
 package com.Bootcamp.Project.Application.configuration;
-
+import com.Bootcamp.Project.Application.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.util.Collection;
 import java.util.List;
 
 public class AppUser implements UserDetails {
-    private final String email;
-    private final String password;
-  // private final Integer loginAttempt;
-    private final Boolean isEnable;
-   // private final Boolean isDeleted;
-    private final List<GrantAuthorityImpl> grantAuthorities;
 
-    /*public AppUser(String email, String password,  Boolean isEnable, Boolean isDeleted, List<GrantAuthorityImpl> grantAuthorities) {
-        this.email = email;
-        this.password = password;
-       // this.loginAttempt = loginAttempt;
-        this.isEnable = isEnable;
-        //this.isDeleted = isDeleted;
+
+    List<GrantAuthorityImpl> grantAuthorities;
+    private User user;
+
+    public AppUser(User user, List<GrantAuthorityImpl> grantAuthorities) {
+        this.user = user;
         this.grantAuthorities = grantAuthorities;
     }
-*/
 
-    public AppUser(String email, String password, Boolean isEnable, List<GrantAuthorityImpl> grantAuthorities) {
-        this.email = email;
-        this.password = password;
-        this.isEnable = isEnable;
-        this.grantAuthorities = grantAuthorities;
+    public AppUser() {
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       /* System.out.println("In app user");
-        grantAuthorities.forEach(authority-> System.out.println(authority.getAuthority()));
-        System.out.println("Out of app user");*/
-        return grantAuthorities;
+        return this.grantAuthorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return user.getEmail();
     }
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -57,7 +51,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.isAccountNonLocked();
     }
 
     @Override
@@ -67,6 +61,6 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return (isEnable);
+        return user.getActive();
     }
 }

@@ -1,8 +1,4 @@
 package com.Bootcamp.Project.Application.configuration;
-
-
-import com.Bootcamp.Project.Application.enums.ErrorCode;
-import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,22 +16,12 @@ public class AppUserDetailsService implements UserDetailsService {
     UserDao userDao;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        System.out.println("Trying to authenticate user ::" + email);
+        UserDetails userDetails = userDao.loadUserByUsername(username);
 
-        try {
-            return userDao.loadUserByEmail(email);
-        } catch (Exception e) {
-            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-            //throw new NotFoundException("User not found with email: " + email);
-        }
+        return userDetails;
+
+
     }
-
-
-    /*https://dzone.com/articles/spring-boot-custom-password-validator-using-passay
-    https://stackabuse.com/spring-custom-password-validation/
-    Madhav Khanna3:18 PM
-    https://dzone.com/articles/creating-custom-annotations-in-java
-    https://www.baeldung.com/java-custom-annotation*/
 }

@@ -3,15 +3,17 @@ package com.Bootcamp.Project.Application.entities;
 import com.Bootcamp.Project.Application.entities.categoryMetadataFieldValues.CategoryMetadataFieldValues;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 public class CategoryMetadataField extends BaseDomain {
     @Column(unique = true)
     private String name;
-    @OneToMany(mappedBy = "categoryMetaField")
-    private Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet=new HashSet<>();
+    @OneToMany(mappedBy = "categoryMetaField",fetch = FetchType.EAGER)
+    private List<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet=new ArrayList<>();
 
     //Constructors
 
@@ -28,7 +30,7 @@ public class CategoryMetadataField extends BaseDomain {
         return name;
     }
 
-    public Set<CategoryMetadataFieldValues> getCategoryMetadataFieldValuesSet() {
+    public List<CategoryMetadataFieldValues> getCategoryMetadataFieldValuesSet() {
         return categoryMetadataFieldValuesSet;
     }
 
@@ -38,14 +40,14 @@ public class CategoryMetadataField extends BaseDomain {
         this.name = name;
     }
 
-    public void setCategoryMetadataFieldValuesSet(Set<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet) {
+    public void setCategoryMetadataFieldValuesSet(List<CategoryMetadataFieldValues> categoryMetadataFieldValuesSet) {
         this.categoryMetadataFieldValuesSet = categoryMetadataFieldValuesSet;
     }
 
     public void setCategoryMetadataFieldValues(CategoryMetadataFieldValues data) {
         if (data != null) {
             if (categoryMetadataFieldValuesSet == null) {
-                categoryMetadataFieldValuesSet = new HashSet<>();
+                categoryMetadataFieldValuesSet = new ArrayList<>();
             }
             data.setCategoryMetaField(this);
             categoryMetadataFieldValuesSet.add(data);

@@ -1,13 +1,13 @@
 package com.Bootcamp.Project.Application.services;
 
 
-import com.Bootcamp.Project.Application.dtos.CategoryAddDTO;
-import com.Bootcamp.Project.Application.dtos.CategoryMetadataDTO;
-import com.Bootcamp.Project.Application.dtos.CategoryResponseDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Category;
 import com.Bootcamp.Project.Application.entities.CategoryMetadataField;
+import com.Bootcamp.Project.Application.entities.categoryMetadataFieldValues.CategoryMetadataFieldValues;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
+import com.Bootcamp.Project.Application.repositories.CMFVRepository;
 import com.Bootcamp.Project.Application.repositories.CategoryMetadataFieldRepository;
 import com.Bootcamp.Project.Application.repositories.CategoryRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CategoryService;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public class CategoryImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     @Autowired
     CategoryMetadataFieldRepository metadataFieldRepository;
+    @Autowired
+    CMFVRepository cmfvRepository;
 
 
     Pageable sortById = PageRequest.of(0, 5, Sort.by("id"));
@@ -96,13 +99,14 @@ public class CategoryImpl implements CategoryService {
         return null;
     }
 
-    @Override
+    /*@Override
     public CategoryResponseDTO showCategory(Long id) {
         ModelMapper modelMapper = new ModelMapper();
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
+
         List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
         List<CategoryAddDTO> childrenCategory = findCategoryChildren(id);
         categoryAddDTOList.addAll(childrenCategory);
@@ -117,17 +121,63 @@ public class CategoryImpl implements CategoryService {
         categoryResponseDTO.setChildCategory(categoryAddDTOList);
         categoryResponseDTO.setParentCategory(parentCategoryAddDTOList);
         return categoryResponseDTO;
+    }*/
+
+    @Override
+    public CategoryResponseDTO showCategory(Long id) {
+        ModelMapper modelMapper = new ModelMapper();
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isEmpty()) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+
+        List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.get().getId());
+
+        List<CMDResponse> fieldList = new ArrayList<>();
+
+        for (CategoryMetadataFieldValues c : categoryMetadataFieldValuesList) {
+
+            CMDResponse cmdResponse = new CMDResponse();
+
+            if (c.getCategoryMetaField().getName() != null) {
+                cmdResponse.setName(c.getCategoryMetaField().getName());
+                cmdResponse.setValues(Arrays.asList(c.getFieldValues()));
+                fieldList.add(cmdResponse);
+            }
+        }
+
+
+        List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
+        List<CategoryAddDTO> childrenCategory = findCategoryChildren(id);
+        categoryAddDTOList.addAll(childrenCategory);
+
+        List<CategoryAddDTO> parentCategoryAddDTOList = new ArrayList<>();
+        List<CategoryAddDTO> parentCategory = findCategoryParent(id);
+        parentCategoryAddDTOList.addAll(parentCategory);
+
+        CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
+        categoryResponseDTO.setName(category.get().getName());
+        categoryResponseDTO.setParentId(category.get().getParentId());
+        categoryResponseDTO.setChildCategory(categoryAddDTOList);
+        categoryResponseDTO.setParentCategory(parentCategoryAddDTOList);
+        categoryResponseDTO.setFieldValues(fieldList);
+
+        return categoryResponseDTO;
     }
+
 
     private List<CategoryAddDTO> findCategoryParent(Long id) {
         ModelMapper modelMapper = new ModelMapper();
         Category category = categoryRepository.findById(id).get();
+
         List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
         while (category.getParentId() != 0l) {
             Optional<Category> category1 = categoryRepository.findById(category.getParentId());
             categoryAddDTOList.add(modelMapper.map(category1.get(), CategoryAddDTO.class));
+
             category = category1.get();
         }
+
         return categoryAddDTOList;
     }
 
@@ -161,19 +211,44 @@ public class CategoryImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryMetadataDTO> showMetaData() {
+    public List<CategoryMetadataFieldDTO> showMetaData() {
         ModelMapper modelMapper = new ModelMapper();
         Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll();
         if (metadataFieldList.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<CategoryMetadataField> categoryMetadataFieldList = metadataFieldList.get();
-        List<CategoryMetadataDTO> categoryMetadataFieldDTOS = categoryMetadataFieldList
+        List<CategoryMetadataFieldDTO> categoryMetadataFieldDTOS = categoryMetadataFieldList
                 .stream()
-                .map(e -> modelMapper.map(e, CategoryMetadataDTO.class))
+                .map(e -> modelMapper.map(e, CategoryMetadataFieldDTO.class))
                 .collect(Collectors.toList());
         return categoryMetadataFieldDTOS;
     }
 
+
+    public String addMetadataValues(CategoryMetadataFieldValuesDTO cmdfvDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Optional<Category> optionalCategory = categoryRepository.findById(cmdfvDTO.getCategoryId());
+        if (optionalCategory.isEmpty()) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+        Category category = optionalCategory.get();
+        Optional<CategoryMetadataField> optionalMetadataField = metadataFieldRepository.findById(cmdfvDTO.getCategoryMetadataFieldId());
+        if (optionalMetadataField.isEmpty()) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+        CategoryMetadataField metadataField = optionalMetadataField.get();
+
+        CategoryMetadataFieldValues categoryMetadataFieldValues = new CategoryMetadataFieldValues();
+
+        String fieldValues = String.join(",", cmdfvDTO.getFieldValues());
+        categoryMetadataFieldValues.setFieldValues(fieldValues);
+        categoryMetadataFieldValues.setCategory(category);
+        categoryMetadataFieldValues.setCategoryMetaField(metadataField);
+
+
+        cmfvRepository.save(categoryMetadataFieldValues);
+        return "metaData values saved successfully";
+    }
 
 }

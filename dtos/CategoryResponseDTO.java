@@ -1,23 +1,21 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CategoryResponseDTO {
     private Long parentId;
     private String name;
     private List<CategoryAddDTO> parentCategory;
     private List<CategoryAddDTO> childCategory;
-    private Set<CategoryMetadataDTO> categoryMetadataDTOSet=new HashSet<>();
+    private List<CMDResponse> fieldValues =new ArrayList<>();
 
-    public Set<CategoryMetadataDTO> getCategoryMetadataDTOSet() {
-        return categoryMetadataDTOSet;
+    public List<CMDResponse> getFieldValues() {
+        return fieldValues;
     }
 
-    public void setCategoryMetadataDTOSet(Set<CategoryMetadataDTO> categoryMetadataDTOSet) {
-        this.categoryMetadataDTOSet = categoryMetadataDTOSet;
+    public void setFieldValues(List<CMDResponse> fieldValues) {
+        this.fieldValues = fieldValues;
     }
 
     public Long getParentId() {
