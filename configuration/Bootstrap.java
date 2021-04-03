@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.configuration;
 
-import com.Bootcamp.Project.Application.entities.Admin;
-import com.Bootcamp.Project.Application.entities.Role;
+import com.Bootcamp.Project.Application.entities.*;
+import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -10,8 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class Bootstrap implements ApplicationRunner {
@@ -25,7 +24,38 @@ public class Bootstrap implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        if (userRepository.count() <= 0) {
+
+        /*Name name1=new Name();
+        name1.setFirstName("Customer");
+        name1.setLastName("Singh");
+
+        Customer customer=new Customer();
+        customer.setEmail("Customer@gmail.com");
+        customer.setPassword(bCryptPasswordEncoder.encode("Customer@123"));
+        List<Role> roleList=new ArrayList<>();
+        roleList.add(new Role("ROLE_CUSTOMER"));
+        customer.setActive(true);
+        customer.setDeleted(false);
+        customer.setRoles(roleList);
+        customer.setName(name1);
+        userRepository.save(customer);
+
+        Name name2=new Name();
+        name2.setFirstName("Seller");
+        name2.setLastName("Singh");
+
+        Seller seller=new Seller();
+        seller.setEmail("Seller@gmail.com");
+        seller.setPassword(bCryptPasswordEncoder.encode("Seller@123"));
+        List<Role> roleList1=new ArrayList<>();
+        roleList.add(new Role("ROLE_SELLER"));
+        seller.setActive(true);
+        seller.setDeleted(false);
+        seller.setRoles(roleList);
+        seller.setName(name2);
+        userRepository.save(seller);*/
+
+       /* if (userRepository.count() <= 0) {
             Admin admin1=new Admin();
             admin1.setEmail("adminuser1@gmail.com");
             admin1.setPassword(bCryptPasswordEncoder.encode("Admin1@user"));
@@ -51,6 +81,8 @@ public class Bootstrap implements ApplicationRunner {
             userRepository.save(admin1);
             userRepository.save(admin2);
             System.out.println("Total Users:"+ userRepository.count());
-        }
+        }*/
+
+
     }
 }

@@ -17,4 +17,6 @@ public interface SellerRepository extends CrudRepository<Seller,Long> {
 
 
     Seller findByEmail(String email);
+
+
 }

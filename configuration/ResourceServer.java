@@ -1,8 +1,8 @@
-package com.Bootcamp.Project.Application.springSecurity;
+package com.Bootcamp.Project.Application.configuration;
 
 
-import com.Bootcamp.Project.Application.configuration.AppUserDetailsService;
-
+import com.Bootcamp.Project.Application.configuration.filters.FilterExceptionHandler;
+import com.Bootcamp.Project.Application.configuration.filters.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.Bootcamp.Project.Application.springSecurity;
+package com.Bootcamp.Project.Application.configuration.filters;
 
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.exceptionHandling.ExceptionResponse;
@@ -24,7 +24,7 @@ import java.util.Date;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FilterExceptionHandler extends OncePerRequestFilter {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+   /* private final Logger log = LoggerFactory.getLogger(getClass());*/
 
 
     @Override

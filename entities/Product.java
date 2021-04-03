@@ -8,10 +8,10 @@ import java.util.List;
 public class Product extends BaseDomain {
     private String name;
     private String description;
-  private Boolean cancellable;
+    private Boolean cancellable;
     private Boolean returnable;
     private String brand;
-    private Boolean active;
+    private Boolean active=false;
     private String primaryImageName;
 
     @ManyToOne

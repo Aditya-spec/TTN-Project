@@ -1,4 +1,4 @@
-package com.Bootcamp.Project.Application.springSecurity;
+package com.Bootcamp.Project.Application.configuration;
 
 
 import io.jsonwebtoken.Claims;

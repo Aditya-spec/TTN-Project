@@ -27,4 +27,7 @@ public interface CategoryRepository extends CrudRepository<Category,Long> {
 
     @Query(value = "from Category c where c.parentId=0")
     List<Category> fetchAllRootCategories(Pageable sortById);
+
+    @Query(value = "select id from category where id NOT IN (select parent_id from category where parent_id IS NOT NULL)",nativeQuery = true)
+    List<Long> fetchLeafCategoryId();
 }

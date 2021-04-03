@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.LoginDTO;
-import com.Bootcamp.Project.Application.springSecurity.AuthorisationService;
+import com.Bootcamp.Project.Application.services.AuthorisationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-public class LoginLogoutController {
+public class LoginController {
 
     @Autowired
     AuthorisationService authorisationService;

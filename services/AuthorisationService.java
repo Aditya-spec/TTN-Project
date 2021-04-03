@@ -1,12 +1,13 @@
-package com.Bootcamp.Project.Application.springSecurity;
+package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.dtos.LoginDTO;
+import com.Bootcamp.Project.Application.entities.AuthenticatedToken;
 import com.Bootcamp.Project.Application.entities.User;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AuthenticatedTokenRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
-import com.Bootcamp.Project.Application.services.UserService;
+import com.Bootcamp.Project.Application.configuration.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

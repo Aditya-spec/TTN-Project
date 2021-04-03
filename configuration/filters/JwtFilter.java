@@ -1,6 +1,8 @@
-package com.Bootcamp.Project.Application.springSecurity;
+package com.Bootcamp.Project.Application.configuration.filters;
 
 import com.Bootcamp.Project.Application.configuration.AppUserDetailsService;
+import com.Bootcamp.Project.Application.configuration.TokenProvider;
+import com.Bootcamp.Project.Application.entities.AuthenticatedToken;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 

@@ -1,7 +1,7 @@
 package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.repositories.AuthenticatedTokenRepository;
-import com.Bootcamp.Project.Application.springSecurity.AuthenticatedToken;
+import com.Bootcamp.Project.Application.entities.AuthenticatedToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

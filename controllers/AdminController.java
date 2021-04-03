@@ -3,6 +3,7 @@ package com.Bootcamp.Project.Application.controllers;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.AdminImpl;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
+import com.Bootcamp.Project.Application.services.ProductImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ public class AdminController {
     AdminImpl adminImpl;
     @Autowired
     CategoryImpl categoryImpl;
+    @Autowired
+    ProductImpl productImpl;
 
     @GetMapping("/home")
     public String adminHome() {
@@ -93,6 +96,22 @@ public class AdminController {
     public ResponseEntity<String> update( @Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
         String result = categoryImpl.updateMetadataValues(categoryMetadataFieldValuesDTO);
         return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @PutMapping("/activate-product")
+    public ResponseEntity<String> activateProduct(@RequestParam Long id){
+        if( productImpl.activateProduct(id)){
+            return new ResponseEntity<>("Product has been activated and mail has been sent",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("product doesn't exist in the database",HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/deActivate-product")
+    public ResponseEntity<String> deActivateProduct(@RequestParam Long id){
+        if( productImpl.deActivateProduct(id)){
+            return new ResponseEntity<>("Product has been deActivated and mail has been sent",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("product doesn't exist in the database",HttpStatus.BAD_REQUEST);
     }
 
 }

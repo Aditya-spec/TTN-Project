@@ -2,6 +2,7 @@ package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
+import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ public class SellerController {
     private SellerImpl sellerImpl;
     @Autowired
     CategoryImpl categoryImpl;
+    @Autowired
+    ProductImpl productImpl;
 
 
 
@@ -66,5 +69,23 @@ public class SellerController {
     public List<SellerCategoryResponseDTO> showCategories(){
 
         return categoryImpl.showSellerCategories();
+    }
+
+    @PostMapping("/add-product")
+    public ResponseEntity<String> addProduct(HttpServletRequest request, @RequestBody SellerProductAddDTO sellerProductAddDTO){
+        String email=request.getUserPrincipal().getName();
+        if(productImpl.addProduct(email, sellerProductAddDTO)){
+            return new ResponseEntity<>("product has been added",HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>("product already exists",HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/delete-product")
+    public ResponseEntity<String> deleteProduct(HttpServletRequest request, @RequestParam Long id){
+        String email=request.getUserPrincipal().getName();
+        if(productImpl.deleteProduct(email,id)){
+            return new ResponseEntity<>("product deleted successfully",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("product doesn't exist in the database",HttpStatus.BAD_REQUEST);
     }
 }
