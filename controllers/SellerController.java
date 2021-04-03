@@ -88,4 +88,20 @@ public class SellerController {
         }
         return new ResponseEntity<>("product doesn't exist in the database",HttpStatus.BAD_REQUEST);
     }
+
+    @PutMapping("/update-product")
+    public ResponseEntity<String> updateProduct(HttpServletRequest request, @RequestBody SellerProductUpdateDTO sellerProductUpdateDTO,@RequestParam Long id){
+        String email=request.getUserPrincipal().getName();
+        if(productImpl.updateProduct(email,sellerProductUpdateDTO,id)){
+            return new ResponseEntity<>("product updated successfully",HttpStatus.OK);
+        }
+        return  new ResponseEntity<>("Product cannot be updated",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/view-product")
+    public SellerProductShowDTO getProduct(HttpServletRequest request,@RequestParam Long id){
+        String email=request.getUserPrincipal().getName();
+        return productImpl.showSellerProduct(email,id);
+    }
+
 }

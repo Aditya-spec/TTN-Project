@@ -6,6 +6,7 @@ import java.util.List;
 
 @Entity
 public class Product extends BaseDomain {
+
     private String name;
     private String description;
     private Boolean cancellable;

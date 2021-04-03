@@ -38,7 +38,7 @@ public class BaseDomain {
         return lastModified;
     }
 
-    public boolean isDeleted() {
+    public boolean getDeleted() {
         return deleted;
     }
 
