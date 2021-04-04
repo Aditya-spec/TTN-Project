@@ -1,6 +1,7 @@
 package com.Bootcamp.Project.Application.repositories;
 
 import com.Bootcamp.Project.Application.entities.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +22,7 @@ public interface ProductRepository extends CrudRepository<Product,Long> {
 
     @Query(value = "from Product p where p.seller=:sellerId and p.name=:name")
     Optional<Product> fetchProductName(@Param("sellerId") Long id, @Param("name") String name);
+
+    @Query(value = "select * from product p where p.seller_id=:sellerId",nativeQuery = true)
+    List<Product> fetchBySellerId(@Param("sellerId") Long id, Pageable sortById);
 }

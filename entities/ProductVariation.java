@@ -1,11 +1,11 @@
 package com.Bootcamp.Project.Application.entities;
-/*
-import com.Bootcamp.Project.Application.entities.OrderProduct;*/
+
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -20,8 +20,8 @@ import java.util.Set;
 })
 public class ProductVariation extends BaseDomain {
     private int quantityAvailable;
-    private boolean active;
-    private int price;
+    private boolean active=true;
+    private Double price;
     private String primaryImageName;
 
     @Type(type = "json")
@@ -49,7 +49,7 @@ public class ProductVariation extends BaseDomain {
 
     //Getters
 
-    public int getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -69,7 +69,7 @@ public class ProductVariation extends BaseDomain {
         return orderProductSet;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return active;
     }
 
@@ -77,9 +77,10 @@ public class ProductVariation extends BaseDomain {
         return metadata;
     }
 
-    //Setters
 
-    public void setPrice(int price) {
+//Setters
+
+    public void setPrice(Double price) {
         this.price = price;
     }
 
