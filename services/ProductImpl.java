@@ -1,9 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.ProductVariationDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductAddDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductShowDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductUpdateDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.*;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
@@ -192,7 +189,7 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
         SellerProductShowDTO sellerProductShowDTO = new SellerProductShowDTO();
-        sellerProductShowDTO = mapping(product, sellerProductShowDTO);
+        sellerProductShowDTO = addVariationMapping(product, sellerProductShowDTO);
         return sellerProductShowDTO;
 
     }
@@ -205,7 +202,7 @@ public class ProductImpl implements ProductService {
         for (Product product : productList) {
             if (!product.getDeleted()) {
                 SellerProductShowDTO showDTO = new SellerProductShowDTO();
-                showDTO = mapping(product, showDTO);
+                showDTO = addVariationMapping(product, showDTO);
                 sellerProductShowDTOList.add(showDTO);
             }
         }
@@ -219,6 +216,9 @@ public class ProductImpl implements ProductService {
         Product product = productRepository.findById(productVariationDTO.getProductId()).orElse(null);
         if (product == null) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        if (seller.getId() != product.getSeller().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
         if (!product.getActive()) {
             throw new EcommerceException(ErrorCode.NOT_ACTIVE);
@@ -252,14 +252,88 @@ public class ProductImpl implements ProductService {
             }
         }
         ProductVariation productVariation = new ProductVariation();
-        productVariation = mapping(productVariation, productVariationDTO, product);
+        productVariation = addVariationMapping(productVariation, productVariationDTO, product);
         productVariationRepository.save(productVariation);
 
         return true;
 
     }
 
-    private ProductVariation mapping(ProductVariation productVariation, ProductVariationDTO productVariationDTO, Product product) {
+    @Override
+    public boolean updateVariation(String email, ProductVariationUpdateDTO productVariationUpdateDTO, Long variationId) {
+        Seller seller = sellerRepository.findByEmail(email);
+        ProductVariation productVariation = productVariationRepository.findById(variationId).orElse(null);
+        if (productVariation == null) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+
+        Product product = productRepository.findById(productVariation.getProduct().getId()).orElse(null);
+
+
+
+        if (seller.getId() != product.getSeller().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+
+        if (product.getDeleted()) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
+        if (category == null) {
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
+        }
+        if (productVariationUpdateDTO.getMetadata() != null) {
+            JSONArray inputMetadata = productVariationUpdateDTO.getMetadata();
+            for (Object object : inputMetadata) {
+                Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class); //Object to JsonObject
+                String fieldName = metaValues.get("fieldName").toString();
+                String value = metaValues.get("values").toString();
+
+                CategoryMetadataField categoryMetadataField = categoryMetadataFieldRepository.findByname(fieldName).orElse(null);
+                if (categoryMetadataField == null) {
+                    throw new EcommerceException(ErrorCode.NO_METADATAFIELD_EXIST);
+                }
+                String dbMetaValues = cmfvRepository.fetchMetaDataValues(category.getId(), categoryMetadataField.getId());
+                if (dbMetaValues == null) {
+                    throw new EcommerceException(ErrorCode.NOT_FOUND);
+                }
+                List<String> dbMetaValuesList = Arrays.asList(dbMetaValues.split(","));
+
+                if (!dbMetaValuesList.contains(value)) {
+                    throw new EcommerceException(ErrorCode.NO_METAVALUES_EXIST);
+                }
+            }
+        }
+
+        productVariation = updateVariationMapping(productVariation, productVariationUpdateDTO);
+        productVariationRepository.save(productVariation);
+        return true;
+    }
+
+    private ProductVariation updateVariationMapping(ProductVariation productVariation, ProductVariationUpdateDTO productVariationUpdateDTO) {
+        if (productVariationUpdateDTO.getMetadata() != null) {
+            JSONObject metadata = new JSONObject();
+            metadata.put("metadata", productVariationUpdateDTO.getMetadata());
+            productVariation.setMetadata(metadata);
+        }
+        if (productVariationUpdateDTO.getPrice() != null) {
+            productVariation.setPrice(productVariationUpdateDTO.getPrice());
+        }
+        if (productVariationUpdateDTO.getActive() != null) {
+            productVariation.setActive(productVariationUpdateDTO.getActive());
+        }
+        if (productVariationUpdateDTO.getPrimaryImageName() != null) {
+            productVariation.setPrimaryImageName(productVariationUpdateDTO.getPrimaryImageName());
+        }
+        if (productVariationUpdateDTO.getQuantityAvailable() != productVariation.getQuantityAvailable()) {
+            productVariation.setQuantityAvailable(productVariationUpdateDTO.getQuantityAvailable());
+        }
+
+        return productVariation;
+    }
+
+
+    private ProductVariation addVariationMapping(ProductVariation productVariation, ProductVariationDTO productVariationDTO, Product product) {
         JSONObject metadata = new JSONObject();
         metadata.put("metadata", productVariationDTO.getMetadata());
         productVariation.setMetadata(metadata);
@@ -272,7 +346,7 @@ public class ProductImpl implements ProductService {
     }
 
 
-    private SellerProductShowDTO mapping(Product product, SellerProductShowDTO showDTO) {
+    private SellerProductShowDTO addVariationMapping(Product product, SellerProductShowDTO showDTO) {
         showDTO.setActive(product.getActive());
         showDTO.setBrand(product.getBrand());
         showDTO.setId(product.getId());

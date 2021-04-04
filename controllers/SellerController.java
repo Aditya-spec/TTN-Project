@@ -116,5 +116,14 @@ public class SellerController {
        }
         return new ResponseEntity<>("product variation cannot be added",HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @PutMapping("/update-productVariation")
+    public ResponseEntity<String> updateVariation(HttpServletRequest request,
+                                                  @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id){
+        String email=request.getUserPrincipal().getName();
+        if(productImpl.updateVariation(email,productVariationUpdateDTO,id)){
+            return new ResponseEntity<>("product variation updated successfully",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("product cannot be updated",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

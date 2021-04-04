@@ -1,9 +1,6 @@
 package com.Bootcamp.Project.Application.services.serviceInterfaces;
 
-import com.Bootcamp.Project.Application.dtos.ProductVariationDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductAddDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductShowDTO;
-import com.Bootcamp.Project.Application.dtos.SellerProductUpdateDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 
 import java.util.List;
 
@@ -23,4 +20,7 @@ public interface ProductService {
     List<SellerProductShowDTO> showAllSellerProducts(String email);
 
     boolean addVariation(String email, ProductVariationDTO productVariationDTO);
+
+
+    boolean updateVariation(String email, ProductVariationUpdateDTO productVariationUpdateDTO, Long id);
 }
