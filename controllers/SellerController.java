@@ -126,4 +126,10 @@ public class SellerController {
         return new ResponseEntity<>("product cannot be updated",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/view-variation")
+    public ProductVariationResponseDTO viewVariation(HttpServletRequest request, @RequestParam Long id){
+       String email=request.getUserPrincipal().getName();
+       return productImpl.showVariation(email,id);
+    }
+
 }

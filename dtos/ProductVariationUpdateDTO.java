@@ -14,7 +14,7 @@ public class ProductVariationUpdateDTO {
     private String primaryImageName;
 
     @Min(value = 0,message = "quantity must be 0 or more")
-    private int quantityAvailable;
+    private Integer quantityAvailable;
 
     @Min(value = 0,message = "price must be 0 or more")
     private Double price;
@@ -33,11 +33,11 @@ public class ProductVariationUpdateDTO {
         this.primaryImageName = primaryImageName;
     }
 
-    public int getQuantityAvailable() {
+    public Integer getQuantityAvailable() {
         return quantityAvailable;
     }
 
-    public void setQuantityAvailable(int quantityAvailable) {
+    public void setQuantityAvailable(Integer quantityAvailable) {
         this.quantityAvailable = quantityAvailable;
     }
 

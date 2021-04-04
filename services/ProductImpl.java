@@ -231,26 +231,8 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
         JSONArray inputMetadata = productVariationDTO.getMetadata();
-        for (Object object : inputMetadata) {
-            Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class); //Object to JsonObject
-            String fieldName = metaValues.get("fieldName").toString();
-            String value = metaValues.get("values").toString();
+        checkVariationDuplicacy(inputMetadata, product);
 
-            CategoryMetadataField categoryMetadataField = categoryMetadataFieldRepository.findByname(fieldName).orElse(null);
-            if (categoryMetadataField == null) {
-                throw new EcommerceException(ErrorCode.NO_METADATAFIELD_EXIST);
-            }
-            String dbMetaValues = cmfvRepository.fetchMetaDataValues(category.getId(), categoryMetadataField.getId());
-            if (dbMetaValues == null) {
-                throw new EcommerceException(ErrorCode.NOT_FOUND);
-            }
-            List<String> dbMetaValuesList = Arrays.asList(dbMetaValues.split(","));
-
-
-            if (!dbMetaValuesList.contains(value)) {
-                throw new EcommerceException(ErrorCode.NO_METAVALUES_EXIST);
-            }
-        }
         ProductVariation productVariation = new ProductVariation();
         productVariation = addVariationMapping(productVariation, productVariationDTO, product);
         productVariationRepository.save(productVariation);
@@ -258,6 +240,7 @@ public class ProductImpl implements ProductService {
         return true;
 
     }
+
 
     @Override
     public boolean updateVariation(String email, ProductVariationUpdateDTO productVariationUpdateDTO, Long variationId) {
@@ -270,9 +253,11 @@ public class ProductImpl implements ProductService {
         Product product = productRepository.findById(productVariation.getProduct().getId()).orElse(null);
 
 
-
         if (seller.getId() != product.getSeller().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        if (!product.getActive()) {
+            throw new EcommerceException(ErrorCode.NOT_ACTIVE);
         }
 
         if (product.getDeleted()) {
@@ -284,30 +269,41 @@ public class ProductImpl implements ProductService {
         }
         if (productVariationUpdateDTO.getMetadata() != null) {
             JSONArray inputMetadata = productVariationUpdateDTO.getMetadata();
-            for (Object object : inputMetadata) {
-                Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class); //Object to JsonObject
-                String fieldName = metaValues.get("fieldName").toString();
-                String value = metaValues.get("values").toString();
-
-                CategoryMetadataField categoryMetadataField = categoryMetadataFieldRepository.findByname(fieldName).orElse(null);
-                if (categoryMetadataField == null) {
-                    throw new EcommerceException(ErrorCode.NO_METADATAFIELD_EXIST);
-                }
-                String dbMetaValues = cmfvRepository.fetchMetaDataValues(category.getId(), categoryMetadataField.getId());
-                if (dbMetaValues == null) {
-                    throw new EcommerceException(ErrorCode.NOT_FOUND);
-                }
-                List<String> dbMetaValuesList = Arrays.asList(dbMetaValues.split(","));
-
-                if (!dbMetaValuesList.contains(value)) {
-                    throw new EcommerceException(ErrorCode.NO_METAVALUES_EXIST);
-                }
-            }
+            checkVariationDuplicacy(inputMetadata, product);
         }
 
         productVariation = updateVariationMapping(productVariation, productVariationUpdateDTO);
         productVariationRepository.save(productVariation);
         return true;
+    }
+
+    @Override
+    public ProductVariationResponseDTO showVariation(String email, Long id) {
+        ModelMapper modelMapper = new ModelMapper();
+        ProductVariation productVariation = productVariationRepository.findById(id).orElse(null);
+        if (productVariation == null) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        Product product = productVariation.getProduct();
+        Seller seller =product.getSeller();
+        ProductVariationResponseDTO responseDTO = showVariationMapping(product, productVariation);
+        return responseDTO;
+    }
+
+    
+
+    private ProductVariationResponseDTO showVariationMapping(Product product, ProductVariation productVariation) {
+        ModelMapper modelMapper = new ModelMapper();
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        ProductVariationResponseDTO responseDTO = new ProductVariationResponseDTO();
+        responseDTO.setProductDTO(productDTO);
+        responseDTO.setMetadata(productVariation.getMetadata());
+        responseDTO.setPrice(productVariation.getPrice());
+        responseDTO.setPrimaryImageName(productVariation.getPrimaryImageName());
+        responseDTO.setQuantityAvailable(productVariation.getQuantityAvailable());
+        responseDTO.setActive(productVariation.getActive());
+        responseDTO.setVariationId(productVariation.getId());
+        return responseDTO;
     }
 
     private ProductVariation updateVariationMapping(ProductVariation productVariation, ProductVariationUpdateDTO productVariationUpdateDTO) {
@@ -342,6 +338,7 @@ public class ProductImpl implements ProductService {
         productVariation.setPrimaryImageName(productVariationDTO.getPrimaryImageName());
         productVariation.setQuantityAvailable(productVariationDTO.getQuantityAvailable());
         productVariation.setProduct(product);
+        product.setActive(true);
         return productVariation;
     }
 
@@ -357,6 +354,30 @@ public class ProductImpl implements ProductService {
         showDTO.setCancellable(product.getCancellable());
         showDTO.setName(product.getName());
         return showDTO;
+    }
+
+    private void checkVariationDuplicacy(JSONArray inputMetadata, Product product) {
+
+        for (Object object : inputMetadata) {
+            Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class); //Object to JsonObject
+            String fieldName = metaValues.get("field").toString();
+            String value = metaValues.get("values").toString();
+
+            CategoryMetadataField categoryMetadataField = categoryMetadataFieldRepository.findByname(fieldName).orElse(null);
+            if (categoryMetadataField == null) {
+                throw new EcommerceException(ErrorCode.NO_METADATAFIELD_EXIST);
+            }
+            String dbMetaValues = cmfvRepository.fetchMetaDataValues(product.getCategory().getId(), categoryMetadataField.getId());
+            if (dbMetaValues == null) {
+                throw new EcommerceException(ErrorCode.NOT_FOUND);
+            }
+            List<String> dbMetaValuesList = Arrays.asList(dbMetaValues.split(","));
+
+            if (!dbMetaValuesList.contains(value)) {
+                throw new EcommerceException(ErrorCode.NO_METAVALUES_EXIST);
+            }
+        }
+
     }
 
 

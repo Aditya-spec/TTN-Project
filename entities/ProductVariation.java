@@ -18,9 +18,11 @@ import java.util.Set;
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 public class ProductVariation extends BaseDomain {
-    private int quantityAvailable;
-    private boolean active=true;
-    private Double price;
+
+
+    private Integer quantityAvailable = 0;
+    private Boolean active = true;
+    private Double price = 0.0;
     private String primaryImageName;
 
     @Type(type = "json")
@@ -34,7 +36,7 @@ public class ProductVariation extends BaseDomain {
     @OneToMany(mappedBy = "productVariation")
     private Set<OrderProduct> orderProductSet;
 
-    @OneToMany(mappedBy = "productVariation",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productVariation", cascade = CascadeType.ALL)
     private Set<Cart> cartSet;
 
     //Constructors
@@ -60,7 +62,7 @@ public class ProductVariation extends BaseDomain {
         return product;
     }
 
-    public int getQuantityAvailable() {
+    public Integer getQuantityAvailable() {
         return quantityAvailable;
     }
 
@@ -68,7 +70,7 @@ public class ProductVariation extends BaseDomain {
         return orderProductSet;
     }
 
-    public boolean getActive() {
+    public Boolean getActive() {
         return active;
     }
 
@@ -95,11 +97,11 @@ public class ProductVariation extends BaseDomain {
         this.orderProductSet = orderProductSet;
     }
 
-    public void setQuantityAvailable(int quantityAvailable) {
+    public void setQuantityAvailable(Integer quantityAvailable) {
         this.quantityAvailable = quantityAvailable;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -115,20 +117,20 @@ public class ProductVariation extends BaseDomain {
         this.cartSet = cartSet;
     }
 
-    public void setOrderProduct(OrderProduct orderProduct){
-        if(orderProduct!=null){
-            if(orderProductSet==null){
-                orderProductSet=new HashSet<>();
+    public void setOrderProduct(OrderProduct orderProduct) {
+        if (orderProduct != null) {
+            if (orderProductSet == null) {
+                orderProductSet = new HashSet<>();
             }
             orderProduct.setProductVariation(this);
             orderProductSet.add(orderProduct);
         }
     }
 
-    public void setCart(Cart cart){
-        if(cartSet !=null){
-            if(cartSet==null){
-                cartSet=new HashSet<>();
+    public void setCart(Cart cart) {
+        if (cartSet != null) {
+            if (cartSet == null) {
+                cartSet = new HashSet<>();
             }
             cart.setProductVariation(this);
             this.getCartSet().add(cart);
