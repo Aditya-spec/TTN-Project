@@ -285,12 +285,34 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         Product product = productVariation.getProduct();
-        Seller seller =product.getSeller();
+        Seller seller = product.getSeller();
         ProductVariationResponseDTO responseDTO = showVariationMapping(product, productVariation);
         return responseDTO;
     }
 
-    
+    @Override
+    public List<ProductVariationResponseDTO> showProductVariations(String email, Long productId) {
+        Seller seller = sellerRepository.findByEmail(email);
+        Product product = productRepository.findById(productId).orElse(null);
+        if (seller.getId() != product.getSeller().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        if (product.getDeleted()) {
+            throw new EcommerceException(ErrorCode.NOT_FOUND);
+        }
+
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId());
+        if (variationList == null) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
+        for (ProductVariation variation : variationList) {
+            ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
+            productVariationList.add(responseDTO);
+        }
+        return productVariationList;
+    }
+
 
     private ProductVariationResponseDTO showVariationMapping(Product product, ProductVariation productVariation) {
         ModelMapper modelMapper = new ModelMapper();
@@ -303,6 +325,8 @@ public class ProductImpl implements ProductService {
         responseDTO.setQuantityAvailable(productVariation.getQuantityAvailable());
         responseDTO.setActive(productVariation.getActive());
         responseDTO.setVariationId(productVariation.getId());
+        responseDTO.setVariationId(productVariation.getId());
+        responseDTO.setProductId(product.getId());
         return responseDTO;
     }
 

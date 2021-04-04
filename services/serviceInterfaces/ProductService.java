@@ -25,4 +25,6 @@ public interface ProductService {
     boolean updateVariation(String email, ProductVariationUpdateDTO productVariationUpdateDTO, Long id);
 
     ProductVariationResponseDTO showVariation(String email, Long id);
+
+    List<ProductVariationResponseDTO> showProductVariations(String name, Long id);
 }

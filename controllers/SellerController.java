@@ -4,9 +4,13 @@ import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,26 +114,49 @@ public class SellerController {
 
     @PostMapping("/add-productVariation")
     public ResponseEntity<String> addProductVariation(HttpServletRequest request, @RequestBody ProductVariationDTO productVariationDTO) {
-        String email=request.getUserPrincipal().getName();
-       if(productImpl.addVariation(email,productVariationDTO)){
-           return new ResponseEntity<>("product variation added successfully",HttpStatus.CREATED);
-       }
-        return new ResponseEntity<>("product variation cannot be added",HttpStatus.INTERNAL_SERVER_ERROR);
+        String email = request.getUserPrincipal().getName();
+        if (productImpl.addVariation(email, productVariationDTO)) {
+            return new ResponseEntity<>("product variation added successfully", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>("product variation cannot be added", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @PutMapping("/update-productVariation")
     public ResponseEntity<String> updateVariation(HttpServletRequest request,
-                                                  @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id){
-        String email=request.getUserPrincipal().getName();
-        if(productImpl.updateVariation(email,productVariationUpdateDTO,id)){
-            return new ResponseEntity<>("product variation updated successfully",HttpStatus.OK);
+                                                  @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id) {
+        String email = request.getUserPrincipal().getName();
+        if (productImpl.updateVariation(email, productVariationUpdateDTO, id)) {
+            return new ResponseEntity<>("product variation updated successfully", HttpStatus.OK);
         }
-        return new ResponseEntity<>("product cannot be updated",HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("product cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/view-variation")
-    public ProductVariationResponseDTO viewVariation(HttpServletRequest request, @RequestParam Long id){
-       String email=request.getUserPrincipal().getName();
-       return productImpl.showVariation(email,id);
+    public MappingJacksonValue viewVariation(HttpServletRequest request, @RequestParam Long id) {
+        String email = request.getUserPrincipal().getName();
+        ProductVariationResponseDTO responseDTO = productImpl.showVariation(email, id);
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("primaryImageName", "variationId", "quantityAvailable"
+                , "price", "metadata", "active","productId","productDTO");
+
+        FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
+
+        MappingJacksonValue mapping = new MappingJacksonValue(responseDTO);
+        mapping.setFilters(filters);
+        return mapping;
+    }
+
+    @GetMapping("/view-variations/{productId}")
+    public MappingJacksonValue viewVariations(HttpServletRequest request, @PathVariable Long productId) {
+        List<ProductVariationResponseDTO> responseDTOList = productImpl.showProductVariations(request.getUserPrincipal().getName(), productId);
+
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("primaryImageName", "variationId", "quantityAvailable"
+                , "price", "metadata", "active");
+
+        FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
+
+        MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
+        mapping.setFilters(filters);
+        return mapping;
     }
 
 }
