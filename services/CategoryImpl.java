@@ -7,9 +7,7 @@ import com.Bootcamp.Project.Application.entities.CategoryMetadataField;
 import com.Bootcamp.Project.Application.entities.categoryMetadataFieldValues.CategoryMetadataFieldValues;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
-import com.Bootcamp.Project.Application.repositories.CMFVRepository;
-import com.Bootcamp.Project.Application.repositories.CategoryMetadataFieldRepository;
-import com.Bootcamp.Project.Application.repositories.CategoryRepository;
+import com.Bootcamp.Project.Application.repositories.*;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,10 @@ public class CategoryImpl implements CategoryService {
     CategoryMetadataFieldRepository metadataFieldRepository;
     @Autowired
     CMFVRepository cmfvRepository;
+    @Autowired
+    ProductVariationRepository productVariationRepository;
+    @Autowired
+    ProductRepository productRepository;
 
 
     Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
@@ -277,15 +279,15 @@ public class CategoryImpl implements CategoryService {
         return "metadata values updated Successfully";
     }
 
-    public String checkFieldValues(String oldValues, String newValues){
+    public String checkFieldValues(String oldValues, String newValues) {
         String[] newValue = newValues.split(",");
-        String updatedValues="";
-        for (String str: newValue){
-            if(!oldValues.contains(str)){
-                updatedValues=oldValues+","+str;
+        String updatedValues = "";
+        for (String str : newValue) {
+            if (!oldValues.contains(str)) {
+                updatedValues = oldValues + "," + str;
             }
         }
-        return  updatedValues;
+        return updatedValues;
     }
 
     @Override
@@ -352,6 +354,33 @@ public class CategoryImpl implements CategoryService {
         customerCategoryResponseDTO.setName(category.get().getName());
         customerCategoryResponseDTO.setChildrenCategoryList(categoryAddDTOList);
         return customerCategoryResponseDTO;
+    }
+
+    @Override
+    public CustomerCategoryFilterDTO filter(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
+        }
+        Double maxPrice = productVariationRepository.getMaxPrice(categoryId);
+        Double minPrice = productVariationRepository.getMinPrice(categoryId);
+        List<String> brandList = productRepository.fetchBrandList(categoryId);
+        CustomerCategoryFilterDTO categoryFilterDTO = new CustomerCategoryFilterDTO();
+        List<CategoryMetadataFieldValues> fieldValuesList = cmfvRepository.fetchByCategoryId(categoryId);
+        List<CMDResponseDTO> cmdResponseDTOList = new ArrayList<>();
+        for (CategoryMetadataFieldValues fieldValues : fieldValuesList) {
+            CMDResponseDTO responseDTO = new CMDResponseDTO();
+            responseDTO.setName(fieldValues.getCategoryMetaField().getName());
+            responseDTO.setValues(Arrays.asList(fieldValues.getFieldValues()));
+            cmdResponseDTOList.add(responseDTO);
+        }
+        categoryFilterDTO.setFieldValuesList(cmdResponseDTOList);
+        categoryFilterDTO.setCategoryId(categoryId);
+        categoryFilterDTO.setCategoryName(category.getName());
+        categoryFilterDTO.setBrandNames(brandList);
+        categoryFilterDTO.setMaxPrice(maxPrice);
+        categoryFilterDTO.setMinPrice(minPrice);
+        return categoryFilterDTO;
     }
 
 }

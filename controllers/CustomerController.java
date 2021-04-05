@@ -102,7 +102,7 @@ public class CustomerController {
     public MappingJacksonValue viewProduct(@RequestParam Long id) {
         AdminCustomerProductResponseDTO responseDTO = productImpl.showCustomerProduct(id);
 
-        SimpleBeanPropertyFilter filter=SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTO);
         mapping.setFilters(filters);
@@ -111,8 +111,8 @@ public class CustomerController {
     }
 
     @GetMapping("/view-allProducts")
-    public MappingJacksonValue viewAllProducts(@RequestParam Long categoryId){
-       List<AdminCustomerProductResponseDTO> responseDTOList= productImpl.showCustomerProducts(categoryId);
+    public MappingJacksonValue viewAllProducts(@RequestParam Long categoryId) {
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.showCustomerProducts(categoryId);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
@@ -121,14 +121,21 @@ public class CustomerController {
     }
 
     @GetMapping("/view-similarProducts")
-    public MappingJacksonValue viewSimilarProduct(@RequestParam Long id){
-        List<AdminCustomerProductResponseDTO> responseDTOList=productImpl.viewSimilarProduct(id);
-        SimpleBeanPropertyFilter filter=SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
+    public MappingJacksonValue viewSimilarProduct(@RequestParam Long id) {
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(id);
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
         mapping.setFilters(filters);
         return mapping;
 
+    }
+
+    @GetMapping("/category-filter")
+    public CustomerCategoryFilterDTO categoryFilter(@RequestParam Long categoryId) {
+       CustomerCategoryFilterDTO customerCategoryFilterDTO= categoryImpl.filter(categoryId);
+
+       return customerCategoryFilterDTO;
     }
 
 }

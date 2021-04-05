@@ -27,4 +27,6 @@ public interface CategoryService {
     List<CustomerCategoryResponseDTO> showCustomerCategories();
 
     CustomerCategoryResponseDTO showCustomerCategoriesParam(Long id);
+
+    CustomerCategoryFilterDTO filter(Long categoryId);
 }

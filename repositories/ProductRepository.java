@@ -34,4 +34,7 @@ public interface ProductRepository extends CrudRepository<Product,Long> {
 
     @Query(value = "from Product p where p.category.id=:categoryId")
     List<Product> fetchAllCategoryProducts(@Param("categoryId") Long id);
+
+    @Query(value = "select distinct brand From product p where p.category_id=:categoryId",nativeQuery = true)
+    List<String> fetchBrandList(@Param("categoryId") Long categoryId);
 }
