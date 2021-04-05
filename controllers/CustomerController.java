@@ -3,9 +3,14 @@ package com.Bootcamp.Project.Application.controllers;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.CustomerImpl;
+import com.Bootcamp.Project.Application.services.ProductImpl;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +24,8 @@ public class CustomerController {
     CustomerImpl customerImpl;
     @Autowired
     CategoryImpl categoryImpl;
+    @Autowired
+    ProductImpl productImpl;
 
     @GetMapping("/home")
     public String indexPremium() {
@@ -90,4 +97,38 @@ public class CustomerController {
     public CustomerCategoryResponseDTO showCategoriesParam(@PathVariable Long id) {
         return categoryImpl.showCustomerCategoriesParam(id);
     }
+
+    @GetMapping("/view-product")
+    public MappingJacksonValue viewProduct(@RequestParam Long id) {
+        AdminCustomerProductResponseDTO responseDTO = productImpl.showCustomerProduct(id);
+
+        SimpleBeanPropertyFilter filter=SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
+        MappingJacksonValue mapping = new MappingJacksonValue(responseDTO);
+        mapping.setFilters(filters);
+        return mapping;
+
+    }
+
+    @GetMapping("/view-allProducts")
+    public MappingJacksonValue viewAllProducts(@RequestParam Long categoryId){
+       List<AdminCustomerProductResponseDTO> responseDTOList= productImpl.showCustomerProducts(categoryId);
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
+        MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
+        mapping.setFilters(filters);
+        return mapping;
+    }
+
+    @GetMapping("/view-similarProducts")
+    public MappingJacksonValue viewSimilarProduct(@RequestParam Long id){
+        List<AdminCustomerProductResponseDTO> responseDTOList=productImpl.viewSimilarProduct(id);
+        SimpleBeanPropertyFilter filter=SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
+        MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
+        mapping.setFilters(filters);
+        return mapping;
+
+    }
+
 }

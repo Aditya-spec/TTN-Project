@@ -3,7 +3,9 @@ package com.Bootcamp.Project.Application.controllers;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
+import com.Bootcamp.Project.Application.services.ProductVariationImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
+import com.Bootcamp.Project.Application.services.serviceInterfaces.ProductVariationService;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -27,6 +29,8 @@ public class SellerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    ProductVariationImpl productVariationImpl;
 
 
     @GetMapping("/home")
@@ -145,7 +149,7 @@ public class SellerController {
         return mapping;
     }
 
-    @GetMapping("/view-variations/{productId}")
+    @GetMapping("/view-allVariations/{productId}")
     public MappingJacksonValue viewVariations(HttpServletRequest request, @PathVariable Long productId) {
         List<ProductVariationResponseDTO> responseDTOList = productImpl.showProductVariations(request.getUserPrincipal().getName(), productId);
 
@@ -158,5 +162,7 @@ public class SellerController {
         mapping.setFilters(filters);
         return mapping;
     }
+
+
 
 }

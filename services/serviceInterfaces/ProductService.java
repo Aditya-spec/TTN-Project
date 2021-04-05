@@ -27,4 +27,14 @@ public interface ProductService {
     ProductVariationResponseDTO showVariation(String email, Long id);
 
     List<ProductVariationResponseDTO> showProductVariations(String name, Long id);
+
+    AdminCustomerProductResponseDTO showCustomerProduct(Long id);
+
+    List<AdminCustomerProductResponseDTO> showAllAdminProducts();
+
+    AdminCustomerProductResponseDTO showAdminProduct(Long id);
+
+    List<AdminCustomerProductResponseDTO> viewSimilarProduct(Long id);
+
+    List<AdminCustomerProductResponseDTO> showCustomerProducts(Long categoryId);
 }

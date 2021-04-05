@@ -25,4 +25,13 @@ public interface ProductRepository extends CrudRepository<Product,Long> {
 
     @Query(value = "select * from product p where p.seller_id=:sellerId",nativeQuery = true)
     List<Product> fetchBySellerId(@Param("sellerId") Long id, Pageable sortById);
+
+    @Query(value = "from Product")
+    List<Product> fetchAllProducts(Pageable sortById);
+
+    @Query(value = "from Product p where p.category.id=:id and p.deleted=false and p.active=true")
+    List<Product> fetchSimilarProducts(@Param("id") Long id,Pageable sortById);
+
+    @Query(value = "from Product p where p.category.id=:categoryId")
+    List<Product> fetchAllCategoryProducts(@Param("categoryId") Long id);
 }

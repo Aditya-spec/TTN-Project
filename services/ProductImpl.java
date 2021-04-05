@@ -16,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ProductImpl implements ProductService {
@@ -47,7 +44,10 @@ public class ProductImpl implements ProductService {
     @Autowired
     CategoryMetadataFieldValuesRepository cmfvRepository;
 
-    Pageable sortById = PageRequest.of(0, 5, Sort.by("id"));
+    @Autowired
+    CategoryImpl categoryImpl;
+
+    Pageable sortById = PageRequest.of(0, 2, Sort.by("id"));
 
     @Override
     public boolean addProduct(String email, SellerProductAddDTO sellerProductAddDTO) {
@@ -311,6 +311,157 @@ public class ProductImpl implements ProductService {
             productVariationList.add(responseDTO);
         }
         return productVariationList;
+    }
+
+    @Override
+    public AdminCustomerProductResponseDTO showCustomerProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if ((product == null) || (product.getDeleted())) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        return fetchProductVariations(product);
+
+    }
+
+    @Override
+    public List<AdminCustomerProductResponseDTO> showAllAdminProducts() {
+        List<Product> productList = productRepository.fetchAllProducts(sortById);
+        if (productList == null) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
+        for (Product product : productList) {
+
+            adminCustomerProductResponseDTOList.add(fetchProductVariations(product));
+        }
+        return adminCustomerProductResponseDTOList;
+    }
+
+    @Override
+    public AdminCustomerProductResponseDTO showAdminProduct(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+
+        return fetchProductVariations(product);
+
+    }
+
+    @Override
+    public List<AdminCustomerProductResponseDTO> viewSimilarProduct(Long productId) {
+        Product givenProduct = productRepository.findById(productId).orElse(null);
+        if (givenProduct == null) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        List<Product> productList = productRepository.fetchSimilarProducts(givenProduct.getCategory().getId(), sortById);
+        List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
+        for (Product product : productList) {
+
+            adminCustomerProductResponseDTOList.add(fetchProductVariations(product));
+        }
+        return adminCustomerProductResponseDTOList;
+    }
+    /*
+    List<globallistofproducts>=new ArrayList<>()
+
+find <leafnodes>;
+
+function(categoryId,productList,allleaves)
+{
+	if(leafnNodes.contains(categoryId)){
+		find all the products of this category;
+		add the products to the globalListofproducts;
+		return globalList;
+	}
+
+	List<childCategory>=find all the children of the category;
+	for(Category child: childCategory){
+		globalList=function(child.getId());
+	}
+}*/
+
+    @Override
+    public List<AdminCustomerProductResponseDTO> showCustomerProducts(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
+        }
+        List<Product> productList = new ArrayList<>();
+
+        List<Category> allLeafCategory = categoryRepository.fetchLeafCategories();
+        if (allLeafCategory == null) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        productList = getAllProducts(category, productList, allLeafCategory);
+        if (productList == null) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        List<AdminCustomerProductResponseDTO> responseDTOList = new ArrayList<>();
+        for (Product product : productList) {
+            responseDTOList.add(showCustomerProduct(product.getId()));
+        }
+        return responseDTOList;
+    }
+
+
+    private List<Product> getAllProducts(Category category, List<Product> productList, List<Category> allLeafCategory) {
+
+        if (allLeafCategory.contains(category)) {
+            List<Product> categoryProducts = productRepository.fetchAllCategoryProducts(category.getId());
+            if ((categoryProducts != null)) {
+                productList.addAll(categoryProducts);
+            }
+            return productList;
+        }
+        Optional<List<Category>> childCategories = categoryRepository.findNextChildren(category.getId());
+       /* if(childCategories.isEmpty()){
+            return productList;
+        }*/
+        List<Category> categoryList = childCategories.get();
+        for (Category child : categoryList) {
+            productList = getAllProducts(child, productList, allLeafCategory);
+        }
+        return productList;
+    }
+
+
+    private AdminCustomerProductResponseDTO fetchProductVariations(Product product) {
+        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId());
+        if (variationList == null) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
+        for (ProductVariation variation : variationList) {
+            ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
+            productVariationList.add(responseDTO);
+        }
+        AdminCustomerProductResponseDTO productResponseDTO = new AdminCustomerProductResponseDTO();
+
+
+        productResponseDTO = mappingCustomerProduct(product, category);
+        productResponseDTO.setVariationsList(productVariationList);
+        return productResponseDTO;
+    }
+
+    private AdminCustomerProductResponseDTO mappingCustomerProduct(Product product, Category category) {
+        AdminCustomerProductResponseDTO responseDTO = new AdminCustomerProductResponseDTO();
+        responseDTO.setProductName(product.getName());
+        responseDTO.setActive(product.getActive());
+        responseDTO.setBrand(product.getBrand());
+        responseDTO.setDescription(product.getDescription());
+        responseDTO.setCancellable(product.getCancellable());
+        responseDTO.setReturnable(product.getReturnable());
+        responseDTO.setSellerName(product.getSeller().getName().getFirstName());
+        responseDTO.setSellerContact(product.getSeller().getCompanyContact());
+        responseDTO.setProductId(product.getId());
+
+        responseDTO.setCategoryId(category.getId());
+        responseDTO.setCategoryName(category.getName());
+        responseDTO.setParentCategoryId(category.getParentId());
+
+        return responseDTO;
     }
 
 
