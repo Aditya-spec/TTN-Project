@@ -47,7 +47,7 @@ public class ProductImpl implements ProductService {
     @Autowired
     CategoryImpl categoryImpl;
 
-    Pageable sortById = PageRequest.of(0, 2, Sort.by("id"));
+    Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
 
     @Override
     public boolean addProduct(String email, SellerProductAddDTO sellerProductAddDTO) {
@@ -70,13 +70,13 @@ public class ProductImpl implements ProductService {
 
 
         List<Product> productList = productRepository.fetchProduct(sellerProductAddDTO.getBrand(), category.getId(), seller.getId());
-
-        for (Product product : productList) {
-            if (product.getName().equalsIgnoreCase(sellerProductAddDTO.getName()) && product.getBrand().equalsIgnoreCase(sellerProductAddDTO.getBrand())) {
-                throw new EcommerceException(ErrorCode.NOT_UNIQUE);
+        if (productList != null) {
+            for (Product product : productList) {
+                if (product.getName().equalsIgnoreCase(sellerProductAddDTO.getName()) && product.getBrand().equalsIgnoreCase(sellerProductAddDTO.getBrand())) {
+                    throw new EcommerceException(ErrorCode.NOT_UNIQUE);
+                }
             }
         }
-
         Product newProduct = new Product();
         newProduct = modelMapper.map(sellerProductAddDTO, Product.class);
         newProduct.setDeleted(false);

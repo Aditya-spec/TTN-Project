@@ -75,7 +75,7 @@ public class AdminController {
     }
 
     @GetMapping("/view-metaDataFields")
-    public List<CategoryMetadataFieldDTO> showMetaDataFields() {
+    public List<CMDResponseDTO> showMetaDataFields() {
         return categoryImpl.showMetaData();
     }
 

@@ -14,7 +14,7 @@ public interface CategoryService {
 
     String addMetadata(String metaData);
 
-    List<CategoryMetadataFieldDTO> showMetaData();
+    List<CMDResponseDTO> showMetaData();
 
     String addMetadataValues(CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO);
 

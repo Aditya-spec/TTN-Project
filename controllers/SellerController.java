@@ -84,36 +84,44 @@ public class SellerController {
     }
 
     @PostMapping("/add-product")
-    public ResponseEntity<String> addProduct(HttpServletRequest request, @RequestBody SellerProductAddDTO sellerProductAddDTO) {
+    public ResponseEntity<MessageDTO> addProduct(HttpServletRequest request, @RequestBody SellerProductAddDTO sellerProductAddDTO) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.addProduct(email, sellerProductAddDTO)) {
-            return new ResponseEntity<>("product has been added", HttpStatus.CREATED);
+  messageDTO.setMessage("product has been added");
+            return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("product already exists", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("product already exists");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/delete-product")
-    public ResponseEntity<String> deleteProduct(HttpServletRequest request, @RequestParam Long id) {
+    public ResponseEntity<MessageDTO> deleteProduct(HttpServletRequest request, @RequestParam Long id) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.deleteProduct(email, id)) {
-            return new ResponseEntity<>("product deleted successfully", HttpStatus.OK);
+            messageDTO.setMessage("product deleted successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("product doesn't exist in the database", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("product doesn't exist in the database");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/update-product")
-    public ResponseEntity<String> updateProduct(HttpServletRequest request, @RequestBody SellerProductUpdateDTO sellerProductUpdateDTO, @RequestParam Long id) {
+    public ResponseEntity<MessageDTO> updateProduct(HttpServletRequest request,
+                                                    @RequestBody SellerProductUpdateDTO sellerProductUpdateDTO,
+                                                    @RequestParam Long productId) {
         String email = request.getUserPrincipal().getName();
-        if (productImpl.updateProduct(email, sellerProductUpdateDTO, id)) {
-            return new ResponseEntity<>("product updated successfully", HttpStatus.OK);
+        if (productImpl.updateProduct(email, sellerProductUpdateDTO, productId)) {
+            messageDTO.setMessage("product updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Product cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
+        messageDTO.setMessage("Product cannot be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/view-product")
-    public SellerProductShowDTO getProduct(HttpServletRequest request, @RequestParam Long id) {
+    public SellerProductShowDTO getProduct(HttpServletRequest request, @RequestParam Long productId) {
         String email = request.getUserPrincipal().getName();
-        return productImpl.showSellerProduct(email, id);
+        return productImpl.showSellerProduct(email, productId);
     }
 
     @GetMapping("/view-products")
@@ -123,22 +131,25 @@ public class SellerController {
     }
 
     @PostMapping("/add-productVariation")
-    public ResponseEntity<String> addProductVariation(HttpServletRequest request, @RequestBody ProductVariationDTO productVariationDTO) {
+    public ResponseEntity<MessageDTO> addProductVariation(HttpServletRequest request, @Valid @RequestBody ProductVariationDTO productVariationDTO) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.addVariation(email, productVariationDTO)) {
-            return new ResponseEntity<>("product variation added successfully", HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>("product variation cannot be added", HttpStatus.INTERNAL_SERVER_ERROR);
+            messageDTO.setMessage("product variation added successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
+        }messageDTO.setMessage("product variation cannot be added");
+        return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping("/update-productVariation")
-    public ResponseEntity<String> updateVariation(HttpServletRequest request,
+    public ResponseEntity<MessageDTO> updateVariation(HttpServletRequest request,
                                                   @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.updateVariation(email, productVariationUpdateDTO, id)) {
-            return new ResponseEntity<>("product variation updated successfully", HttpStatus.OK);
+            messageDTO.setMessage("product variation updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("product cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
+        messageDTO.setMessage("product cannot be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/view-variation")

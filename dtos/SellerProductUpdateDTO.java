@@ -8,7 +8,7 @@ public class SellerProductUpdateDTO {
 
     private String name;
 
-   private String description;
+    private String description;
 
     @JsonProperty
     private boolean cancellable;

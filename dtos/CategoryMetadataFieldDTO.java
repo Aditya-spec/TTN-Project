@@ -1,3 +1,4 @@
+/*
 package com.Bootcamp.Project.Application.dtos;
 
 import java.util.ArrayList;
@@ -6,15 +7,26 @@ import java.util.List;
 
 public class CategoryMetadataFieldDTO {
     private String name;
-    List<CategoryMetadataFieldValuesDTO> categoryFieldValues =new ArrayList<>();
+   private List<String> metaValues;
 
-    public List<CategoryMetadataFieldValuesDTO> getCategoryFieldValues() {
+    public List<String> getMetaValues() {
+        return metaValues;
+    }
+
+    public void setMetaValues(List<String> metaValues) {
+        this.metaValues = metaValues;
+    }
+    // List<CategoryMetadataFieldValuesDTO> categoryFieldValues =new ArrayList<>();
+
+    */
+/*public List<CategoryMetadataFieldValuesDTO> getCategoryFieldValues() {
         return categoryFieldValues;
     }
 
     public void setCategoryFieldValues(List<CategoryMetadataFieldValuesDTO> categoryFieldValues) {
         this.categoryFieldValues = categoryFieldValues;
-    }
+    }*//*
+
 
     public String getName() {
         return name;
@@ -24,3 +36,4 @@ public class CategoryMetadataFieldDTO {
         this.name = name;
     }
 }
+*/

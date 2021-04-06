@@ -16,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -153,33 +150,6 @@ public class CategoryImpl implements CategoryService {
         return categoryAddDTOList;
     }
 
-  /*  private List<CategoryAddDTO> findSellerCategoryChildren(Long id) {
-        List<Category> categoryList = categoryRepository.fetchLeafCategories();
-        if (categoryList == null) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
-        }
-
-        for (Category category : categoryList) {
-            List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.getId());
-
-            List<CMDResponseDTO> fieldList = new ArrayList<>();
-
-            for (CategoryMetadataFieldValues c : categoryMetadataFieldValuesList) {
-
-                CMDResponseDTO cmdResponseDTO = new CMDResponseDTO();
-
-                if (c.getCategoryMetaField().getName() != null) {
-                    cmdResponseDTO.setName(c.getCategoryMetaField().getName());
-                    cmdResponseDTO.setValues(Arrays.asList(c.getFieldValues()));
-                    fieldList.add(cmdResponseDTO);
-                }
-            }
-
-        }
-
-
-        return null;
-    }*/
 
 
     @Override
@@ -196,18 +166,36 @@ public class CategoryImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryMetadataFieldDTO> showMetaData() {
+    public List<CMDResponseDTO> showMetaData() {
         ModelMapper modelMapper = new ModelMapper();
         Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll();
         if (metadataFieldList.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<CategoryMetadataField> categoryMetadataFieldList = metadataFieldList.get();
-        List<CategoryMetadataFieldDTO> categoryMetadataFieldDTOS = categoryMetadataFieldList
-                .stream()
-                .map(e -> modelMapper.map(e, CategoryMetadataFieldDTO.class))
-                .collect(Collectors.toList());
-        return categoryMetadataFieldDTOS;
+
+        List<CMDResponseDTO> cmdResponseDTOS = new ArrayList<>();
+
+        for (CategoryMetadataField metadataField : categoryMetadataFieldList) {
+
+            List<CategoryMetadataFieldValues> fieldValuesList = cmfvRepository.fetchByMetaId(metadataField.getId());
+
+            CMDResponseDTO metadataFieldDTO = new CMDResponseDTO();
+            if (fieldValuesList == null) {
+                throw new EcommerceException(ErrorCode.NO_DATA);
+            }
+
+            List<String> collect = fieldValuesList.stream().map(e -> e.getFieldValues()).collect(Collectors.toList());
+            System.out.println(collect);
+            List<String> metaValues = collect.stream().distinct().collect(Collectors.toList());
+            System.out.println(metaValues);
+            metadataFieldDTO.setValues(metaValues);
+            metadataFieldDTO.setName(metadataField.getName());
+
+            cmdResponseDTOS.add(metadataFieldDTO);
+
+        }
+        return cmdResponseDTOS;
     }
 
     @Override
