@@ -136,8 +136,8 @@ public class CustomerController {
     }
 
     @GetMapping("/view-similarProducts")
-    public MappingJacksonValue viewSimilarProduct(@RequestParam Long id) {
-        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(id);
+    public MappingJacksonValue viewSimilarProduct(@RequestParam Long productId) {
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(productId);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
@@ -149,7 +149,6 @@ public class CustomerController {
     @GetMapping("/category-filter")
     public CustomerCategoryFilterDTO categoryFilter(@RequestParam Long categoryId) {
        CustomerCategoryFilterDTO customerCategoryFilterDTO= categoryImpl.filter(categoryId);
-
        return customerCategoryFilterDTO;
     }
 

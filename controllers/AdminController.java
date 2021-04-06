@@ -61,13 +61,13 @@ public class AdminController {
 
     @PostMapping("/add-metadataField")
     public ResponseEntity<MessageDTO> addMetadata(@RequestParam String metaDataField) {
-        if(metaDataField.equals("")){
+        if (metaDataField.equals("")) {
             messageDTO.setMessage("metadata Field cannot be null");
-            return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
-        if(metaDataField.length()<3||(metaDataField.length()>15)){
+        if (metaDataField.length() < 3 || (metaDataField.length() > 15)) {
             messageDTO.setMessage("metadata Field's length must be between 3 to 15 characters");
-            return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         String result = categoryImpl.addMetadata(metaDataField);
         messageDTO.setMessage(result);
@@ -129,11 +129,13 @@ public class AdminController {
     }
 
     @PutMapping("/deActivate-product")
-    public ResponseEntity<String> deActivateProduct(@RequestParam Long id) {
+    public ResponseEntity<MessageDTO> deActivateProduct(@RequestParam Long id) {
         if (productImpl.deActivateProduct(id)) {
-            return new ResponseEntity<>("Product has been deActivated and mail has been sent", HttpStatus.OK);
+            messageDTO.setMessage("Product has been deActivated and mail has been sent");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("product doesn't exist in the database", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("product doesn't exist in the database");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/view-allProducts")
@@ -164,22 +166,6 @@ public class AdminController {
 
 
 
-    /*
-  www.yoursite.com?myparam1={id1}&myparam2={id2} */
-
-     /*@GetMapping("/get/sellers")
-    public List<SellerDTO> getAllSeller( ){
-        //List<CustomerDTO> customerDtos = adminService.getCustomers();
-        List<SellerDTO> sellerDtoList = adminService.getSellers();
-        return sellerDtoList;
-
-    }*/
-
-    /* @GetMapping("/get/customers")
-    public List<CustomerDTO> getAllCustomer( ){
-        List<CustomerDTO> customerDtoList = adminService.getCustomers();
-    return customerDtoList;
-    }*/
 
 
 

@@ -16,7 +16,7 @@ public class ProductVariationDTO {
 
     @NotNull(message = "please provide the quantity")
     @Min(value = 0,message = "quantity must be 0 or more")
-    private int quantityAvailable;
+    private Integer quantityAvailable;
 
     @NotNull(message = "please provide the path")
     @Min(value = 0,message = "price must be 0 or more")
@@ -41,11 +41,11 @@ public class ProductVariationDTO {
         this.primaryImageName = primaryImageName;
     }
 
-    public int getQuantityAvailable() {
+    public Integer getQuantityAvailable() {
         return quantityAvailable;
     }
 
-    public void setQuantityAvailable(int quantityAvailable) {
+    public void setQuantityAvailable(Integer quantityAvailable) {
         this.quantityAvailable = quantityAvailable;
     }
 
