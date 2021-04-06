@@ -63,7 +63,8 @@ public class SellerRegistrationDTO {
     private String addressLine;
 
     @NotNull(message = "pls add Zipcode name")
-    private int zipCode;
+    @Size(min = 6, message = "zipCode must be of 6 digits", max = 6)
+    private String zipCode;
 
     @NotNull(message = "pls add Address type")
     private Label label;
@@ -101,11 +102,11 @@ public class SellerRegistrationDTO {
         this.addressLine = addressLine;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

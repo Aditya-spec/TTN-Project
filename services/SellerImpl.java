@@ -3,6 +3,8 @@ package com.Bootcamp.Project.Application.services;
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Seller;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.SellerService;
@@ -24,31 +26,36 @@ public class SellerImpl implements SellerService {
     EmailService emailService;
     @Autowired
     AddressRepository addressRepository;
+    @Autowired
+    MessageDTO messageDTO;
 
     ModelMapper modelMapper = new ModelMapper();
 
     public SellerProfileDTO showProfile(String email) {
+        ModelMapper modelMapper = new ModelMapper();
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
-            System.out.println("seller is null");
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
-        SellerProfileDTO sellerProfileDto = mapSeller(seller);
+        SellerProfileDTO sellerProfileDto = new SellerProfileDTO();
+        sellerProfileDto = mapSeller(seller, sellerProfileDto);
         AddressDTO addressDto = mapAddress(seller.getAddress());
         sellerProfileDto.setAddressDto(addressDto);
         return sellerProfileDto;
     }
 
-    private SellerProfileDTO mapSeller(Seller seller) {
-        SellerProfileDTO sellerProfileDto = new SellerProfileDTO();
-        sellerProfileDto.setCompanyName(seller.getCompanyName());
-        sellerProfileDto.setCompanyContact(seller.getCompanyContact());
-        sellerProfileDto.setId(seller.getId());
-        sellerProfileDto.setFirstName(seller.getName().getFirstName());
-        sellerProfileDto.setLastName(seller.getName().getFirstName());
-        sellerProfileDto.setMiddleName(seller.getName().getMiddleName());
-        sellerProfileDto.setImagePath(seller.getImagePath());
-        sellerProfileDto.setActive(seller.getActive());
-        return sellerProfileDto;
+    private SellerProfileDTO mapSeller(Seller seller, SellerProfileDTO sellerProfileDTO) {
+
+        sellerProfileDTO.setCompanyName(seller.getCompanyName());
+        sellerProfileDTO.setCompanyContact(seller.getCompanyContact());
+        sellerProfileDTO.setId(seller.getId());
+        sellerProfileDTO.setFirstName(seller.getName().getFirstName());
+        sellerProfileDTO.setLastName(seller.getName().getLastName());
+        sellerProfileDTO.setMiddleName(seller.getName().getMiddleName());
+        sellerProfileDTO.setImagePath(seller.getImagePath());
+        sellerProfileDTO.setActive(seller.getActive());
+
+        return sellerProfileDTO;
     }
 
     private AddressDTO mapAddress(Address address) {
@@ -85,9 +92,9 @@ public class SellerImpl implements SellerService {
         return true;
     }
 
-    public boolean customerResetPassword(String email, PasswordDTO passwordDto) {
+    public boolean sellerResetPassword(String email, PasswordDTO passwordDto) {
         Seller seller = sellerRepository.findByEmail(email);
-        if (seller == null || seller.getActive()) {
+        if (seller == null || !seller.getActive()) {
             return false;
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -99,14 +106,23 @@ public class SellerImpl implements SellerService {
     }
 
 
-    public ResponseEntity<String> updateAddress(Long id, AddressUpdateDTO addressUpdateDto) {
+    public ResponseEntity<MessageDTO> updateAddress(String email, Long id, AddressUpdateDTO addressUpdateDto) {
         Address address = addressRepository.getAddressById(id);
+        Seller seller = sellerRepository.findByEmail(email);
+
         if (address == null) {
-            return new ResponseEntity<>("invalid address id", HttpStatus.BAD_REQUEST);
+            messageDTO.setMessage("invalid address id");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
+
+        if (seller.getId() != address.getUser().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+
         address = mapAddress(address, addressUpdateDto);
         addressRepository.save(address);
-        return new ResponseEntity<>("Address has been updated successfully", HttpStatus.OK);
+        messageDTO.setMessage("Address has been updated successfully");
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
     private Address mapAddress(Address address, AddressUpdateDTO addressUpdateDto) {
@@ -125,7 +141,7 @@ public class SellerImpl implements SellerService {
         if (addressUpdateDto.getLabel() != null) {
             address.setLabel(addressUpdateDto.getLabel());
         }
-        if (addressUpdateDto.getZipCode() != 0) {
+        if (addressUpdateDto.getZipCode() != null) {
             address.setZipCode(addressUpdateDto.getZipCode());
         }
         return address;

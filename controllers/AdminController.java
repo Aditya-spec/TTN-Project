@@ -33,7 +33,7 @@ public class AdminController {
     @GetMapping("/home")
     public ResponseEntity<MessageDTO> adminHome() {
         messageDTO.setMessage("Admin home");
-        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
 
@@ -60,21 +60,31 @@ public class AdminController {
     }
 
     @PostMapping("/add-metadataField")
-    public ResponseEntity<String> addMetadata(@RequestParam String metaDataField) {
+    public ResponseEntity<MessageDTO> addMetadata(@RequestParam String metaDataField) {
+        if(metaDataField.equals("")){
+            messageDTO.setMessage("metadata Field cannot be null");
+            return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+        }
+        if(metaDataField.length()<3||(metaDataField.length()>15)){
+            messageDTO.setMessage("metadata Field's length must be between 3 to 15 characters");
+            return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+        }
         String result = categoryImpl.addMetadata(metaDataField);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        messageDTO.setMessage(result);
+        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/view-metaDataField")
+    @GetMapping("/view-metaDataFields")
     public List<CategoryMetadataFieldDTO> showMetaDataFields() {
         return categoryImpl.showMetaData();
     }
 
 
     @PostMapping("/add-category")
-    public ResponseEntity<String> addCategory(@Valid @RequestBody CategoryAddDTO categoryAddDTO) {
+    public ResponseEntity<MessageDTO> addCategory(@Valid @RequestBody CategoryAddDTO categoryAddDTO) {
         String result = categoryImpl.addCategory(categoryAddDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        messageDTO.setMessage(result);
+        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
     @GetMapping("/view-categories")
@@ -88,29 +98,34 @@ public class AdminController {
     }
 
     @PutMapping("/update-category")
-    public ResponseEntity<String> updateCategory(@RequestParam Long id, String updatedName) {
-        String result = categoryImpl.updateCategory(id, updatedName);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    public ResponseEntity<MessageDTO> updateCategory(@RequestParam Long categoryId, @RequestParam String updatedName) {
+        String result = categoryImpl.updateCategory(categoryId, updatedName);
+        messageDTO.setMessage(result);
+        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/add-metaValues")
-    public ResponseEntity<String> addMetaValues(@Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
+    public ResponseEntity<MessageDTO> addMetaValues(@Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
         String result = categoryImpl.addMetadataValues(categoryMetadataFieldValuesDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        messageDTO.setMessage(result);
+        return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/update-metaValues")
-    public ResponseEntity<String> update(@Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
+    public ResponseEntity<MessageDTO> update(@Valid @RequestBody CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
         String result = categoryImpl.updateMetadataValues(categoryMetadataFieldValuesDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        messageDTO.setMessage(result);
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
     @PutMapping("/activate-product")
-    public ResponseEntity<String> activateProduct(@RequestParam Long id) {
+    public ResponseEntity<MessageDTO> activateProduct(@RequestParam Long id) {
         if (productImpl.activateProduct(id)) {
-            return new ResponseEntity<>("Product has been activated and mail has been sent", HttpStatus.OK);
+            messageDTO.setMessage("Product has been activated and mail has been sent");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("product doesn't exist in the database", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("product doesn't exist in the database");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/deActivate-product")

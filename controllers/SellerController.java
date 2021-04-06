@@ -27,6 +27,8 @@ public class SellerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    MessageDTO messageDTO;
    /* @Autowired
     ProductVariationImpl productVariationImpl;*/
 
@@ -43,30 +45,36 @@ public class SellerController {
     }
 
     @PatchMapping("/update-profile")
-    public ResponseEntity<String> updateSeller(HttpServletRequest request, @Valid @RequestBody SellerUpdateDTO sellerUpdateDto) {
+    public ResponseEntity<MessageDTO> updateSeller(HttpServletRequest request, @Valid @RequestBody SellerUpdateDTO sellerUpdateDto) {
         String email = request.getUserPrincipal().getName();
         if (sellerImpl.updateSeller(email, sellerUpdateDto)) {
-            return new ResponseEntity<>("fields updated successfully", HttpStatus.OK);
+            messageDTO.setMessage("fields updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("fields cannot be updated", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("fields cannot be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<String> changePassword(HttpServletRequest request, @Valid @RequestBody PasswordDTO passwordDto) {
+    public ResponseEntity<MessageDTO> changePassword(HttpServletRequest request, @Valid @RequestBody PasswordDTO passwordDto) {
         String email = request.getUserPrincipal().getName();
         if (sellerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
-            return new ResponseEntity<>("Password and Confirm password do not match", HttpStatus.BAD_REQUEST);
+            messageDTO.setMessage("Password and Confirm password do not match");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
-        if (sellerImpl.customerResetPassword(email, passwordDto)) {
-            return new ResponseEntity<>("password has been updated successfully", HttpStatus.OK);
+        if (sellerImpl.sellerResetPassword(email, passwordDto)) {
+            messageDTO.setMessage("password has been updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("password cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
+            messageDTO.setMessage("password cannot be updated");
+            return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PatchMapping("update-address/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable Long id, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
-        return sellerImpl.updateAddress(id, addressUpdateDto);
+    public ResponseEntity<MessageDTO> updatePassword(HttpServletRequest request,@PathVariable Long id, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
+        String email=request.getUserPrincipal().getName();
+        return sellerImpl.updateAddress(email,id, addressUpdateDto);
     }
 
     @GetMapping("/view-categories")

@@ -22,7 +22,8 @@ public class AddressDTO extends BaseDomainDTO {
     @Size(min = 3,max = 20,message = "addressLine be between 3 to 20 characters")
     private String addressLine;
     @NotNull(message = "pls add Zipcode name")
-    private int zipCode;
+    @Size(min = 6,max = 6,message = "zipCode must have 6 digits")
+    private String zipCode;
     @NotNull(message = "pls add Address type")
     private Label label;
 
@@ -61,11 +62,11 @@ public class AddressDTO extends BaseDomainDTO {
         this.addressLine = addressLine;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

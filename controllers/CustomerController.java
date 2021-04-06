@@ -49,47 +49,58 @@ public class CustomerController {
     }
 
     @PostMapping("/add-address")
-    public ResponseEntity<String> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
+    public ResponseEntity<MessageDTO> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.addAddress(email, addressDTO)) {
-            return new ResponseEntity<>("address added successfully", HttpStatus.OK);
+            messageDTO.setMessage("address added successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("address can't be updated", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("address can't be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/delete-address")
-    public ResponseEntity<String> deleteAddress(@RequestParam Long id) {
-        if (customerImpl.deleteAddress(id)) {
-            return new ResponseEntity<>("address deleted successfully", HttpStatus.OK);
+    public ResponseEntity<MessageDTO> deleteAddress(HttpServletRequest request,@RequestParam Long id) {
+        String email=request.getUserPrincipal().getName();
+        if (customerImpl.deleteAddress(id,email)) {
+            messageDTO.setMessage("address deleted successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("address couldn't be deleted", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("address couldn't be deleted");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @PatchMapping("/update-profile")
-    public ResponseEntity<String> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {
+    public ResponseEntity<MessageDTO> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.updateProfile(email, customerProfileDto)) {
-            return new ResponseEntity<>("fields updated successfully", HttpStatus.OK);
+            messageDTO.setMessage("fields updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>("fields cannot be updated", HttpStatus.BAD_REQUEST);
+        messageDTO.setMessage("fields cannot be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<String> changePassword(HttpServletRequest request,@Valid @RequestBody PasswordDTO passwordDto) {
+    public ResponseEntity<MessageDTO> changePassword(HttpServletRequest request,@Valid @RequestBody PasswordDTO passwordDto) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
-            return new ResponseEntity<>("Password and Confirm password do not match", HttpStatus.BAD_REQUEST);
+          messageDTO.setMessage("Password and Confirm password do not match");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (customerImpl.customerResetPassword(email, passwordDto)) {
-            return new ResponseEntity<>("password has been updated successfully", HttpStatus.OK);
+            messageDTO.setMessage("password has been updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("password cannot be updated", HttpStatus.INTERNAL_SERVER_ERROR);
+            messageDTO.setMessage("password cannot be updated");
+            return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PatchMapping("update-address")
-    public ResponseEntity<String> updatePassword(@RequestParam Long id, HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
-        return customerImpl.updateAddress(id, addressUpdateDto);
+    @PatchMapping("/update-address")
+    public ResponseEntity<MessageDTO> updatePassword(@RequestParam Long addressId, HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
+        String email=request.getUserPrincipal().getName();
+        return customerImpl.updateAddress(email,addressId, addressUpdateDto);
     }
 
     @GetMapping("/view-categories")

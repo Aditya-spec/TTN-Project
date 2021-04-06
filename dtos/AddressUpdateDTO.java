@@ -3,8 +3,6 @@ package com.Bootcamp.Project.Application.dtos;
 import com.Bootcamp.Project.Application.enums.Label;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class AddressUpdateDTO {
@@ -16,9 +14,8 @@ public class AddressUpdateDTO {
     private String country;
     @Size(min=3,max=25,message = "addressLine must have characters between 2 to 20")
     private String addressLine;
-    @Digits(integer = 6, fraction = 0,message = "zipCode must be of 6 digits")
-    @Length(min = 6,max = 6,message = "zip code must be of 6 digits")
-    private int zipCode;
+    @Size(min = 6,max = 6,message = "zipCode must be of 6 digits")
+    private String zipCode;
 
     private Label label;
 
@@ -54,11 +51,11 @@ public class AddressUpdateDTO {
         this.addressLine = addressLine;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

@@ -9,5 +9,5 @@ public interface SellerService {
     public SellerProfileDTO showProfile(String email);
     public boolean updateSeller(String email, SellerUpdateDTO sellerUpdateDto);
     public boolean checkPassword(String password, String confirmPassword);
-    public boolean customerResetPassword(String email, PasswordDTO passwordDto);
+    public boolean sellerResetPassword(String email, PasswordDTO passwordDto);
 }

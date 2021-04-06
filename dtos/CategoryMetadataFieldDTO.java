@@ -6,14 +6,14 @@ import java.util.List;
 
 public class CategoryMetadataFieldDTO {
     private String name;
-    List<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet=new ArrayList<>();
+    List<CategoryMetadataFieldValuesDTO> categoryFieldValues =new ArrayList<>();
 
-    public List<CategoryMetadataFieldValuesDTO> getCategoryMetadataFieldValuesDTOSet() {
-        return categoryMetadataFieldValuesDTOSet;
+    public List<CategoryMetadataFieldValuesDTO> getCategoryFieldValues() {
+        return categoryFieldValues;
     }
 
-    public void setCategoryMetadataFieldValuesDTOSet(List<CategoryMetadataFieldValuesDTO> categoryMetadataFieldValuesDTOSet) {
-        this.categoryMetadataFieldValuesDTOSet = categoryMetadataFieldValuesDTOSet;
+    public void setCategoryFieldValues(List<CategoryMetadataFieldValuesDTO> categoryFieldValues) {
+        this.categoryFieldValues = categoryFieldValues;
     }
 
     public String getName() {

@@ -281,10 +281,10 @@ public class CategoryImpl implements CategoryService {
 
     public String checkFieldValues(String oldValues, String newValues) {
         String[] newValue = newValues.split(",");
-        String updatedValues = "";
+        String updatedValues = oldValues;
         for (String str : newValue) {
             if (!oldValues.contains(str)) {
-                updatedValues = oldValues + "," + str;
+                updatedValues = updatedValues + "," + str;
             }
         }
         return updatedValues;

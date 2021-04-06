@@ -14,7 +14,7 @@ public class Address extends BaseDomain {
     private String state;
     private String country;
     private String addressLine;
-    private int zipCode;
+    private String zipCode;
 
     @Enumerated(EnumType.STRING)
     private Label label;
@@ -54,7 +54,7 @@ public class Address extends BaseDomain {
         return addressLine;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
@@ -84,7 +84,7 @@ public class Address extends BaseDomain {
         this.addressLine = addressLine;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

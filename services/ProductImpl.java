@@ -362,24 +362,7 @@ public class ProductImpl implements ProductService {
         }
         return adminCustomerProductResponseDTOList;
     }
-    /*
-    List<globallistofproducts>=new ArrayList<>()
 
-find <leafnodes>;
-
-function(categoryId,productList,allleaves)
-{
-	if(leafnNodes.contains(categoryId)){
-		find all the products of this category;
-		add the products to the globalListofproducts;
-		return globalList;
-	}
-
-	List<childCategory>=find all the children of the category;
-	for(Category child: childCategory){
-		globalList=function(child.getId());
-	}
-}*/
 
     @Override
     public List<AdminCustomerProductResponseDTO> showCustomerProducts(Long categoryId) {
@@ -415,9 +398,7 @@ function(categoryId,productList,allleaves)
             return productList;
         }
         Optional<List<Category>> childCategories = categoryRepository.findNextChildren(category.getId());
-       /* if(childCategories.isEmpty()){
-            return productList;
-        }*/
+
         List<Category> categoryList = childCategories.get();
         for (Category child : categoryList) {
             productList = getAllProducts(child, productList, allLeafCategory);
