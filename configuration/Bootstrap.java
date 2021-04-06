@@ -26,11 +26,22 @@ public class Bootstrap implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         /*Name name1=new Name();
+        Address address1=new Address();
+
         name1.setFirstName("Customer");
+        name1.setMiddleName("Kumar");
         name1.setLastName("Singh");
 
+        address1.setLabel(Label.HOME);
+        address1.setAddressLine("120d");
+        address1.setZipCode(110035);
+        address1.setCountry("India");
+        address1.setCity("Delhi");
+        address1.setState("Delhi");
+
         Customer customer=new Customer();
-        customer.setEmail("Customer@gmail.com");
+
+        customer.setEmail("CustomerBootstrap@gmail.com");
         customer.setPassword(bCryptPasswordEncoder.encode("Customer@123"));
         List<Role> roleList=new ArrayList<>();
         roleList.add(new Role("ROLE_CUSTOMER"));
@@ -38,14 +49,24 @@ public class Bootstrap implements ApplicationRunner {
         customer.setDeleted(false);
         customer.setRoles(roleList);
         customer.setName(name1);
+        customer.setAddress(address1);
         userRepository.save(customer);
 
         Name name2=new Name();
+        Address address2=new Address();
         name2.setFirstName("Seller");
+        name2.setMiddleName("Kumar");
         name2.setLastName("Singh");
 
+        address2.setLabel(Label.OFFICE);
+        address2.setAddressLine("332D");
+        address2.setZipCode(201014);
+        address2.setCountry("India");
+        address2.setCity("Indirapuram");
+        address2.setState("Uttar Pradesh");
+
         Seller seller=new Seller();
-        seller.setEmail("Seller@gmail.com");
+        seller.setEmail("SellerBootstrap@gmail.com");
         seller.setPassword(bCryptPasswordEncoder.encode("Seller@123"));
         List<Role> roleList1=new ArrayList<>();
         roleList.add(new Role("ROLE_SELLER"));
@@ -53,9 +74,10 @@ public class Bootstrap implements ApplicationRunner {
         seller.setDeleted(false);
         seller.setRoles(roleList);
         seller.setName(name2);
+        seller.setAddress(address2);
         userRepository.save(seller);*/
 
-       /* if (userRepository.count() <= 0) {
+        if (userRepository.count() <= 0) {
             Admin admin1=new Admin();
             admin1.setEmail("adminuser1@gmail.com");
             admin1.setPassword(bCryptPasswordEncoder.encode("Admin1@user"));
@@ -81,8 +103,7 @@ public class Bootstrap implements ApplicationRunner {
             userRepository.save(admin1);
             userRepository.save(admin2);
             System.out.println("Total Users:"+ userRepository.count());
-        }*/
-
+        }
 
     }
 }

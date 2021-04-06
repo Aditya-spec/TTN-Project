@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_AUTHORISED("you are not authorised to make this update",HttpStatus.BAD_REQUEST,400),
     NO_METAVALUES_EXIST("Given metaData values do not exist in the system",HttpStatus.BAD_REQUEST,400),
     NO_METADATAFIELD_EXIST("Given metadata field doesn't exist in the database",HttpStatus.BAD_REQUEST,400),
+    ALREADY_ACTIVE("Already active",HttpStatus.BAD_REQUEST,400),
     NOT_ACTIVE("given data is not active",HttpStatus.BAD_REQUEST,400),
     USER_IS_ADMIN("Cannot make changes, this user is Admin", HttpStatus.BAD_REQUEST, 400);
 

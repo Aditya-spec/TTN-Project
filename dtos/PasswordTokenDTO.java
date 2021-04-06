@@ -12,17 +12,6 @@ public class PasswordTokenDTO {
     @Pattern(regexp="((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})",message="Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")
     private String confirmPassword;
 
-    @NotEmpty(message = "token cannot be empty")
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getPassword() {
         return password;
     }

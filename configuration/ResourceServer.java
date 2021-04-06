@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +46,11 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new SpringSecurityAuditorAware();
+    }
+
 
     @Bean
     @Override
@@ -65,8 +71,9 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/register/**").permitAll()
+                .antMatchers("/register-page/**").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/password/**").permitAll()
                 .antMatchers("/oauth").permitAll()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/seller/**/**").hasAnyRole("SELLER")

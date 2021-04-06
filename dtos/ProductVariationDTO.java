@@ -11,7 +11,7 @@ public class ProductVariationDTO {
     private Long productId;
 
     @NotNull(message = "please provide image path")
-    @Pattern(regexp = "([^\\\\s]+(\\\\.(?i)(jpg|png|jpeg|bmp))$)",message = "please provide the valid image format")
+    @Pattern(regexp = "([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)", message = "please provide a valid image in any of jpeg,png,bmp,jpg format")
     private String primaryImageName;
 
     @NotNull(message = "please provide the quantity")

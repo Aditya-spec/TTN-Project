@@ -1,11 +1,11 @@
 package com.Bootcamp.Project.Application.services;
 
+import com.Bootcamp.Project.Application.dtos.AddressDTO;
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
-import com.Bootcamp.Project.Application.entities.Customer;
-import com.Bootcamp.Project.Application.entities.Role;
-import com.Bootcamp.Project.Application.entities.Seller;
-import com.Bootcamp.Project.Application.entities.User;
+import com.Bootcamp.Project.Application.entities.*;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.RoleRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -36,32 +35,9 @@ public class RegistrationImpl implements RegistrationService {
     @Autowired
     SellerRepository sellerRepository;
 
-
-
-
     ModelMapper modelMapper = new ModelMapper();
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-
-    /*public Boolean registerCustomer(CustomerRegistrationDTO customerRegistrationDTO) {
-        Customer customer = modelMapper.map(customerRegistrationDTO, Customer.class);
-        customer.setActive(false);
-        String encodedPassword = passwordEncoder.encode(customer.getPassword());
-        customer.setPassword(encodedPassword);
-
-        Role role = roleRepository.findById(4l).get();
-        customer.setRoles(Arrays.asList(role));
-        customer.setActivationToken(UUID.randomUUID().toString());
-        customer.setExpiresAt(LocalTime.now().plusMinutes(15));
-        customerRepository.save(customer);
-
-        String body = " Please active your account using this link" +
-                " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + customer.getActivationToken();
-        String topic = "Registration Done!!";
-        emailService.sendMail(customer.getEmail(), topic, body);
-        return true;
-    }*/
 
     public Boolean registerCustomer(CustomerRegistrationDTO customerRegistrationDTO) {
         Customer customer = modelMapper.map(customerRegistrationDTO, Customer.class);
@@ -102,6 +78,7 @@ public class RegistrationImpl implements RegistrationService {
             System.out.println("activating the customer");
             registeredCustomer.setActive(true);
             registeredCustomer.setActivationToken(null);
+            registeredCustomer.setExpiresAt(null);
             customerRepository.save(registeredCustomer);
             return true;
         }
@@ -133,7 +110,7 @@ public class RegistrationImpl implements RegistrationService {
             return false;
         }
         if (customer.getActive()) {
-            return false;
+            throw new EcommerceException(ErrorCode.ALREADY_ACTIVE);
         }
         customer.setActivationToken(UUID.randomUUID().toString());
         customer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
@@ -146,17 +123,34 @@ public class RegistrationImpl implements RegistrationService {
     }
 
     public boolean registerSeller(SellerRegistrationDTO sellerRegistrationDTO) {
-        Seller seller=modelMapper.map(sellerRegistrationDTO,Seller.class);
+        Address address = new Address();
+        address = mapSellerAddress(sellerRegistrationDTO, address);
+
+        Seller seller = modelMapper.map(sellerRegistrationDTO, Seller.class);
+
+        seller.setAddress(address);
         seller.setActive(false);
+
         String encodedPassword = passwordEncoder.encode(seller.getPassword());
         seller.setPassword(encodedPassword);
         Role role = roleRepository.findByAuthorization("ROLE_SELLER").get(1);
         seller.setRoles(Arrays.asList(role));
+
         sellerRepository.save(seller);
-       /* System.out.println(sellerRegistrationDTO.getSellerAddressDTO().getCountry());
-        System.out.println(seller.getAddress().getCountry());*/
-        String body="Your account has been registered, please wait for activation mail";
-        emailService.sendMail(seller.getEmail(),"Account registered",body);
+
+        String body = "Your account has been registered, please wait for activation mail";
+        emailService.sendMail(seller.getEmail(), "Account registered", body);
         return true;
     }
+
+    private Address mapSellerAddress(SellerRegistrationDTO sellerRegistrationDTO, Address address) {
+        address.setAddressLine(sellerRegistrationDTO.getAddressLine());
+        address.setLabel(sellerRegistrationDTO.getLabel());
+        address.setState(sellerRegistrationDTO.getState());
+        address.setCountry(sellerRegistrationDTO.getCountry());
+        address.setCity(sellerRegistrationDTO.getCity());
+        address.setZipCode(sellerRegistrationDTO.getZipCode());
+        return address;
+    }
+
 }

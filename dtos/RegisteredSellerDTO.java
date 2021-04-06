@@ -1,23 +1,22 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import com.Bootcamp.Project.Application.enums.Label;
+
+import java.util.Date;
 
 public class RegisteredSellerDTO {
     private Long SellerId;
-
     private String firstName;
-
     private String middleName;
-
     private String lastName;
-
     private String email;
-
-    private boolean enable;
-
+    private boolean active;
     private String companyName;
-
     private AddressDTO addressDTO;
+    private String contactNumber;
+    private Date dateCreated;
+    private Date lastModified;
+    private String createdBy;
+    private String lastModifiedBy;
 
     public AddressDTO getAddressDTO() {
         return addressDTO;
@@ -26,62 +25,7 @@ public class RegisteredSellerDTO {
     public void setAddressDTO(AddressDTO addressDTO) {
         this.addressDTO = addressDTO;
     }
-    /*private String city;
-    private String state;
-    private String country;
-    private String addressLine;
-    private int zipCode;
-    private Label label;*/
 
-   /* public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAddressLine() {
-        return addressLine;
-    }
-
-    public void setAddressLine(String addressLine) {
-        this.addressLine = addressLine;
-    }
-
-    public int getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public Label getLabel() {
-        return label;
-    }
-
-    public void setLabel(Label label) {
-        this.label = label;
-    }*/
-
-    private String contactNumber;
 
     public Long getSellerId() {
         return SellerId;
@@ -123,12 +67,12 @@ public class RegisteredSellerDTO {
         this.email = email;
     }
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getCompanyName() {
@@ -145,5 +89,37 @@ public class RegisteredSellerDTO {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
     }
 }

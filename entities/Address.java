@@ -46,7 +46,9 @@ public class Address extends BaseDomain {
         return state;
     }
 
-    public String getCountry() { return country; }
+    public String getCountry() {
+        return country;
+    }
 
     public String getAddressLine() {
         return addressLine;

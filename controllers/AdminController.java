@@ -27,10 +27,13 @@ public class AdminController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    MessageDTO messageDTO;
 
     @GetMapping("/home")
-    public String adminHome() {
-        return "Admin home";
+    public ResponseEntity<MessageDTO> adminHome() {
+        messageDTO.setMessage("Admin home");
+        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
     }
 
 
@@ -46,13 +49,13 @@ public class AdminController {
     }
 
     @PatchMapping(path = "/activate-user/{id}")
-    public ResponseEntity<String> activateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
+    public ResponseEntity<MessageDTO> activateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
         return adminImpl.activateUser(id, fields);
     }
 
 
     @PatchMapping("/deactivate-user/{id}")
-    public ResponseEntity<String> deactivateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
+    public ResponseEntity<MessageDTO> deactivateUser(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
         return adminImpl.deactivateUser(id, fields);
     }
 

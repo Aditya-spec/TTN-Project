@@ -1,15 +1,18 @@
 package com.Bootcamp.Project.Application.entities;
 
 
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class BaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_generator")
@@ -24,7 +27,14 @@ public class BaseDomain {
     @UpdateTimestamp()
     private Date lastModified;
 
+    @CreatedBy
+    private String createdBy;
+
+    @LastModifiedBy
+    private String lastModifiedBy;
+
     //Getters
+
 
     public Long getId() {
         return id;
@@ -42,7 +52,16 @@ public class BaseDomain {
         return deleted;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
     //Setters
+
 
     public void setId(Long id) {
         this.id = id;
@@ -58,5 +77,13 @@ public class BaseDomain {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
     }
 }

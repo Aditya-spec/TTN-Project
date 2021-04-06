@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 @Component
 public class CustomerRegistrationDTO {
 
-    @NotEmpty(message = " first name is required ")
+    @NotNull(message = " first name is required ")
     @Size(min = 2,max = 20,message = "size must be between 2 to 20")
     private String firstName;
 

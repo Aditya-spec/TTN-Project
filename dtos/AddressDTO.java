@@ -2,6 +2,7 @@ package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,7 +27,7 @@ public class AddressDTO extends BaseDomainDTO {
     private Label label;
 
 
- /*   private UserDTO user;*/
+
 
     public String getCity() {
         return city;

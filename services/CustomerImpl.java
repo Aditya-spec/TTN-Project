@@ -37,7 +37,6 @@ public class CustomerImpl implements CustomerService {
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-            //throw new NotFoundException("no customer for this email exists");
         }
         CustomerProfileDTO customerProfileDto = modelMapper.map(customer, CustomerProfileDTO.class);
         return customerProfileDto;

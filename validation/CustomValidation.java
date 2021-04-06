@@ -1,5 +1,6 @@
 package com.Bootcamp.Project.Application.validation;
 
+import com.Bootcamp.Project.Application.dtos.AddressDTO;
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
@@ -29,7 +30,7 @@ public class CustomValidation {
         for (Seller seller : sellerList) {
             if (sellerRegistrationDTO.getEmail().equals(seller.getEmail())) {
 
-                 return "error: email already exist";
+                return "error: email already exist";
             }
 
 
@@ -53,8 +54,8 @@ public class CustomValidation {
         List<Customer> customerList = customerRepository.fetchAllCustomer();
 
         if (!customerRegistrationDTO.getPassword().equals(customerRegistrationDTO.getConfirmPassword())) {
-          // throw new EcommerceException(ErrorCode.PASSWORDS_NOT_SAME);
-             return "error: password and confirm-password did not match";
+
+            return "error: password and confirm-password did not match";
         }
 
         for (Customer customer : customerList) {
@@ -69,4 +70,28 @@ public class CustomValidation {
         }
         return null;
     }
+
+    /*public String addressValidation(AddressDTO address) {
+        if (address.getAddressLine() == null) {
+            return "addressLine cannot be null";
+        }
+        if ((address.getCity() == null)||(address.getCity().length()<2)||(address.getCity().length()>20)) {
+            return "please give appropriate ";
+        }
+        if (address.getCountry() == null) {
+            return "country cannot be null";
+        }
+        if (address.getLabel() == null) {
+            return "city cannot be null";
+        }
+        if (address.getCity() == null) {
+            return "city cannot be null";
+        }
+        if (address.getState() == null) {
+            return "state cannot be null";
+        }
+        return null;
+
+
+    }*/
 }

@@ -1,5 +1,7 @@
 package com.Bootcamp.Project.Application.dtos;
 
+import com.Bootcamp.Project.Application.enums.Label;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
@@ -19,29 +21,14 @@ public class SellerRegistrationDTO {
     @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})", message = "Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")
     private String confirmPassword;
 
-    /*@NotNull(message = "city name is required")
-    @Size(min = 3,max = 20,message = "city be between 3 to 20 characters")
-    private String city;
-    @NotNull(message = "state name is required")
-    @Size(min = 3,max = 20,message = "state be between 3 to 20 characters")
-    private String state;
-    @NotNull(message = "country name is required")
-    @Size(min = 3,max = 20,message = "country be between 3 to 20 characters")
-    private String country;
-    @NotNull(message = "addressLine  is required")
-    @Size(min = 3,max = 20,message = "addressLine be between 3 to 20 characters")
-    private String addressLine;
-    @NotNull(message = "zipCode  is required")
-    private int zipCode;
-*/
+
     @NotEmpty(message = " first name is required ")
-    @Size(min = 2,max = 20,message = "your firstName should have 2 to 20 characters")
+    @Size(min = 2, max = 20, message = "your firstName should have 2 to 20 characters")
     private String firstName;
 
     @NotNull(message = " first name is required ")
-    @Size(min = 2,max = 20,message = "your lastName should have 2 to 20 characters")
+    @Size(min = 2, max = 20, message = "your lastName should have 2 to 20 characters")
     private String lastName;
-
 
 
     @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}", message = "enter a valid phone number")
@@ -50,7 +37,7 @@ public class SellerRegistrationDTO {
 
     @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}"
             + "[A-Z]{1}[1-9A-Z]{1}"
-                    + "Z[0-9A-Z]{1}$",message = "give in proper GST format")
+            + "Z[0-9A-Z]{1}$", message = "give in proper GST format")
     @NotNull(message = "gst number is required ")
     private String gstNumber;
 
@@ -58,15 +45,78 @@ public class SellerRegistrationDTO {
     @Size(min = 5, max = 30, message = "company name should have 5 to 30 characters")
     private String companyName;
 
-    private AddressDTO addressDTO;
 
-    public AddressDTO getAddressDTO() {
-        return addressDTO;
+    @NotNull(message = "pls add City name")
+    @Size(min = 3, max = 20, message = "city be between 3 to 20 characters")
+    private String city;
+
+    @NotNull(message = "pls add State name")
+    @Size(min = 3, max = 20, message = "state be between 3 to 20 characters")
+    private String state;
+
+    @NotNull(message = "pls add Country name")
+    @Size(min = 3, max = 20, message = "country be between 3 to 20 characters")
+    private String country;
+
+    @NotNull(message = "pls add AddressLine name")
+    @Size(min = 3, max = 20, message = "addressLine be between 3 to 20 characters")
+    private String addressLine;
+
+    @NotNull(message = "pls add Zipcode name")
+    private int zipCode;
+
+    @NotNull(message = "pls add Address type")
+    private Label label;
+
+
+    public String getCity() {
+        return city;
     }
 
-    public void setAddressDTO(AddressDTO addressDTO) {
-        this.addressDTO = addressDTO;
+    public void setCity(String city) {
+        this.city = city;
     }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAddressLine() {
+        return addressLine;
+    }
+
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
+    }
+
+    public int getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(int zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public void setLabel(Label label) {
+        this.label = label;
+    }
+
 
     public String getEmail() {
         return email;
@@ -108,45 +158,6 @@ public class SellerRegistrationDTO {
         this.companyName = companyName;
     }
 
-    /*public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAddressLine() {
-        return addressLine;
-    }
-
-    public void setAddressLine(String addressLine) {
-        this.addressLine = addressLine;
-    }
-
-    public int getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
-    }*/
 
     public String getFirstName() {
         return firstName;

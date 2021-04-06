@@ -26,10 +26,14 @@ public class CustomerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    MessageDTO messageDTO;
 
     @GetMapping("/home")
-    public String indexPremium() {
-        return "Customer Home";
+    public ResponseEntity<MessageDTO> indexPremium()
+    {
+        messageDTO.setMessage("Customer Home");
+        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
     }
 
     @GetMapping("/view-profile")
@@ -71,7 +75,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<String> changePassword(HttpServletRequest request, @RequestBody PasswordDTO passwordDto) {
+    public ResponseEntity<String> changePassword(HttpServletRequest request,@Valid @RequestBody PasswordDTO passwordDto) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
             return new ResponseEntity<>("Password and Confirm password do not match", HttpStatus.BAD_REQUEST);
