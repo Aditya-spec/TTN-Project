@@ -437,6 +437,7 @@ public class ProductImpl implements ProductService {
         responseDTO.setSellerName(product.getSeller().getName().getFirstName());
         responseDTO.setSellerContact(product.getSeller().getCompanyContact());
         responseDTO.setProductId(product.getId());
+        responseDTO.setImagePath(product.getPrimaryImageName());
 
         responseDTO.setCategoryId(category.getId());
         responseDTO.setCategoryName(category.getName());
