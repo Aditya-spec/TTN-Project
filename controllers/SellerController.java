@@ -29,8 +29,6 @@ public class SellerController {
     ProductImpl productImpl;
     @Autowired
     MessageDTO messageDTO;
-   /* @Autowired
-    ProductVariationImpl productVariationImpl;*/
 
 
     @GetMapping("/home")
@@ -132,7 +130,8 @@ public class SellerController {
     }
 
     @PostMapping("/add-productVariation")
-    public ResponseEntity<MessageDTO> addProductVariation(HttpServletRequest request, @Valid @RequestBody ProductVariationDTO productVariationDTO) {
+    public ResponseEntity<MessageDTO> addProductVariation(HttpServletRequest request,
+                                                          @Valid @RequestBody ProductVariationDTO productVariationDTO) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.addVariation(email, productVariationDTO)) {
             messageDTO.setMessage("product variation added successfully");
