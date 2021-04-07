@@ -1,11 +1,17 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import org.json.simple.JSONArray;
+
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
+
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Validated
 public class CategoryMetadataFieldValuesDTO {
 
     @NotNull(message = "metadataField cannot ne null")

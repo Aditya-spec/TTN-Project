@@ -11,19 +11,19 @@ public class CustomerRegistrationDTO {
     @Size(min = 2,max = 20,message = "size must be between 2 to 20")
     private String firstName;
 
-    @NotNull(message = " first name is required ")
+    @NotNull(message = " last name is required ")
     @Size(min = 2,max = 20,message = "size must be between 2 to 20")
     private String lastName;
 
-    @NotEmpty(message = "email is required and should be unique")
+    @NotNull(message = "email is required and should be unique")
     @Email(message = "enter a valid email")
     private String email;
 
-    @NotEmpty(message = "password is mandatory ")
+    @NotNull(message = "password is mandatory ")
     @Pattern(regexp="((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})",message="Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")
     private String password;
 
-    @NotEmpty(message = "password is mandatory ")
+    @NotNull(message = "password is mandatory ")
     @Pattern(regexp="((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,15})",message="Password must be 8 characters long and should contain uppercase,lowercase,digit,and special character")
     private String confirmPassword;
 
@@ -32,6 +32,7 @@ public class CustomerRegistrationDTO {
     @NotNull(message = "contact number required")
     private String contact;
 
+    //getters and setters
 
     public String getEmail() {
         return email;

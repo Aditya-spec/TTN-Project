@@ -10,6 +10,7 @@ import java.util.List;
 
 public class CategoryAddDTO {
 
+
     private Long parentId;
 
     @NotNull(message = "Category name cannot be null")

@@ -2,10 +2,11 @@ package com.Bootcamp.Project.Application.dtos;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CustomerEmailDTO {
 
-    @NotEmpty(message = "email cannot be empty")
+    @NotNull(message = "email cannot be empty")
     @Email(message = "give proper email format")
     private String email;
 

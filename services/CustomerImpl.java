@@ -49,7 +49,6 @@ public class CustomerImpl implements CustomerService {
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
         if (addressList == null) {
             throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
-
         }
         Type setType = new TypeToken<List<AddressDTO>>() {
         }.getType();
@@ -66,7 +65,7 @@ public class CustomerImpl implements CustomerService {
         Address address = modelMapper.map(addressDTO, Address.class);
         customer.setAddress(address);
         customerRepository.save(customer);
-        /* addressRepository.save(address);*/
+
         return true;
     }
 
@@ -174,12 +173,11 @@ public class CustomerImpl implements CustomerService {
         if (addressUpdateDto.getLabel() != null) {
             address.setLabel(addressUpdateDto.getLabel());
         }
-        /*if (addressUpdateDto.getZipCode() != 0) {
+        if (addressUpdateDto.getZipCode() != null) {
             address.setZipCode(addressUpdateDto.getZipCode());
-        }*/
+        }
         return address;
     }
-
 
 
 }

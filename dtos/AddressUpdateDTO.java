@@ -1,11 +1,12 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
-import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.Size;
 
+
 public class AddressUpdateDTO {
+
+
     @Size(min=3,max=25,message = "city must have characters between 2 to 20")
     private String city;
     @Size(min=3,max=25,message = "state must have characters between 2 to 20")

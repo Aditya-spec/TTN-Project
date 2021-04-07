@@ -382,6 +382,7 @@ public class ProductImpl implements ProductService {
         }
         List<AdminCustomerProductResponseDTO> responseDTOList = new ArrayList<>();
         for (Product product : productList) {
+            if(!product.getDeleted())
             responseDTOList.add(showCustomerProduct(product.getId()));
         }
         return responseDTOList;

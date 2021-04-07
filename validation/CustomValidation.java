@@ -1,6 +1,6 @@
 package com.Bootcamp.Project.Application.validation;
 
-import com.Bootcamp.Project.Application.dtos.AddressDTO;
+
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
@@ -30,7 +30,7 @@ public class CustomValidation {
         for (Seller seller : sellerList) {
             if (sellerRegistrationDTO.getEmail().equals(seller.getEmail())) {
 
-                return "error: email already exist";
+                return "error: email id already exist";
             }
 
 
@@ -39,10 +39,10 @@ public class CustomValidation {
             }
 
             if (sellerRegistrationDTO.getGstNumber().equals(seller.getGstNumber())) {
-                return "seller account with " + sellerRegistrationDTO.getGstNumber() + "already exist";
+                return "seller account with gstNumber" + sellerRegistrationDTO.getGstNumber() + "already exist";
             }
             if (sellerRegistrationDTO.getCompanyName().equals(seller.getCompanyName())) {
-                return "seller account with " + sellerRegistrationDTO.getCompanyName() + "already exist";
+                return "seller account with company name" + sellerRegistrationDTO.getCompanyName() + "already exist";
             }
         }
 
@@ -60,7 +60,7 @@ public class CustomValidation {
 
         for (Customer customer : customerList) {
             if (customerRegistrationDTO.getEmail().equals(customer.getEmail())) {
-                return " error: email already exist";
+                return " error: email id already exist";
             }
 
             if (customerRegistrationDTO.getContact().equals(customer.getContact())) {

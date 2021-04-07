@@ -21,10 +21,10 @@ public class PasswordController {
     @PostMapping(path = "/generate-token")
     public ResponseEntity<MessageDTO> generatePassword(@RequestParam String email) {
         if (passwordImpl.generatePassword(email)) {
-            messageDTO.setMessage("email has been sent to reset the password");
+            messageDTO.setMessage("Email has been sent with a link to reset the password");
             return new ResponseEntity(messageDTO, HttpStatus.OK);
         }
-        messageDTO.setMessage("not able to generate token");
+        messageDTO.setMessage("Not able to generate token");
         return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
     }
 

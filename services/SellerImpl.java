@@ -32,43 +32,19 @@ public class SellerImpl implements SellerService {
     ModelMapper modelMapper = new ModelMapper();
 
     public SellerProfileDTO showProfile(String email) {
-        ModelMapper modelMapper = new ModelMapper();
+
         Seller seller = sellerRepository.findByEmail(email);
         if (seller == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
         SellerProfileDTO sellerProfileDto = new SellerProfileDTO();
         sellerProfileDto = mapSeller(seller, sellerProfileDto);
-        AddressDTO addressDto = mapAddress(seller.getAddress());
-        sellerProfileDto.setAddressDto(addressDto);
+        sellerProfileDto = mapAddress(seller.getAddress(),sellerProfileDto);
+
         return sellerProfileDto;
     }
 
-    private SellerProfileDTO mapSeller(Seller seller, SellerProfileDTO sellerProfileDTO) {
 
-        sellerProfileDTO.setCompanyName(seller.getCompanyName());
-        sellerProfileDTO.setCompanyContact(seller.getCompanyContact());
-        sellerProfileDTO.setId(seller.getId());
-        sellerProfileDTO.setFirstName(seller.getName().getFirstName());
-        sellerProfileDTO.setLastName(seller.getName().getLastName());
-        sellerProfileDTO.setMiddleName(seller.getName().getMiddleName());
-        sellerProfileDTO.setImagePath(seller.getImagePath());
-        sellerProfileDTO.setActive(seller.getActive());
-
-        return sellerProfileDTO;
-    }
-
-    private AddressDTO mapAddress(Address address) {
-        AddressDTO addressDTO = new AddressDTO();
-        addressDTO.setZipCode(address.getZipCode());
-        addressDTO.setAddressLine(address.getAddressLine());
-        addressDTO.setState(address.getState());
-        addressDTO.setLabel(address.getLabel());
-        addressDTO.setCountry(address.getCountry());
-        addressDTO.setAddressLine(address.getAddressLine());
-        addressDTO.setCity(address.getCity());
-        return addressDTO;
-    }
 
 
     public boolean updateSeller(String email, SellerUpdateDTO sellerUpdateDto) {
@@ -76,7 +52,7 @@ public class SellerImpl implements SellerService {
         if (seller == null) {
             return false;
         }
-        // seller=modelMapper.map(sellerUpdateDto,Seller.class);
+
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(sellerUpdateDto, seller);
         sellerRepository.save(seller);
@@ -119,13 +95,13 @@ public class SellerImpl implements SellerService {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
 
-        address = mapAddress(address, addressUpdateDto);
+        address = mapUpdatedAddress(address, addressUpdateDto);
         addressRepository.save(address);
         messageDTO.setMessage("Address has been updated successfully");
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
-    private Address mapAddress(Address address, AddressUpdateDTO addressUpdateDto) {
+    private Address mapUpdatedAddress(Address address, AddressUpdateDTO addressUpdateDto) {
         if (addressUpdateDto.getAddressLine() != null) {
             address.setAddressLine(addressUpdateDto.getAddressLine());
         }
@@ -145,6 +121,33 @@ public class SellerImpl implements SellerService {
             address.setZipCode(addressUpdateDto.getZipCode());
         }
         return address;
+    }
+
+    private SellerProfileDTO mapSeller(Seller seller, SellerProfileDTO sellerProfileDTO) {
+
+        sellerProfileDTO.setCompanyName(seller.getCompanyName());
+        sellerProfileDTO.setCompanyContact(seller.getCompanyContact());
+        sellerProfileDTO.setId(seller.getId());
+        sellerProfileDTO.setFirstName(seller.getName().getFirstName());
+        sellerProfileDTO.setLastName(seller.getName().getLastName());
+        sellerProfileDTO.setMiddleName(seller.getName().getMiddleName());
+        sellerProfileDTO.setImagePath(seller.getImagePath());
+        sellerProfileDTO.setActive(seller.getActive());
+        sellerProfileDTO.setEmail(seller.getEmail());
+
+        return sellerProfileDTO;
+    }
+
+    private SellerProfileDTO mapAddress(Address address,SellerProfileDTO sellerProfileDTO) {
+
+        sellerProfileDTO.setZipCode(address.getZipCode());
+        sellerProfileDTO.setAddressLine(address.getAddressLine());
+        sellerProfileDTO.setState(address.getState());
+        sellerProfileDTO.setLabel(address.getLabel());
+        sellerProfileDTO.setCountry(address.getCountry());
+        sellerProfileDTO.setAddressLine(address.getAddressLine());
+        sellerProfileDTO.setCity(address.getCity());
+        return sellerProfileDTO;
     }
 }
 

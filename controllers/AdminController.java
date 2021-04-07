@@ -62,7 +62,7 @@ public class AdminController {
     @PostMapping("/add-metadataField")
     public ResponseEntity<MessageDTO> addMetadata(@RequestParam String metaDataField) {
         if (metaDataField.equals("")) {
-            messageDTO.setMessage("metadata Field cannot be null");
+            messageDTO.setMessage("Metadata Field cannot be null");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (metaDataField.length() < 3 || (metaDataField.length() > 15)) {

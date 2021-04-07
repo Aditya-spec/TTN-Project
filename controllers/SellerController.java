@@ -72,9 +72,9 @@ public class SellerController {
     }
 
     @PatchMapping("update-address/{id}")
-    public ResponseEntity<MessageDTO> updatePassword(HttpServletRequest request,@PathVariable Long id, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
-        String email=request.getUserPrincipal().getName();
-        return sellerImpl.updateAddress(email,id, addressUpdateDto);
+    public ResponseEntity<MessageDTO> updatePassword(HttpServletRequest request, @PathVariable Long id, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
+        String email = request.getUserPrincipal().getName();
+        return sellerImpl.updateAddress(email, id, addressUpdateDto);
     }
 
     @GetMapping("/view-categories")
@@ -87,7 +87,7 @@ public class SellerController {
     public ResponseEntity<MessageDTO> addProduct(HttpServletRequest request, @RequestBody SellerProductAddDTO sellerProductAddDTO) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.addProduct(email, sellerProductAddDTO)) {
-  messageDTO.setMessage("product has been added");
+            messageDTO.setMessage("product has been added");
             return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
         }
         messageDTO.setMessage("product already exists");
@@ -136,13 +136,14 @@ public class SellerController {
         if (productImpl.addVariation(email, productVariationDTO)) {
             messageDTO.setMessage("product variation added successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
-        }messageDTO.setMessage("product variation cannot be added");
+        }
+        messageDTO.setMessage("product variation cannot be added");
         return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping("/update-productVariation")
     public ResponseEntity<MessageDTO> updateVariation(HttpServletRequest request,
-                                                  @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id) {
+                                                      @RequestBody ProductVariationUpdateDTO productVariationUpdateDTO, @RequestParam Long id) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.updateVariation(email, productVariationUpdateDTO, id)) {
             messageDTO.setMessage("product variation updated successfully");

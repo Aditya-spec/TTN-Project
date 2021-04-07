@@ -1,6 +1,5 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.AddressDTO;
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.*;
@@ -51,11 +50,14 @@ public class RegistrationImpl implements RegistrationService {
         customer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
         customerRepository.save(customer);
 
-        String body = " Please active your account using this link" +
+        String body = " You have been registered, please active your account using this link" +
                 " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + customer.getActivationToken();
         String topic = "Registration Done!!";
+
         System.out.println(body);
+
         emailService.sendMail(customer.getEmail(), topic, body);
+
         return true;
     }
 
@@ -69,13 +71,13 @@ public class RegistrationImpl implements RegistrationService {
             registeredCustomer.setExpiresAt(LocalDateTime.now().plusMinutes(15));
             customerRepository.save(registeredCustomer);
 
-            String body = " Please active your account using this link" +
+            String body = " Your token has been expired, please active your account using this link" +
                     " which will be valid for 15 minutes only = \n http://localhost:8080/register-page/activate/customer/" + registeredCustomer.getActivationToken();
 
+            System.out.println(body);
             emailService.sendMail(registeredCustomer.getEmail(), "Resending activation link", body);
             return false;
         } else {
-            System.out.println("activating the customer");
             registeredCustomer.setActive(true);
             registeredCustomer.setActivationToken(null);
             registeredCustomer.setExpiresAt(null);
@@ -98,16 +100,15 @@ public class RegistrationImpl implements RegistrationService {
     public Boolean resendActivationLink(String email) {
 
         User user = userRepository.findByEmail(email);
-        System.out.println(user);
-        if (user == null) {
 
-            return false;
+        if (user == null) {
+          throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
         long id = user.getId();
         Customer customer = customerRepository.findById(id);
 
         if (customer == null) {
-            return false;
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
         if (customer.getActive()) {
             throw new EcommerceException(ErrorCode.ALREADY_ACTIVE);
@@ -138,8 +139,8 @@ public class RegistrationImpl implements RegistrationService {
 
         sellerRepository.save(seller);
 
-        String body = "Your account has been registered, please wait for activation mail";
-        emailService.sendMail(seller.getEmail(), "Account registered", body);
+        String body = "Your account has been registered, please wait for approval confirmation mail";
+        emailService.sendMail(seller.getEmail(), "Account Registered!!", body);
         return true;
     }
 

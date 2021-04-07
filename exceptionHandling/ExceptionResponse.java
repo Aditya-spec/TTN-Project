@@ -8,7 +8,7 @@ public class ExceptionResponse {
 
     private String errorDesc;
     private HttpStatus status;
-    private Date date  ;
+    private Date date;
 
     public ExceptionResponse(Date date,String errorDesc, HttpStatus status) {
         this.errorDesc = errorDesc;

@@ -52,10 +52,10 @@ public class CustomerController {
     public ResponseEntity<MessageDTO> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.addAddress(email, addressDTO)) {
-            messageDTO.setMessage("address added successfully");
+            messageDTO.setMessage("Address added successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        messageDTO.setMessage("address can't be updated");
+        messageDTO.setMessage("Address can't be updated");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
@@ -63,10 +63,10 @@ public class CustomerController {
     public ResponseEntity<MessageDTO> deleteAddress(HttpServletRequest request,@RequestParam Long id) {
         String email=request.getUserPrincipal().getName();
         if (customerImpl.deleteAddress(id,email)) {
-            messageDTO.setMessage("address deleted successfully");
+            messageDTO.setMessage("Address deleted successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        messageDTO.setMessage("address couldn't be deleted");
+        messageDTO.setMessage("Address can't be deleted");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
@@ -74,10 +74,10 @@ public class CustomerController {
     public ResponseEntity<MessageDTO> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.updateProfile(email, customerProfileDto)) {
-            messageDTO.setMessage("fields updated successfully");
+            messageDTO.setMessage("Fields updated successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        messageDTO.setMessage("fields cannot be updated");
+        messageDTO.setMessage("Fields cannot be updated");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 

@@ -40,7 +40,6 @@ public class RegistrationController {
     public ResponseEntity<MessageDTO> registerCustomer(@Valid @RequestBody CustomerRegistrationDTO customerRegistrationDTO) {
         String result = customValidation.checkCustomerValidation(customerRegistrationDTO);
         if (result != null) {
-            System.out.println(customerRegistrationDTO);
             messageDTO.setMessage(result);
             return new ResponseEntity<>(messageDTO, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -86,12 +85,11 @@ public class RegistrationController {
             return new ResponseEntity<>(messageDTO, HttpStatus.NOT_ACCEPTABLE);
         }
 
-
         if (registrationImpl.registerSeller(sellerRegistrationDTO)) {
-            messageDTO.setMessage("seller has been registered,please wait for confirmation mail");
+            messageDTO.setMessage("Seller has been registered, please wait for confirmation mail");
             return new ResponseEntity<>(messageDTO, HttpStatus.CREATED);
         }
-        messageDTO.setMessage("seller not created");
+        messageDTO.setMessage("Seller cannot be registered");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 

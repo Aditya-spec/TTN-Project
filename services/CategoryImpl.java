@@ -33,7 +33,7 @@ public class CategoryImpl implements CategoryService {
     @Autowired
     ProductRepository productRepository;
 
-
+    ModelMapper modelMapper = new ModelMapper();
     Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
 
     @Override
@@ -48,7 +48,8 @@ public class CategoryImpl implements CategoryService {
             newCategory.setParentId(0l);
             categoryRepository.save(newCategory);
             return "Category added successfully";
-        } else {
+        }
+        else {
             Optional<Category> parentCategory = categoryRepository.findById(categoryAddDTO.getParentId());
             if (parentCategory.isEmpty())
                 throw new EcommerceException(ErrorCode.PARENT_CATEGORY_NOT_EXISTS);
@@ -63,7 +64,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDTO> showCategories() {
-        ModelMapper modelMapper = new ModelMapper();
+
         Optional<List<Category>> categories = categoryRepository.fetchALlCategories(sortById);
         if (categories.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -82,7 +83,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public CategoryResponseDTO showCategory(Long id) {
-        ModelMapper modelMapper = new ModelMapper();
+
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
@@ -124,7 +125,7 @@ public class CategoryImpl implements CategoryService {
 
 
     private List<CategoryAddDTO> findCategoryParent(Long id) {
-        ModelMapper modelMapper = new ModelMapper();
+
         Category category = categoryRepository.findById(id).get();
 
         List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
@@ -140,7 +141,7 @@ public class CategoryImpl implements CategoryService {
 
 
     private List<CategoryAddDTO> findCategoryChildren(Long id) {
-        ModelMapper modelMapper = new ModelMapper();
+
         Optional<List<Category>> categories = categoryRepository.findNextChildren(id);
         if (categories.isEmpty()) {
             return null;
@@ -154,7 +155,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public String addMetadata(String metaData) {
-        ModelMapper modelMapper = new ModelMapper();
+
         Optional<CategoryMetadataField> metadataField = metadataFieldRepository.findByname(metaData);
         if (metadataField.isPresent()) {
             throw new EcommerceException(ErrorCode.ALREADY_EXISTS);
@@ -167,8 +168,8 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<CMDResponseDTO> showMetaData() {
-        ModelMapper modelMapper = new ModelMapper();
-        Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll();
+
+        Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll(sortById);
         if (metadataFieldList.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -186,9 +187,9 @@ public class CategoryImpl implements CategoryService {
             }
 
             List<String> collect = fieldValuesList.stream().map(e -> e.getFieldValues()).collect(Collectors.toList());
-            System.out.println(collect);
+
             List<String> metaValues = collect.stream().distinct().collect(Collectors.toList());
-            System.out.println(metaValues);
+
             metadataFieldDTO.setValues(metaValues);
             metadataFieldDTO.setName(metadataField.getName());
 
@@ -199,8 +200,8 @@ public class CategoryImpl implements CategoryService {
     }
 
     @Override
-    public String updateCategory(Long id, String updatedName) {
-        Category category = categoryRepository.findById(id).orElse(null);
+    public String updateCategory(Long categoryId, String updatedName) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
@@ -214,13 +215,13 @@ public class CategoryImpl implements CategoryService {
     }
 
     public String addMetadataValues(CategoryMetadataFieldValuesDTO cmdfvDTO) {
-        ModelMapper modelMapper = new ModelMapper();
 
         Optional<Category> optionalCategory = categoryRepository.findById(cmdfvDTO.getCategoryId());
         if (optionalCategory.isEmpty()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
         Category category = optionalCategory.get();
+
         Optional<CategoryMetadataField> optionalMetadataField = metadataFieldRepository.findById(cmdfvDTO.getCategoryMetadataFieldId());
         if (optionalMetadataField.isEmpty()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
@@ -238,7 +239,7 @@ public class CategoryImpl implements CategoryService {
         } catch (RuntimeException e) {
             updateMetadataValues(cmdfvDTO);
         }
-        return "metaData values saved successfully";//call update metadata value method here
+        return "metaData values saved successfully";
     }
 
 
@@ -306,6 +307,7 @@ public class CategoryImpl implements CategoryService {
             sellerCategoryResponseDTO.setParentList(categoryAddDTOList);
             sellerCategoryResponseDTO.setName(category.getName());
             sellerCategoryResponseDTO.setFieldValues(fieldList);
+
             sellerCategoryResponseDTOList.add(sellerCategoryResponseDTO);
         }
         return sellerCategoryResponseDTOList;
@@ -316,7 +318,7 @@ public class CategoryImpl implements CategoryService {
     public List<CustomerCategoryResponseDTO> showCustomerCategories() {
         List<Category> categoryList = categoryRepository.fetchAllRootCategories(sortById);
         if (categoryList == null) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
         List<CustomerCategoryResponseDTO> customerCategoryResponseDTOList = new ArrayList<>();
@@ -352,8 +354,11 @@ public class CategoryImpl implements CategoryService {
         }
         Double maxPrice = productVariationRepository.getMaxPrice(categoryId);
         Double minPrice = productVariationRepository.getMinPrice(categoryId);
+
         List<String> brandList = productRepository.fetchBrandList(categoryId);
+
         CustomerCategoryFilterDTO categoryFilterDTO = new CustomerCategoryFilterDTO();
+
         List<CategoryMetadataFieldValues> fieldValuesList = cmfvRepository.fetchByCategoryId(categoryId);
         List<CMDResponseDTO> cmdResponseDTOList = new ArrayList<>();
         for (CategoryMetadataFieldValues fieldValues : fieldValuesList) {

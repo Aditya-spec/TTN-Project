@@ -29,7 +29,10 @@ public class PasswordImpl implements PasswordService {
         if (user == null) {
            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
 
-        } else {
+        }
+        if(!user.getActive()){
+            throw new EcommerceException(ErrorCode.NOT_ACTIVE);
+        }
             user.setResetToken(UUID.randomUUID().toString());
             user.setResetTokenTime(LocalDateTime.now().plusMinutes(15));
             userRepository.save(user);
@@ -38,7 +41,7 @@ public class PasswordImpl implements PasswordService {
             emailService.sendMail(user.getEmail(), "Password Generation Link", body);
             System.out.println(body);
             return true;
-        }
+
     }
 
     public Boolean checkPassword(PasswordTokenDTO passwordTokenDto) {

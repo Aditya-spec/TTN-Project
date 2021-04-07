@@ -42,14 +42,13 @@ public class AdminImpl implements AdminService {
     @Autowired
     EmailService emailService;
 
-    Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
+    Pageable sortById = PageRequest.of(0, 5, Sort.by("id"));
 
     public List<RegisteredCustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
         if (customerList == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-            //throw new NotFoundException("No customer registered");
         }
 
         List<RegisteredCustomerDTO> registeredCustomerDTOList
@@ -64,7 +63,6 @@ public class AdminImpl implements AdminService {
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
         if (sellerList == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-
         }
 
         List<RegisteredSellerDTO> registeredSellerDTOList = new ArrayList<>();
@@ -91,7 +89,7 @@ public class AdminImpl implements AdminService {
         }
 
         if (user.getActive()) {
-            messageDTO.setMessage("User is already activated");
+            messageDTO.setMessage("User is already active");
             return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
         }
         try {
@@ -105,10 +103,10 @@ public class AdminImpl implements AdminService {
 
         }
         userRepository.save(user);
-        String body = "Your account is activated now!!";
-        String topic = "Account Update";
+        String body = "Your account is active now!!";
+        String topic = "Account Update!!";
         emailService.sendMail(user.getEmail(), topic, body);
-        messageDTO.setMessage("account is activated successfully");
+        messageDTO.setMessage("Account is activated successfully");
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
