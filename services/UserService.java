@@ -15,6 +15,8 @@ import java.util.Date;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    EmailService emailService;
 
     public static final int MAX_FAILED_ATTEMPTS = 3;
 
@@ -41,11 +43,12 @@ public class UserService {
     public void lock(User user) {
         user.setAccountNonLocked(false);
         user.setLockTime(new Date());
-
+        String body="Your account has been locked for 24 hours due to three successive wrong attempts";
+        emailService.sendMail(user.getEmail(),"Account locked",body);
         repo.save(user);
     }
 
-   // @Transactional(propagation = Propagation.REQUIRES_NEW)
+    // @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean unlockWhenTimeExpired(User user) {
         long lockTimeInMillis = user.getLockTime().getTime();
         long currentTimeInMillis = System.currentTimeMillis();

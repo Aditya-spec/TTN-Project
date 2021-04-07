@@ -84,7 +84,8 @@ public class SellerController {
     }
 
     @PostMapping("/add-product")
-    public ResponseEntity<MessageDTO> addProduct(HttpServletRequest request, @RequestBody SellerProductAddDTO sellerProductAddDTO) {
+    public ResponseEntity<MessageDTO> addProduct(HttpServletRequest request,
+                                                 @RequestBody SellerProductAddDTO sellerProductAddDTO) {
         String email = request.getUserPrincipal().getName();
         if (productImpl.addProduct(email, sellerProductAddDTO)) {
             messageDTO.setMessage("product has been added");

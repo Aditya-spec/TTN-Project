@@ -28,7 +28,7 @@ public class PasswordController {
         return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/reset")
+    @PatchMapping("/reset")
     public ResponseEntity<MessageDTO> resetPassword(@RequestParam String token, @RequestBody @Valid PasswordTokenDTO passwordTokenDto) {
         if (!passwordImpl.checkPassword(passwordTokenDto)) {
             messageDTO.setMessage("Passwords don't match");

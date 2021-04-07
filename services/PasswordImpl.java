@@ -23,24 +23,26 @@ public class PasswordImpl implements PasswordService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     public boolean generatePassword(String email) {
 
         User user = userRepository.findByEmail(email);
         if (user == null) {
-           throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
 
         }
-        if(!user.getActive()){
+        if (!user.getActive()) {
             throw new EcommerceException(ErrorCode.NOT_ACTIVE);
         }
-            user.setResetToken(UUID.randomUUID().toString());
-            user.setResetTokenTime(LocalDateTime.now().plusMinutes(15));
-            userRepository.save(user);
-            String body = " Please generate new Password using this link" +
-                    " which will be valid for 15 minutes only = \n http://localhost:8080/password/reset?token=" + user.getResetToken();
-            emailService.sendMail(user.getEmail(), "Password Generation Link", body);
-            System.out.println(body);
-            return true;
+        user.setResetToken(UUID.randomUUID().toString());
+        user.setResetTokenTime(LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+        String body = " Please generate new Password using this link" +
+                " which will be valid for 15 minutes only = \n http://localhost:8080/password/reset?token=" + user.getResetToken();
+        emailService.sendMail(user.getEmail(), "Password Generation Link", body);
+        System.out.println(body);
+
+        return true;
 
     }
 
@@ -66,6 +68,8 @@ public class PasswordImpl implements PasswordService {
             user.setResetTokenTime(null);
             user.setActive(true);
             userRepository.save(user);
+            String body = "Your password has been updated successfully and account has been activated";
+            emailService.sendMail(user.getEmail(), "Password Updated ", body);
             return true;
         }
     }
