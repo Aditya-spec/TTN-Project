@@ -41,9 +41,7 @@ public class PasswordImpl implements PasswordService {
                 " which will be valid for 15 minutes only = \n http://localhost:8080/password/reset?token=" + user.getResetToken();
         emailService.sendMail(user.getEmail(), "Password Generation Link", body);
         System.out.println(body);
-
         return true;
-
     }
 
     public Boolean checkPassword(PasswordTokenDTO passwordTokenDto) {
@@ -70,6 +68,7 @@ public class PasswordImpl implements PasswordService {
             userRepository.save(user);
             String body = "Your password has been updated successfully and account has been activated";
             emailService.sendMail(user.getEmail(), "Password Updated ", body);
+            System.out.println(body);
             return true;
         }
     }

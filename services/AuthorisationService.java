@@ -1,6 +1,7 @@
 package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.dtos.LoginDTO;
+import com.Bootcamp.Project.Application.dtos.MessageDTO;
 import com.Bootcamp.Project.Application.entities.AuthenticatedToken;
 import com.Bootcamp.Project.Application.entities.User;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
@@ -33,6 +34,8 @@ public class AuthorisationService {
     TokenProvider tokenProvider;
     @Autowired
     UserService userService;
+    @Autowired
+    MessageDTO messageDTO;
 
     public ResponseEntity getAuthentication(LoginDTO loginDTO, HttpServletResponse response) {
         User user = userRepository.findByEmail(loginDTO.getEmail());
@@ -51,7 +54,7 @@ public class AuthorisationService {
                     if (userService.unlockWhenTimeExpired(user)) {
                         throw new EcommerceException(ErrorCode.PASSWORD_NOT_CORRECT);
                     } else {
-                        throw new EcommerceException(ErrorCode.USER_IS_LOCKED);
+                        throw new EcommerceException(ErrorCode.ACCOUNT_IS_LOCKED);
                     }
                 } else {
                     throw new EcommerceException(ErrorCode.USER_NOT_ACTIVE);
@@ -61,8 +64,13 @@ public class AuthorisationService {
             }
         } else {
             if (user.getFailedAttempt() > 0) {
-                userService.resetFailedAttempts(user.getEmail());
-            
+                if (!user.isAccountNonLocked()) {
+                    if (!userService.unlockWhenTimeExpired(user)) {
+                        throw new EcommerceException(ErrorCode.USER_IS_LOCKED);
+                    }
+                } else {
+                    userService.resetFailedAttempts(user.getEmail());
+                }
             }
 
         }
@@ -83,7 +91,9 @@ public class AuthorisationService {
         newTokenEntry.setToken(token);
         newTokenEntry.setUsername(loginDTO.getEmail());
         authenticatedTokenRepository.save(newTokenEntry);
-        return ResponseEntity.ok(token);
+        String body="You have logged in successfully, your token is: "+ token;
+        messageDTO.setMessage(body);
+        return ResponseEntity.ok(messageDTO);
     }
     }
 

@@ -43,6 +43,7 @@ public class UserService {
     public void lock(User user) {
         user.setAccountNonLocked(false);
         user.setLockTime(new Date());
+        user.setFailedAttempt(3);
         String body="Your account has been locked for 24 hours due to three successive wrong attempts";
         emailService.sendMail(user.getEmail(),"Account locked",body);
         repo.save(user);
