@@ -5,12 +5,13 @@ import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Name;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CustomerService;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerImpl implements CustomerService {
@@ -32,6 +33,8 @@ public class CustomerImpl implements CustomerService {
     EmailService emailService;
     @Autowired
     MessageDTO messageDTO;
+    @Autowired
+    CustomValidation customValidation;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -45,24 +48,25 @@ public class CustomerImpl implements CustomerService {
     }
 
     public List<AddressDTO> showAddresses(String email) {
+
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
         if (addressList == null) {
             throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
         }
-        Type setType = new TypeToken<List<AddressDTO>>() {
-        }.getType();
-        List<AddressDTO> showAddressDTOList = modelMapper.map(addressList, setType);
+        List<AddressDTO> showAddressDTOList = addressList.stream().map(e -> mapAddressToDTO(e)).collect(Collectors.toList());
+
         return showAddressDTOList;
     }
 
     public Boolean addAddress(String email, AddressDTO addressDTO) {
+
         Customer customer = customerRepository.findByEmail(email);
         if (customer == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-
         }
-        Address address = modelMapper.map(addressDTO, Address.class);
+        Address address = mapAddressFromDTO(addressDTO);
+
         customer.setAddress(address);
         customerRepository.save(customer);
 
@@ -88,35 +92,10 @@ public class CustomerImpl implements CustomerService {
         if (customer == null) {
             return false;
         }
-        customer = mapCustomer(customerProfileDto, customer);
+        customer = mapCustomerFromDTO(customerProfileDto, customer);
         customerRepository.save(customer);
         return true;
     }
-
-    private Customer mapCustomer(CustomerProfileDTO customerProfileDto, Customer customer) {
-        Name name = customer.getName();
-        if (customerProfileDto.getFirstName() != null) {
-            name.setFirstName(customerProfileDto.getFirstName());
-        }
-        if (customerProfileDto.getLastName() != null) {
-            name.setLastName(customerProfileDto.getLastName());
-        }
-
-        if (customerProfileDto.getMiddleName() != null) {
-            name.setMiddleName(customerProfileDto.getMiddleName());
-        }
-        customer.setName(name);
-
-        if (customerProfileDto.getContact() != null) {
-            customer.setContact(customerProfileDto.getContact());
-        }
-
-        if (customerProfileDto.getImagePath() != null) {
-            customer.setImagePath(customerProfileDto.getImagePath());
-        }
-        return customer;
-    }
-
 
     public boolean checkPassword(String password, String confirmPassword) {
         if (password.equals(confirmPassword)) {
@@ -149,7 +128,7 @@ public class CustomerImpl implements CustomerService {
         if (customer.getId() != address.getUser().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-        address = mapAddress(address, addressUpdateDto);
+        address = mapUpdateAddressFromDTO(address, addressUpdateDto);
 
         addressRepository.save(address);
 
@@ -157,7 +136,38 @@ public class CustomerImpl implements CustomerService {
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
-    private Address mapAddress(Address address, AddressUpdateDTO addressUpdateDto) {
+
+    /**
+     *
+     * Utilities Function
+     *
+     * */
+
+    private Customer mapCustomerFromDTO(CustomerProfileDTO customerProfileDto, Customer customer) {
+        Name name = customer.getName();
+        if (customerProfileDto.getFirstName() != null) {
+            name.setFirstName(customerProfileDto.getFirstName());
+        }
+        if (customerProfileDto.getLastName() != null) {
+            name.setLastName(customerProfileDto.getLastName());
+        }
+
+        if (customerProfileDto.getMiddleName() != null) {
+            name.setMiddleName(customerProfileDto.getMiddleName());
+        }
+        customer.setName(name);
+
+        if (customerProfileDto.getContact() != null) {
+            customer.setContact(customerProfileDto.getContact());
+        }
+
+        if (customerProfileDto.getImagePath() != null) {
+            customer.setImagePath(customerProfileDto.getImagePath());
+        }
+        return customer;
+    }
+
+    private Address mapUpdateAddressFromDTO(Address address, AddressUpdateDTO addressUpdateDto) {
         if (addressUpdateDto.getAddressLine() != null) {
             address.setAddressLine(addressUpdateDto.getAddressLine());
         }
@@ -171,7 +181,8 @@ public class CustomerImpl implements CustomerService {
             address.setCountry(addressUpdateDto.getCountry());
         }
         if (addressUpdateDto.getLabel() != null) {
-            address.setLabel(addressUpdateDto.getLabel());
+            Label label = customValidation.verifyLabel(addressUpdateDto.getLabel());
+            address.setLabel(label);
         }
         if (addressUpdateDto.getZipCode() != null) {
             address.setZipCode(addressUpdateDto.getZipCode());
@@ -179,5 +190,27 @@ public class CustomerImpl implements CustomerService {
         return address;
     }
 
+    private Address mapAddressFromDTO(AddressDTO addressDTO) {
+        Address address = new Address();
+        address.setAddressLine(addressDTO.getAddressLine());
+        Label label = customValidation.verifyLabel(addressDTO.getLabel().toString());
+        address.setLabel(label);
+        address.setCity(addressDTO.getCity());
+        address.setCountry(addressDTO.getCountry());
+        address.setState(addressDTO.getState());
+        address.setZipCode(addressDTO.getZipCode());
+        return address;
+    }
+
+    public AddressDTO mapAddressToDTO(Address address){
+        AddressDTO addressDTO = new AddressDTO();
+        addressDTO.setAddressLine(address.getAddressLine());
+        addressDTO.setLabel(address.getLabel().toString());
+        addressDTO.setCity(address.getCity());
+        addressDTO.setCountry(address.getCountry());
+        addressDTO.setState(address.getState());
+        addressDTO.setZipCode(address.getZipCode());
+        return addressDTO;
+    }
 
 }

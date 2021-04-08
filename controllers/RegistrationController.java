@@ -84,6 +84,7 @@ public class RegistrationController {
             messageDTO.setMessage(result);
             return new ResponseEntity<>(messageDTO, HttpStatus.NOT_ACCEPTABLE);
         }
+        customValidation.verifyLabel(sellerRegistrationDTO.getLabel());
 
         if (registrationImpl.registerSeller(sellerRegistrationDTO)) {
             messageDTO.setMessage("Seller has been registered, please wait for confirmation mail");

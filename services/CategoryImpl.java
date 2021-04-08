@@ -124,32 +124,7 @@ public class CategoryImpl implements CategoryService {
     }
 
 
-    private List<CategoryAddDTO> findCategoryParent(Long id) {
 
-        Category category = categoryRepository.findById(id).get();
-
-        List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
-        while (category.getParentId() != 0l) {
-            Optional<Category> category1 = categoryRepository.findById(category.getParentId());
-            categoryAddDTOList.add(modelMapper.map(category1.get(), CategoryAddDTO.class));
-
-            category = category1.get();
-        }
-
-        return categoryAddDTOList;
-    }
-
-
-    private List<CategoryAddDTO> findCategoryChildren(Long id) {
-
-        Optional<List<Category>> categories = categoryRepository.findNextChildren(id);
-        if (categories.isEmpty()) {
-            return null;
-        }
-        List<Category> categoryList = categories.get();
-        List<CategoryAddDTO> categoryAddDTOList = categoryList.stream().map(e -> modelMapper.map(e, CategoryAddDTO.class)).collect(Collectors.toList());
-        return categoryAddDTOList;
-    }
 
 
 
@@ -214,6 +189,8 @@ public class CategoryImpl implements CategoryService {
         return "category updated successfully";
     }
 
+
+    @Override
     public String addMetadataValues(CategoryMetadataFieldValuesDTO cmdfvDTO) {
 
         Optional<Category> optionalCategory = categoryRepository.findById(cmdfvDTO.getCategoryId());
@@ -268,16 +245,7 @@ public class CategoryImpl implements CategoryService {
         return "metadata values updated Successfully";
     }
 
-    public String checkFieldValues(String oldValues, String newValues) {
-        String[] newValue = newValues.split(",");
-        String updatedValues = oldValues;
-        for (String str : newValue) {
-            if (!oldValues.contains(str)) {
-                updatedValues = updatedValues + "," + str;
-            }
-        }
-        return updatedValues;
-    }
+
 
     @Override
     public List<SellerCategoryResponseDTO> showSellerCategories() {
@@ -374,6 +342,52 @@ public class CategoryImpl implements CategoryService {
         categoryFilterDTO.setMaxPrice(maxPrice);
         categoryFilterDTO.setMinPrice(minPrice);
         return categoryFilterDTO;
+    }
+
+
+    /**
+     *
+     * Utility Functions
+     *
+     */
+
+    private List<CategoryAddDTO> findCategoryParent(Long id) {
+
+        Category category = categoryRepository.findById(id).get();
+
+        List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
+        while (category.getParentId() != 0l) {
+            Optional<Category> category1 = categoryRepository.findById(category.getParentId());
+            categoryAddDTOList.add(modelMapper.map(category1.get(), CategoryAddDTO.class));
+
+            category = category1.get();
+        }
+
+        return categoryAddDTOList;
+    }
+
+
+
+    private List<CategoryAddDTO> findCategoryChildren(Long id) {
+
+        Optional<List<Category>> categories = categoryRepository.findNextChildren(id);
+        if (categories.isEmpty()) {
+            return null;
+        }
+        List<Category> categoryList = categories.get();
+        List<CategoryAddDTO> categoryAddDTOList = categoryList.stream().map(e -> modelMapper.map(e, CategoryAddDTO.class)).collect(Collectors.toList());
+        return categoryAddDTOList;
+    }
+
+    public String checkFieldValues(String oldValues, String newValues) {
+        String[] newValue = newValues.split(",");
+        String updatedValues = oldValues;
+        for (String str : newValue) {
+            if (!oldValues.contains(str)) {
+                updatedValues = updatedValues + "," + str;
+            }
+        }
+        return updatedValues;
     }
 
 }

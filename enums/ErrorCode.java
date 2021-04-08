@@ -9,6 +9,7 @@ public enum ErrorCode {
     ADDRESS_NOT_FOUND("Address does not exists in the database", HttpStatus.NOT_FOUND, 404),
     USER_ALREADY_EXISTS("User already exists in the system", HttpStatus.FOUND, 302),
     PASSWORD_NOT_CORRECT("password is incorrect", HttpStatus.BAD_REQUEST, 400),
+    LABEL_NOT_CORRECT("Label must be either HOME or OFFICE",HttpStatus.BAD_REQUEST,400),
     USER_NOT_ACTIVE("User is not active", HttpStatus.UPGRADE_REQUIRED, 426),
     ACTIVATED_TOKEN("Your account is already activated", HttpStatus.BAD_REQUEST, 400),
     USER_IS_LOCKED("User account is locked for 24 hours", HttpStatus.UPGRADE_REQUIRED, 426),

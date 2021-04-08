@@ -4,12 +4,14 @@ import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.*;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.RoleRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.RegistrationService;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,6 +35,8 @@ public class RegistrationImpl implements RegistrationService {
     UserRepository userRepository;
     @Autowired
     SellerRepository sellerRepository;
+    @Autowired
+    CustomValidation customValidation;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -144,9 +148,16 @@ public class RegistrationImpl implements RegistrationService {
         return true;
     }
 
+    /**
+     *
+     Utility functions
+
+     */
+
     private Address mapSellerAddress(SellerRegistrationDTO sellerRegistrationDTO, Address address) {
         address.setAddressLine(sellerRegistrationDTO.getAddressLine());
-        address.setLabel(sellerRegistrationDTO.getLabel());
+        Label label=customValidation.verifyLabel(sellerRegistrationDTO.getLabel());
+        address.setLabel(label);
         address.setState(sellerRegistrationDTO.getState());
         address.setCountry(sellerRegistrationDTO.getCountry());
         address.setCity(sellerRegistrationDTO.getCity());

@@ -27,7 +27,7 @@ public class AddressDTO extends BaseDomainDTO {
     @Size(min = 6,max = 6,message = "zipCode must have 6 digits")
     private String zipCode;
     @NotNull(message = "please add Address type")
-    private Label label;
+    private String label;
 
 
 
@@ -72,11 +72,11 @@ public class AddressDTO extends BaseDomainDTO {
         this.zipCode = zipCode;
     }
 
-    public Label getLabel() {
+    public String getLabel() {
         return label;
     }
 
-    public void setLabel(Label label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 

@@ -4,10 +4,12 @@ import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.Address;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.SellerService;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class SellerImpl implements SellerService {
     AddressRepository addressRepository;
     @Autowired
     MessageDTO messageDTO;
+    @Autowired
+    CustomValidation customValidation;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -38,13 +42,11 @@ public class SellerImpl implements SellerService {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
         SellerProfileDTO sellerProfileDto = new SellerProfileDTO();
-        sellerProfileDto = mapSeller(seller, sellerProfileDto);
-        sellerProfileDto = mapAddress(seller.getAddress(),sellerProfileDto);
+        sellerProfileDto = mapSellerToDTO(seller, sellerProfileDto);
+        sellerProfileDto = mapAddressToDTO(seller.getAddress(), sellerProfileDto);
 
         return sellerProfileDto;
     }
-
-
 
 
     public boolean updateSeller(String email, SellerUpdateDTO sellerUpdateDto) {
@@ -95,13 +97,17 @@ public class SellerImpl implements SellerService {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
 
-        address = mapUpdatedAddress(address, addressUpdateDto);
+        address = mapUpdatedAddressFromDTO(address, addressUpdateDto);
         addressRepository.save(address);
         messageDTO.setMessage("Address has been updated successfully");
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
-    private Address mapUpdatedAddress(Address address, AddressUpdateDTO addressUpdateDto) {
+    /**
+     * Utility functions
+     */
+
+    private Address mapUpdatedAddressFromDTO(Address address, AddressUpdateDTO addressUpdateDto) {
         if (addressUpdateDto.getAddressLine() != null) {
             address.setAddressLine(addressUpdateDto.getAddressLine());
         }
@@ -115,7 +121,8 @@ public class SellerImpl implements SellerService {
             address.setCountry(addressUpdateDto.getCountry());
         }
         if (addressUpdateDto.getLabel() != null) {
-            address.setLabel(addressUpdateDto.getLabel());
+            Label label = customValidation.verifyLabel(addressUpdateDto.getLabel());
+            address.setLabel(label);
         }
         if (addressUpdateDto.getZipCode() != null) {
             address.setZipCode(addressUpdateDto.getZipCode());
@@ -123,7 +130,7 @@ public class SellerImpl implements SellerService {
         return address;
     }
 
-    private SellerProfileDTO mapSeller(Seller seller, SellerProfileDTO sellerProfileDTO) {
+    private SellerProfileDTO mapSellerToDTO(Seller seller, SellerProfileDTO sellerProfileDTO) {
 
         sellerProfileDTO.setCompanyName(seller.getCompanyName());
         sellerProfileDTO.setCompanyContact(seller.getCompanyContact());
@@ -138,12 +145,12 @@ public class SellerImpl implements SellerService {
         return sellerProfileDTO;
     }
 
-    private SellerProfileDTO mapAddress(Address address,SellerProfileDTO sellerProfileDTO) {
+    private SellerProfileDTO mapAddressToDTO(Address address, SellerProfileDTO sellerProfileDTO) {
 
         sellerProfileDTO.setZipCode(address.getZipCode());
         sellerProfileDTO.setAddressLine(address.getAddressLine());
         sellerProfileDTO.setState(address.getState());
-        sellerProfileDTO.setLabel(address.getLabel());
+        sellerProfileDTO.setLabel(address.getLabel().toString());
         sellerProfileDTO.setCountry(address.getCountry());
         sellerProfileDTO.setAddressLine(address.getAddressLine());
         sellerProfileDTO.setCity(address.getCity());

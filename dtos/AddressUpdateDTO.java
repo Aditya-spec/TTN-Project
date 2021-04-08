@@ -18,7 +18,7 @@ public class AddressUpdateDTO {
     @Size(min = 6,max = 6,message = "zipCode must be of 6 digits")
     private String zipCode;
 
-    private Label label;
+    private String label;
 
     public String getCity() {
         return city;
@@ -60,11 +60,11 @@ public class AddressUpdateDTO {
         this.zipCode = zipCode;
     }
 
-    public Label getLabel() {
+    public String getLabel() {
         return label;
     }
 
-    public void setLabel(Label label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 }

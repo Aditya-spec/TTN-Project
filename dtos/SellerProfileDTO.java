@@ -45,7 +45,7 @@ public class SellerProfileDTO {
     @Size(min = 3,max = 20,message = "must be between 3 to 20 characters")
     private String zipCode;
 
-    private Label label;
+    private String label;
 
 
     public Long getId() {
@@ -168,11 +168,11 @@ public class SellerProfileDTO {
         this.zipCode = zipCode;
     }
 
-    public Label getLabel() {
+    public String getLabel() {
         return label;
     }
 
-    public void setLabel(Label label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 }

@@ -1,9 +1,11 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.CustomerImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -28,12 +30,13 @@ public class CustomerController {
     ProductImpl productImpl;
     @Autowired
     MessageDTO messageDTO;
+    @Autowired
+    CustomValidation customValidation;
 
     @GetMapping("/home")
-    public ResponseEntity<MessageDTO> indexPremium()
-    {
+    public ResponseEntity<MessageDTO> indexPremium() {
         messageDTO.setMessage("Customer Home");
-        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/view-profile")
@@ -51,7 +54,7 @@ public class CustomerController {
     @PostMapping("/add-address")
     public ResponseEntity<MessageDTO> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
-
+        Label label=customValidation.verifyLabel(addressDTO.getLabel());
         if (customerImpl.addAddress(email, addressDTO)) {
             messageDTO.setMessage("Address added successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
@@ -61,9 +64,9 @@ public class CustomerController {
     }
 
     @DeleteMapping("/delete-address")
-    public ResponseEntity<MessageDTO> deleteAddress(HttpServletRequest request,@RequestParam Long id) {
-        String email=request.getUserPrincipal().getName();
-        if (customerImpl.deleteAddress(id,email)) {
+    public ResponseEntity<MessageDTO> deleteAddress(HttpServletRequest request, @RequestParam Long id) {
+        String email = request.getUserPrincipal().getName();
+        if (customerImpl.deleteAddress(id, email)) {
             messageDTO.setMessage("Address deleted successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
@@ -83,10 +86,10 @@ public class CustomerController {
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<MessageDTO> changePassword(HttpServletRequest request,@Valid @RequestBody PasswordDTO passwordDto) {
+    public ResponseEntity<MessageDTO> changePassword(HttpServletRequest request, @Valid @RequestBody PasswordDTO passwordDto) {
         String email = request.getUserPrincipal().getName();
         if (customerImpl.checkPassword(passwordDto.getPassword(), passwordDto.getConfirmPassword())) {
-          messageDTO.setMessage("Password and Confirm password do not match");
+            messageDTO.setMessage("Password and Confirm password do not match");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (customerImpl.customerResetPassword(email, passwordDto)) {
@@ -100,8 +103,8 @@ public class CustomerController {
 
     @PatchMapping("/update-address")
     public ResponseEntity<MessageDTO> updatePassword(@RequestParam Long addressId, HttpServletRequest request, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
-        String email=request.getUserPrincipal().getName();
-        return customerImpl.updateAddress(email,addressId, addressUpdateDto);
+        String email = request.getUserPrincipal().getName();
+        return customerImpl.updateAddress(email, addressId, addressUpdateDto);
     }
 
     @GetMapping("/view-categories")
@@ -149,8 +152,8 @@ public class CustomerController {
 
     @GetMapping("/category-filter")
     public CustomerCategoryFilterDTO categoryFilter(@RequestParam Long categoryId) {
-       CustomerCategoryFilterDTO customerCategoryFilterDTO= categoryImpl.filter(categoryId);
-       return customerCategoryFilterDTO;
+        CustomerCategoryFilterDTO customerCategoryFilterDTO = categoryImpl.filter(categoryId);
+        return customerCategoryFilterDTO;
     }
 
 }

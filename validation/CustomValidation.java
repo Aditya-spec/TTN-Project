@@ -5,12 +5,17 @@ import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Seller;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.enums.Label;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class CustomValidation {
@@ -71,27 +76,13 @@ public class CustomValidation {
         return null;
     }
 
-    /*public String addressValidation(AddressDTO address) {
-        if (address.getAddressLine() == null) {
-            return "addressLine cannot be null";
-        }
-        if ((address.getCity() == null)||(address.getCity().length()<2)||(address.getCity().length()>20)) {
-            return "please give appropriate ";
-        }
-        if (address.getCountry() == null) {
-            return "country cannot be null";
-        }
-        if (address.getLabel() == null) {
-            return "city cannot be null";
-        }
-        if (address.getCity() == null) {
-            return "city cannot be null";
-        }
-        if (address.getState() == null) {
-            return "state cannot be null";
-        }
-        return null;
+    public Label verifyLabel(String label) {
 
-
-    }*/
+        return Stream.of(Label.values())
+                .filter(c -> c.toString().equals(label))
+                .findFirst()
+                .orElseThrow(() -> {
+                    throw new EcommerceException(ErrorCode.LABEL_NOT_CORRECT);
+                });
+    }
 }

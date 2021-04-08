@@ -161,14 +161,6 @@ public class ProductImpl implements ProductService {
             }
         }
 
-
-        /*if (sellerProductUpdateDTO.getName() != null) {
-            Product product1 = productRepository.fetchProductForUpdate(seller.getId(), sellerProductUpdateDTO.getName());
-            if (product1 != null) {
-                throw new EcommerceException(ErrorCode.ALREADY_EXISTS);
-            }
-            product.setName(sellerProductUpdateDTO.getName());
-        }*/
         if (sellerProductUpdateDTO.getCancellable()) {
             product.setCancellable(sellerProductUpdateDTO.getCancellable());
         }
@@ -427,6 +419,11 @@ public class ProductImpl implements ProductService {
         }
         return productList;
     }
+
+    /**
+     * Utility Functions
+     *
+     */
 
 
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {

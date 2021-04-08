@@ -66,7 +66,7 @@ public class SellerRegistrationDTO {
     private String zipCode;
 
     @NotNull(message = "pls add Address type")
-    private Label label;
+    private String label;
 
 
     public String getCity() {
@@ -109,11 +109,11 @@ public class SellerRegistrationDTO {
         this.zipCode = zipCode;
     }
 
-    public Label getLabel() {
+    public String getLabel() {
         return label;
     }
 
-    public void setLabel(Label label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 
