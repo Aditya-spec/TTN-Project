@@ -234,12 +234,12 @@ public class ProductImpl implements ProductService {
         if (product.getDeleted()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
-        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
+        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);  //to get meta values
         if (category == null) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
         JSONArray inputMetadata = productVariationDTO.getMetadata();
-        checkVariation(inputMetadata, product);
+        checkVariation(inputMetadata, product);             //check whether the given field and values is present or not
 
         ProductVariation productVariation = new ProductVariation();
         productVariation = showProductMapping(productVariation, productVariationDTO, product);
@@ -286,14 +286,18 @@ public class ProductImpl implements ProductService {
     }
 
     @Override
-    public ProductVariationResponseDTO showVariation(String email, Long id) {
+    public ProductVariationResponseDTO showVariation(String email, Long variationId) {
         ModelMapper modelMapper = new ModelMapper();
-        ProductVariation productVariation = productVariationRepository.findById(id).orElse(null);
+        ProductVariation productVariation = productVariationRepository.findById(variationId).orElse(null);
         if (productVariation == null) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         Product product = productVariation.getProduct();
         Seller seller = product.getSeller();
+
+        if (seller.getId() != product.getSeller().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
         ProductVariationResponseDTO responseDTO = showVariationMapping(product, productVariation);
         return responseDTO;
     }
@@ -309,14 +313,16 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
 
-        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId());
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
         if (variationList == null) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
         for (ProductVariation variation : variationList) {
-            ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
-            productVariationList.add(responseDTO);
+            if (!variation.getDeleted()) {
+                ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
+                productVariationList.add(responseDTO);
+            }
         }
         return productVariationList;
     }
@@ -324,13 +330,13 @@ public class ProductImpl implements ProductService {
     @Override
     public AdminCustomerProductResponseDTO showCustomerProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
-        if ((product == null) ) {
+        if ((product == null)) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
-        if (product.getDeleted()){
+        if (product.getDeleted()) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
-        if (!product.getActive()){
+        if (!product.getActive()) {
             throw new EcommerceException(ErrorCode.NOT_ACTIVE);
         }
 
@@ -346,7 +352,6 @@ public class ProductImpl implements ProductService {
         }
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         for (Product product : productList) {
-
             adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
         }
         return adminCustomerProductResponseDTOList;
@@ -372,8 +377,9 @@ public class ProductImpl implements ProductService {
         List<Product> productList = productRepository.fetchSimilarProducts(givenProduct.getCategory().getId(), sortById);
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         for (Product product : productList) {
-
-            adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
+            if (!product.getDeleted() && product.getActive()) {
+                adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
+            }
         }
         return adminCustomerProductResponseDTOList;
     }
@@ -397,7 +403,7 @@ public class ProductImpl implements ProductService {
         }
         List<AdminCustomerProductResponseDTO> responseDTOList = new ArrayList<>();
         for (Product product : productList) {
-            if (!product.getDeleted()&& product.getActive())
+            if (!product.getDeleted() && product.getActive())
                 responseDTOList.add(showCustomerProduct(product.getId()));
         }
         return responseDTOList;
@@ -425,7 +431,10 @@ public class ProductImpl implements ProductService {
 
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
-        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId());
+        if (category == null) {
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
+        }
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
         if (variationList == null) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -531,7 +540,7 @@ public class ProductImpl implements ProductService {
     private void checkVariation(JSONArray inputMetadata, Product product) {
 
         for (Object object : inputMetadata) {
-            Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class); //Object to JsonObject
+            Map<String, Object> metaValues = objectMapper.convertValue(object, Map.class);
             String fieldName = metaValues.get("field").toString();
             String value = metaValues.get("values").toString();
 
