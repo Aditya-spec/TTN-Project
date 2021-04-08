@@ -1,14 +1,16 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import com.Bootcamp.Project.Application.enums.Label;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.validation.annotation.Validated;
 
 
-import javax.validation.constraints.NotEmpty;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Validated
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressDTO extends BaseDomainDTO {
 
     @NotNull(message = "please add City name")

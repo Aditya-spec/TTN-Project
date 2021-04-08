@@ -51,7 +51,7 @@ public class CustomerImpl implements CustomerService {
 
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
-        if (addressList == null) {
+        if (addressList.size()==0) {
             throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
         }
         List<AddressDTO> showAddressDTOList = addressList.stream().map(e -> mapAddressToDTO(e)).collect(Collectors.toList());

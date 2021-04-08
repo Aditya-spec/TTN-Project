@@ -1,7 +1,6 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 @JsonFilter(value = "responseDTOFilter")

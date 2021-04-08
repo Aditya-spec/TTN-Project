@@ -198,6 +198,9 @@ public class ProductImpl implements ProductService {
     public List<SellerProductShowDTO> showAllSellerProducts(String email) {
         Seller seller = sellerRepository.findByEmail(email);
         List<Product> productList = productRepository.fetchBySellerId(seller.getId(), sortById);
+        if(productList.size()==0){
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
         List<SellerProductShowDTO> sellerProductShowDTOList = new ArrayList<>();
         for (Product product : productList) {
             if (!product.getDeleted()) {
@@ -306,7 +309,7 @@ public class ProductImpl implements ProductService {
         }
 
         List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
-        if (variationList == null) {
+        if (variationList.size()==0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
@@ -339,7 +342,7 @@ public class ProductImpl implements ProductService {
     @Override
     public List<AdminCustomerProductResponseDTO> showAllAdminProducts() {
         List<Product> productList = productRepository.fetchAllProducts(sortById);
-        if (productList == null) {
+        if (productList.size()==0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
@@ -367,6 +370,9 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
         List<Product> productList = productRepository.fetchSimilarProducts(givenProduct.getCategory().getId(), sortById);
+        if(productList.size()==0){
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         for (Product product : productList) {
             if (!product.getDeleted() && product.getActive()) {
@@ -386,11 +392,11 @@ public class ProductImpl implements ProductService {
         List<Product> productList = new ArrayList<>();
 
         List<Category> allLeafCategory = categoryRepository.fetchLeafCategories();
-        if (allLeafCategory == null) {
+        if (allLeafCategory.size()==0) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
         productList = getAllProducts(category, productList, allLeafCategory);
-        if (productList == null) {
+        if (productList.size()==0) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
         List<AdminCustomerProductResponseDTO> responseDTOList = new ArrayList<>();
@@ -406,7 +412,7 @@ public class ProductImpl implements ProductService {
 
         if (allLeafCategory.contains(category)) {
             List<Product> categoryProducts = productRepository.fetchAllCategoryProducts(category.getId());
-            if ((categoryProducts != null)) {
+            if ((categoryProducts.size()==0)) {
                 productList.addAll(categoryProducts);
             }
             return productList;
@@ -432,7 +438,7 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
         List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
-        if (variationList == null) {
+        if (variationList.size()==0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();

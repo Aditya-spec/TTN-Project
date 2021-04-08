@@ -90,6 +90,9 @@ public class CategoryImpl implements CategoryService {
         }
 
         List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.get().getId());
+        if(categoryMetadataFieldValuesList.size()==0){
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
 
         List<CMDResponseDTO> fieldList = new ArrayList<>();
 
@@ -157,7 +160,7 @@ public class CategoryImpl implements CategoryService {
             List<CategoryMetadataFieldValues> fieldValuesList = cmfvRepository.fetchByMetaId(metadataField.getId());
 
             CMDResponseDTO metadataFieldDTO = new CMDResponseDTO();
-            if (fieldValuesList == null) {
+            if (fieldValuesList.size()==0) {
                 throw new EcommerceException(ErrorCode.NO_DATA);
             }
 
@@ -250,7 +253,7 @@ public class CategoryImpl implements CategoryService {
     @Override
     public List<SellerCategoryResponseDTO> showSellerCategories() {
         List<Category> categoryList = categoryRepository.fetchLeafCategories();
-        if (categoryList == null) {
+        if (categoryList.size()==0) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
         List<SellerCategoryResponseDTO> sellerCategoryResponseDTOList = new ArrayList<>();
@@ -285,7 +288,7 @@ public class CategoryImpl implements CategoryService {
     @Override
     public List<CustomerCategoryResponseDTO> showCustomerCategories() {
         List<Category> categoryList = categoryRepository.fetchAllRootCategories(sortById);
-        if (categoryList == null) {
+        if (categoryList.size()==0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
@@ -324,6 +327,9 @@ public class CategoryImpl implements CategoryService {
         Double minPrice = productVariationRepository.getMinPrice(categoryId);
 
         List<String> brandList = productRepository.fetchBrandList(categoryId);
+        if(brandList.size()==0){
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
 
         CustomerCategoryFilterDTO categoryFilterDTO = new CustomerCategoryFilterDTO();
 

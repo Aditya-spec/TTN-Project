@@ -77,7 +77,6 @@ public class CustomValidation {
     }
 
     public Label verifyLabel(String label) {
-
         return Stream.of(Label.values())
                 .filter(c -> c.toString().equals(label))
                 .findFirst()

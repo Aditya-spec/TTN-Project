@@ -1,7 +1,5 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import com.Bootcamp.Project.Application.enums.Label;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

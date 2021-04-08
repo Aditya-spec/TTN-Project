@@ -47,7 +47,7 @@ public class AdminImpl implements AdminService {
     public List<RegisteredCustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
-        if (customerList == null) {
+        if (customerList.size()==0) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -61,7 +61,7 @@ public class AdminImpl implements AdminService {
     public List<RegisteredSellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
-        if (sellerList == null) {
+        if (sellerList.size()==0) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -71,7 +71,6 @@ public class AdminImpl implements AdminService {
             addressDTO.setDateCreated(seller.getAddress().getDateCreated());
             RegisteredSellerDTO registeredSellerDTO = modelMapper.map(seller, RegisteredSellerDTO.class);
 
-            //  registeredSellerDTO = sellerAddressMapping(seller.getAddress(), registeredSellerDTO);
             registeredSellerDTO.setAddressDTO(addressDTO);
             registeredSellerDTO.setContactNumber(seller.getCompanyContact());
             registeredSellerDTOList.add(registeredSellerDTO);

@@ -1,9 +1,12 @@
 package com.Bootcamp.Project.Application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerProfileDTO {
 
     @Email(message = "enter a valid email")

@@ -3,7 +3,6 @@ package com.Bootcamp.Project.Application.dtos;
 import org.json.simple.JSONArray;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class ProductVariationUpdateDTO {
