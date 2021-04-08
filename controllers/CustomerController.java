@@ -51,6 +51,7 @@ public class CustomerController {
     @PostMapping("/add-address")
     public ResponseEntity<MessageDTO> addAddress(HttpServletRequest request, @Valid @RequestBody AddressDTO addressDTO) {
         String email = request.getUserPrincipal().getName();
+
         if (customerImpl.addAddress(email, addressDTO)) {
             messageDTO.setMessage("Address added successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
