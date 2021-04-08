@@ -3,9 +3,6 @@ package com.Bootcamp.Project.Application.configuration.filters;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.exceptionHandling.ExceptionResponse;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -24,7 +21,6 @@ import java.util.Date;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FilterExceptionHandler extends OncePerRequestFilter {
 
-   /* private final Logger log = LoggerFactory.getLogger(getClass());*/
 
 
     @Override
@@ -36,9 +32,9 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
         catch (EcommerceException e) {
             response.setContentType("application/json");
             response.setStatus(e.errorCode.getCode());
-            ExceptionResponse apiResponse = new ExceptionResponse(new Date(),e.errorCode.getErrorDesc(), e.errorCode.getStatusCode());
+            ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),e.errorCode.getErrorDesc(), e.errorCode.getStatusCode());
             ObjectMapper objectMapper = new ObjectMapper();
-            response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
+            response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
         }
     }
 }

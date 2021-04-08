@@ -40,6 +40,10 @@ public class AuthorisationService {
     public ResponseEntity getAuthentication(LoginDTO loginDTO, HttpServletResponse response) {
         User user = userRepository.findByEmail(loginDTO.getEmail());
 
+        if(user==null){
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+        }
+
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             if (user != null) {
                 if (user.getActive() && user.isAccountNonLocked()) {

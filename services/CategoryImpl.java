@@ -67,7 +67,7 @@ public class CategoryImpl implements CategoryService {
 
         Optional<List<Category>> categories = categoryRepository.fetchALlCategories(sortById);
         if (categories.isEmpty()) {
-            throw new EcommerceException(ErrorCode.NO_DATA);
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
 
         List<Category> categoryList = categories.get();
@@ -86,7 +86,7 @@ public class CategoryImpl implements CategoryService {
 
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
 
         List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.get().getId());
@@ -181,11 +181,11 @@ public class CategoryImpl implements CategoryService {
     public String updateCategory(Long categoryId, String updatedName) {
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
         Category categoryExists = categoryRepository.findByName(updatedName);
         if (categoryExists != null) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.ALREADY_EXISTS);
         }
         category.setName(updatedName);
         categoryRepository.save(category);
@@ -227,18 +227,18 @@ public class CategoryImpl implements CategoryService {
     public String updateMetadataValues(CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO) {
         Optional<Category> category = categoryRepository.findById(categoryMetadataFieldValuesDTO.getCategoryId());
         if (category.isEmpty()) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
 
         Optional<CategoryMetadataField> metadataField = metadataFieldRepository.findById(categoryMetadataFieldValuesDTO.getCategoryMetadataFieldId());
         if (metadataField.isEmpty()) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
         CategoryMetadataFieldValues metadataFieldValues = cmfvRepository.fetchObject(category.get().getId(), metadataField.get().getId());
 
         if (metadataFieldValues == null) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
         String oldValues = metadataFieldValues.getFieldValues();
         String newValues = String.join(",", categoryMetadataFieldValuesDTO.getFieldValues());
@@ -254,7 +254,7 @@ public class CategoryImpl implements CategoryService {
     public List<SellerCategoryResponseDTO> showSellerCategories() {
         List<Category> categoryList = categoryRepository.fetchLeafCategories();
         if (categoryList.size()==0) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<SellerCategoryResponseDTO> sellerCategoryResponseDTOList = new ArrayList<>();
 
@@ -308,7 +308,7 @@ public class CategoryImpl implements CategoryService {
     public CustomerCategoryResponseDTO showCustomerCategoriesParam(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
         CustomerCategoryResponseDTO customerCategoryResponseDTO = new CustomerCategoryResponseDTO();
         List<CategoryAddDTO> categoryAddDTOList = findCategoryChildren(category.get().getId());
