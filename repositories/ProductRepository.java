@@ -26,6 +26,9 @@ public interface ProductRepository extends CrudRepository<Product,Long> {
     @Query(value = "select * from product p where p.seller_id=:sellerId",nativeQuery = true)
     List<Product> fetchBySellerId(@Param("sellerId") Long id, Pageable sortById);
 
+    @Query(value = "select * from product p where p.seller_id=:sellerId and p.deleted=0",nativeQuery = true)
+    List<Product> fetchBySellerIdForScheduler(@Param("sellerId") Long id);
+
     @Query(value = "from Product")
     List<Product> fetchAllProducts(Pageable sortById);
 
