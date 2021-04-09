@@ -20,7 +20,7 @@ public interface CustomerRepository extends CrudRepository<Customer,Integer> {
 
     Customer findById(long id);
 
-    @Query("from Customer")
+    @Query("from Customer c where c.deleted=false ")
     List<Customer> fetchCustomerByPage(Pageable sortById);
 
 

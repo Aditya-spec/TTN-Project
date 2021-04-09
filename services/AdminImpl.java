@@ -47,8 +47,8 @@ public class AdminImpl implements AdminService {
     public List<RegisteredCustomerDTO> getCustomers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
-        if (customerList.size()==0) {
-            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+        if (customerList.size() == 0) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
         List<RegisteredCustomerDTO> registeredCustomerDTOList
@@ -61,7 +61,7 @@ public class AdminImpl implements AdminService {
     public List<RegisteredSellerDTO> getSellers() {
         ModelMapper modelMapper = new ModelMapper();
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
-        if (sellerList.size()==0) {
+        if (sellerList.size() == 0) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -83,8 +83,7 @@ public class AdminImpl implements AdminService {
         User user = userRepository.findById(id).get();
 
         if (user == null) {
-            messageDTO.setMessage("User with this id doesn't exist");
-            return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
 
         if (user.getActive()) {
@@ -114,15 +113,13 @@ public class AdminImpl implements AdminService {
         User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
-            messageDTO.setMessage("User with this id doesn't exist");
-            return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
 
         List<Role> roles = user.getRoles();
         for (Role role : roles) {
             if (role.getAuthorization().equals("ROLE_ADMIN")) {
-                messageDTO.setMessage("Admin cannot be deactivated");
-                return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+                throw new EcommerceException(ErrorCode.USER_IS_ADMIN);
             }
         }
         if (!user.getActive()) {

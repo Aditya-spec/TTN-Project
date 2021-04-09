@@ -48,8 +48,7 @@ public class CategoryImpl implements CategoryService {
             newCategory.setParentId(0l);
             categoryRepository.save(newCategory);
             return "Category added successfully";
-        }
-        else {
+        } else {
             Optional<Category> parentCategory = categoryRepository.findById(categoryAddDTO.getParentId());
             if (parentCategory.isEmpty())
                 throw new EcommerceException(ErrorCode.PARENT_CATEGORY_NOT_EXISTS);
@@ -90,7 +89,7 @@ public class CategoryImpl implements CategoryService {
         }
 
         List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.get().getId());
-        if(categoryMetadataFieldValuesList.size()==0){
+        if (categoryMetadataFieldValuesList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
@@ -127,10 +126,6 @@ public class CategoryImpl implements CategoryService {
     }
 
 
-
-
-
-
     @Override
     public String addMetadata(String metaData) {
 
@@ -160,7 +155,7 @@ public class CategoryImpl implements CategoryService {
             List<CategoryMetadataFieldValues> fieldValuesList = cmfvRepository.fetchByMetaId(metadataField.getId());
 
             CMDResponseDTO metadataFieldDTO = new CMDResponseDTO();
-            if (fieldValuesList.size()==0) {
+            if (fieldValuesList.size() == 0) {
                 throw new EcommerceException(ErrorCode.NO_DATA);
             }
 
@@ -249,11 +244,10 @@ public class CategoryImpl implements CategoryService {
     }
 
 
-
     @Override
     public List<SellerCategoryResponseDTO> showSellerCategories() {
         List<Category> categoryList = categoryRepository.fetchLeafCategories();
-        if (categoryList.size()==0) {
+        if (categoryList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<SellerCategoryResponseDTO> sellerCategoryResponseDTOList = new ArrayList<>();
@@ -288,7 +282,7 @@ public class CategoryImpl implements CategoryService {
     @Override
     public List<CustomerCategoryResponseDTO> showCustomerCategories() {
         List<Category> categoryList = categoryRepository.fetchAllRootCategories(sortById);
-        if (categoryList.size()==0) {
+        if (categoryList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
@@ -327,7 +321,7 @@ public class CategoryImpl implements CategoryService {
         Double minPrice = productVariationRepository.getMinPrice(categoryId);
 
         List<String> brandList = productRepository.fetchBrandList(categoryId);
-        if(brandList.size()==0){
+        if (brandList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
@@ -352,9 +346,7 @@ public class CategoryImpl implements CategoryService {
 
 
     /**
-     *
      * Utility Functions
-     *
      */
 
     private List<CategoryAddDTO> findCategoryParent(Long id) {
@@ -371,7 +363,6 @@ public class CategoryImpl implements CategoryService {
 
         return categoryAddDTOList;
     }
-
 
 
     private List<CategoryAddDTO> findCategoryChildren(Long id) {

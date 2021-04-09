@@ -51,7 +51,7 @@ public class CustomerImpl implements CustomerService {
 
         Customer customer = customerRepository.findByEmail(email);
         List<Address> addressList = addressRepository.fetchAddresses(customer.getId());
-        if (addressList.size()==0) {
+        if (addressList.size() == 0) {
             throw new EcommerceException(ErrorCode.ADDRESS_NOT_FOUND);
         }
         List<AddressDTO> showAddressDTOList = addressList.stream().map(e -> mapAddressToDTO(e)).collect(Collectors.toList());
@@ -138,10 +138,8 @@ public class CustomerImpl implements CustomerService {
 
 
     /**
-     *
      * Utilities Function
-     *
-     * */
+     */
 
     private Customer mapCustomerFromDTO(CustomerProfileDTO customerProfileDto, Customer customer) {
         Name name = customer.getName();
@@ -202,7 +200,7 @@ public class CustomerImpl implements CustomerService {
         return address;
     }
 
-    public AddressDTO mapAddressToDTO(Address address){
+    public AddressDTO mapAddressToDTO(Address address) {
         AddressDTO addressDTO = new AddressDTO();
         addressDTO.setAddressLine(address.getAddressLine());
         addressDTO.setLabel(address.getLabel().toString());

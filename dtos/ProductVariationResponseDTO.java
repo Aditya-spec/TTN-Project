@@ -1,7 +1,10 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import org.json.simple.JSONObject;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonFilter(value = "responseDTOFilter")
 public class ProductVariationResponseDTO {
@@ -12,7 +15,7 @@ public class ProductVariationResponseDTO {
     private String primaryImageName;
     private Integer quantityAvailable;
     private Double price;
-    private JSONObject metadata;
+    private List<Object> metadata=new ArrayList<>();
     private Boolean active;
 
     public Long getProductId() {
@@ -63,11 +66,11 @@ public class ProductVariationResponseDTO {
         this.price = price;
     }
 
-    public JSONObject getMetadata() {
+    public List<Object> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(JSONObject metadata) {
+    public void setMetadata(List<Object> metadata) {
         this.metadata = metadata;
     }
 

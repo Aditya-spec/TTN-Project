@@ -33,6 +33,7 @@ public class CustomValidation {
         }
 
         for (Seller seller : sellerList) {
+
             if (sellerRegistrationDTO.getEmail().equals(seller.getEmail())) {
 
                 return "error: email id already exist";
@@ -46,7 +47,7 @@ public class CustomValidation {
             if (sellerRegistrationDTO.getGstNumber().equals(seller.getGstNumber())) {
                 return "seller account with gstNumber" + sellerRegistrationDTO.getGstNumber() + "already exist";
             }
-            if (sellerRegistrationDTO.getCompanyName().equals(seller.getCompanyName())) {
+            if (sellerRegistrationDTO.getCompanyName().equalsIgnoreCase(seller.getCompanyName())) {
                 return "seller account with company name" + sellerRegistrationDTO.getCompanyName() + "already exist";
             }
         }

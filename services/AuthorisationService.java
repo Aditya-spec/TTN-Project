@@ -95,7 +95,7 @@ public class AuthorisationService {
         newTokenEntry.setToken(token);
         newTokenEntry.setUsername(loginDTO.getEmail());
         authenticatedTokenRepository.save(newTokenEntry);
-        String body="You have logged in successfully, your token is: "+ token;
+        String body="You have logged in successfully.";
         messageDTO.setMessage(body);
         return ResponseEntity.ok(messageDTO);
     }

@@ -12,7 +12,7 @@ public interface SellerRepository extends CrudRepository<Seller,Long> {
     @Query("from Seller")
     List<Seller> fetchAllSeller();
 
-    @Query("from Seller")
+    @Query("from Seller s where s.deleted=false")
     List<Seller> fetchSellerByPage(Pageable sortById);
 
 

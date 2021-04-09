@@ -94,7 +94,7 @@ public class RegistrationImpl implements RegistrationService {
     public boolean findCustomerByToken(String token) {
         Customer customer = customerRepository.findByActivationToken(token);
         if (customer == null) {
-            return false;
+            throw new EcommerceException(ErrorCode.INVALID_TOKEN);
         }
         return true;
     }
@@ -106,7 +106,7 @@ public class RegistrationImpl implements RegistrationService {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
-          throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
+            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
         long id = user.getId();
         Customer customer = customerRepository.findById(id);
@@ -149,14 +149,12 @@ public class RegistrationImpl implements RegistrationService {
     }
 
     /**
-     *
-     Utility functions
-
+     * Utility functions
      */
 
     private Address mapSellerAddress(SellerRegistrationDTO sellerRegistrationDTO, Address address) {
         address.setAddressLine(sellerRegistrationDTO.getAddressLine());
-        Label label=customValidation.verifyLabel(sellerRegistrationDTO.getLabel());
+        Label label = customValidation.verifyLabel(sellerRegistrationDTO.getLabel());
         address.setLabel(label);
         address.setState(sellerRegistrationDTO.getState());
         address.setCountry(sellerRegistrationDTO.getCountry());
