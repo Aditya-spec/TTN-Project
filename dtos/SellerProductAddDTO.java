@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 public class SellerProductAddDTO {
     @NotNull(message = " category id for the product is a necessary field")
-    private Long category;
+    private Long categoryId;
 
     @NotNull(message = " product name is a necessary  field")
     private String name;
@@ -26,12 +26,12 @@ public class SellerProductAddDTO {
 
 
 
-    public Long getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Long category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getName() {

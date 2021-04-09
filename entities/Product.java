@@ -13,7 +13,7 @@ public class Product extends BaseDomain {
     private Boolean returnable;
     private String brand;
     private Boolean active=false;
-    private String primaryImageName;
+   /* private String primaryImageName;*/
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
@@ -52,9 +52,9 @@ public class Product extends BaseDomain {
         return name;
     }
 
-    public String getPrimaryImageName() {
+   /* public String getPrimaryImageName() {
         return primaryImageName;
-    }
+    }*/
 
     public String getDescription() {
         return description;
@@ -91,9 +91,9 @@ public class Product extends BaseDomain {
         this.seller = seller;
     }
 
-    public void setPrimaryImageName(String primaryImageName) {
+   /* public void setPrimaryImageName(String primaryImageName) {
         this.primaryImageName = primaryImageName;
-    }
+    }*/
 
     public void setCategory(Category category) {
         this.category = category;

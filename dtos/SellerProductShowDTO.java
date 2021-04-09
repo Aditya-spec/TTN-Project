@@ -1,7 +1,5 @@
 package com.Bootcamp.Project.Application.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class SellerProductShowDTO {
     private Long id;
 
@@ -11,7 +9,7 @@ public class SellerProductShowDTO {
 
     private String description;
 
-    private Long category;
+    private Long categoryId;
 
     private String categoryName;
 
@@ -53,12 +51,12 @@ public class SellerProductShowDTO {
         this.description = description;
     }
 
-    public Long getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Long category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCategoryName() {

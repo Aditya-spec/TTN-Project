@@ -47,17 +47,17 @@ public class ProductImpl implements ProductService {
     @Autowired
     CategoryImpl categoryImpl;
 
+    ModelMapper modelMapper = new ModelMapper();
+
     Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
+
 
     @Override
     public boolean addProduct(String email, SellerProductAddDTO sellerProductAddDTO) {
-        ModelMapper modelMapper = new ModelMapper();
-        Seller seller = sellerRepository.findByEmail(email);
-        if (seller == null) {
-            throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
-        }
 
-        Long categoryId = sellerProductAddDTO.getCategory();
+        Seller seller = sellerRepository.findByEmail(email);
+
+        Long categoryId = sellerProductAddDTO.getCategoryId();                  //category is for category_id
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
@@ -67,19 +67,11 @@ public class ProductImpl implements ProductService {
         if (!(leafCategoriesId.contains(categoryId))) {
             throw new EcommerceException(ErrorCode.NOT_LEAF_CATEGORY);
         }
+        checkProductUniqueness(sellerProductAddDTO.getName(), sellerProductAddDTO.getBrand(), categoryId, seller.getId());
+        Product newProduct = mapProductFromDTO(sellerProductAddDTO);
 
-
-        List<Product> productList = productRepository.fetchProduct(sellerProductAddDTO.getBrand(), category.getId(), seller.getId());
-        if (productList != null) {
-            for (Product product : productList) {
-                if (product.getName().equalsIgnoreCase(sellerProductAddDTO.getName()) && product.getBrand().equalsIgnoreCase(sellerProductAddDTO.getBrand())) {
-                    throw new EcommerceException(ErrorCode.NOT_UNIQUE);
-                }
-            }
-        }
-        Product newProduct = new Product();
-        newProduct = modelMapper.map(sellerProductAddDTO, Product.class);
         newProduct.setDeleted(false);
+        newProduct.setActive(false);
         category.setProduct(newProduct);
         seller.setProduct(newProduct);
 
@@ -94,11 +86,15 @@ public class ProductImpl implements ProductService {
         return true;
     }
 
+
     @Override
     public boolean activateProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) {
             return false;
+        }
+        if (product.getActive()) {
+            throw new EcommerceException(ErrorCode.ALREADY_ACTIVE);
         }
         product.setActive(true);
         productRepository.save(product);
@@ -112,6 +108,9 @@ public class ProductImpl implements ProductService {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) {
             return false;
+        }
+        if (!product.getActive()) {
+            throw new EcommerceException(ErrorCode.ALREADY_DISACTIVE);
         }
         product.setActive(false);
         productRepository.save(product);
@@ -130,7 +129,6 @@ public class ProductImpl implements ProductService {
         if (seller.getId() != product.getSeller().getId()) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
-        // product.setActive(false);
         product.setDeleted(true);
         productRepository.save(product);
         return true;
@@ -138,9 +136,7 @@ public class ProductImpl implements ProductService {
 
     @Override
     public boolean updateProduct(String email, SellerProductUpdateDTO sellerProductUpdateDTO, Long id) {
-
         Seller seller = sellerRepository.findByEmail(email);
-
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
@@ -151,16 +147,9 @@ public class ProductImpl implements ProductService {
         }
 
         if (sellerProductUpdateDTO != null) {
-            List<Product> productList = productRepository.fetchProduct(product.getBrand(), product.getCategory().getId(), seller.getId());
-            if (productList != null) {
-                for (Product dbProduct : productList) {
-                    if (sellerProductUpdateDTO.getName().equalsIgnoreCase(dbProduct.getName())) {
-                        throw new EcommerceException(ErrorCode.NOT_UNIQUE);
-                    }
-                }
-            }
+            checkProductUniqueness(sellerProductUpdateDTO.getName(), product.getBrand(), product.getCategory().getId(), seller.getId());
+            product.setName(sellerProductUpdateDTO.getName());
         }
-
         if (sellerProductUpdateDTO.getCancellable()) {
             product.setCancellable(sellerProductUpdateDTO.getCancellable());
         }
@@ -170,10 +159,10 @@ public class ProductImpl implements ProductService {
         if (sellerProductUpdateDTO.getDescription() != null) {
             product.setDescription(sellerProductUpdateDTO.getDescription());
         }
-
         productRepository.save(product);
         return true;
     }
+
 
     @Override
     public SellerProductShowDTO showSellerProduct(String email, Long id) {
@@ -191,7 +180,6 @@ public class ProductImpl implements ProductService {
         SellerProductShowDTO sellerProductShowDTO = new SellerProductShowDTO();
         sellerProductShowDTO = showProductMapping(product, sellerProductShowDTO);
         return sellerProductShowDTO;
-
     }
 
     @Override
@@ -266,10 +254,7 @@ public class ProductImpl implements ProductService {
         if (product.getDeleted()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
-        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
-        if (category == null) {
-            throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
-        }
+
         if (productVariationUpdateDTO.getMetadata() != null) {
             JSONArray inputMetadata = productVariationUpdateDTO.getMetadata();
             checkVariation(inputMetadata, product);
@@ -282,12 +267,15 @@ public class ProductImpl implements ProductService {
 
     @Override
     public ProductVariationResponseDTO showVariation(String email, Long variationId) {
-        ModelMapper modelMapper = new ModelMapper();
+
         ProductVariation productVariation = productVariationRepository.findById(variationId).orElse(null);
         if (productVariation == null) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         Product product = productVariation.getProduct();
+        if (product.getDeleted()) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
         Seller seller = product.getSeller();
 
         if (seller.getId() != product.getSeller().getId()) {
@@ -305,7 +293,7 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
         if (product.getDeleted()) {
-            throw new EcommerceException(ErrorCode.NOT_FOUND);
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
 
         List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
@@ -314,10 +302,8 @@ public class ProductImpl implements ProductService {
         }
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
         for (ProductVariation variation : variationList) {
-            if (!variation.getDeleted()) {
-                ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
-                productVariationList.add(responseDTO);
-            }
+            ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
+            productVariationList.add(responseDTO);
         }
         return productVariationList;
     }
@@ -334,9 +320,7 @@ public class ProductImpl implements ProductService {
         if (!product.getActive()) {
             throw new EcommerceException(ErrorCode.NOT_ACTIVE);
         }
-
         return fetchProductWithVariations(product);
-
     }
 
     @Override
@@ -408,28 +392,31 @@ public class ProductImpl implements ProductService {
     }
 
 
-    private List<Product> getAllProducts(Category category, List<Product> productList, List<Category> allLeafCategory) {
-
-        if (allLeafCategory.contains(category)) {
-            List<Product> categoryProducts = productRepository.fetchAllCategoryProducts(category.getId());
-            if ((categoryProducts.size() != 0)) {
-                productList.addAll(categoryProducts);
-            }
-            return productList;
-        }
-        Optional<List<Category>> childCategories = categoryRepository.findNextChildren(category.getId());
-
-        List<Category> categoryList = childCategories.get();
-        for (Category child : categoryList) {
-            productList = getAllProducts(child, productList, allLeafCategory);
-        }
-        return productList;
-    }
 
     /**
      * Utility Functions
      */
 
+    private Product mapProductFromDTO(SellerProductAddDTO sellerProductAddDTO) {
+        Product product = new Product();
+        product.setCancellable(sellerProductAddDTO.getCancellable());
+        product.setName(sellerProductAddDTO.getName());
+        product.setDescription(sellerProductAddDTO.getDescription());
+        product.setBrand(sellerProductAddDTO.getBrand());
+        product.setReturnable(sellerProductAddDTO.getReturnable());
+        return product;
+    }
+
+    private void checkProductUniqueness(String name, String brand, Long categoryId, Long sellerId) {
+        List<Product> productList = productRepository.fetchProduct(brand, categoryId, sellerId);
+        if (productList != null) {
+            for (Product product : productList) {
+                if (name.equalsIgnoreCase(product.getName())) {
+                    throw new EcommerceException(ErrorCode.NOT_UNIQUE);
+                }
+            }
+        }
+    }
 
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
@@ -464,8 +451,6 @@ public class ProductImpl implements ProductService {
         responseDTO.setSellerName(product.getSeller().getName().getFirstName());
         responseDTO.setSellerContact(product.getSeller().getCompanyContact());
         responseDTO.setProductId(product.getId());
-        responseDTO.setImagePath(product.getPrimaryImageName());
-
         responseDTO.setCategoryId(category.getId());
         responseDTO.setCategoryName(category.getName());
         responseDTO.setParentCategoryId(category.getParentId());
@@ -475,7 +460,7 @@ public class ProductImpl implements ProductService {
 
 
     private ProductVariationResponseDTO showVariationMapping(Product product, ProductVariation productVariation) {
-        ModelMapper modelMapper = new ModelMapper();
+
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
         ProductVariationResponseDTO responseDTO = new ProductVariationResponseDTO();
         responseDTO.setProductDTO(productDTO);
@@ -530,7 +515,7 @@ public class ProductImpl implements ProductService {
         showDTO.setActive(product.getActive());
         showDTO.setBrand(product.getBrand());
         showDTO.setId(product.getId());
-        showDTO.setCategory(product.getCategory().getId());
+        showDTO.setCategoryId(product.getCategory().getId());
         showDTO.setDescription(product.getDescription());
         showDTO.setCategoryName(product.getCategory().getName());
         showDTO.setReturnable(product.getReturnable());
@@ -561,6 +546,23 @@ public class ProductImpl implements ProductService {
             }
         }
 
+    }
+    private List<Product> getAllProducts(Category category, List<Product> productList, List<Category> allLeafCategory) {
+
+        if (allLeafCategory.contains(category)) {
+            List<Product> categoryProducts = productRepository.fetchAllCategoryProducts(category.getId());
+            if ((categoryProducts.size() != 0)) {
+                productList.addAll(categoryProducts);
+            }
+            return productList;
+        }
+
+        Optional<List<Category>> childCategories = categoryRepository.findNextChildren(category.getId());
+        List<Category> categoryList = childCategories.get();
+        for (Category child : categoryList) {
+            productList = getAllProducts(child, productList, allLeafCategory);
+        }
+        return productList;
     }
 
 

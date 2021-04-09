@@ -19,16 +19,16 @@ public class AdminCustomerProductResponseDTO {
     private Long categoryId;
     private String categoryName;
     private Long parentCategoryId;
-    private String imagePath;
+   /* private String imagePath;*/
     List<ProductVariationResponseDTO> variationsList;
 
-    public String getImagePath() {
+    /*public String getImagePath() {
         return imagePath;
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
+    }*/
 
     public String getProductName() {
         return productName;
