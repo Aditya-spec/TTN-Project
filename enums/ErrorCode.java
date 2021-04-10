@@ -20,6 +20,7 @@ public enum ErrorCode {
     ALREADY_EXISTS("given data already exists in the system", HttpStatus.BAD_REQUEST, 400),
     PARENT_CATEGORY_NOT_EXISTS("Parent category for given category do not exists", HttpStatus.BAD_REQUEST, 400),
     NO_DATA("No data to show", HttpStatus.NOT_FOUND, 404),
+    IMAGE_NOT_UPLOADED("Image cannot be uploaded",HttpStatus.BAD_REQUEST,400),
     ALREADY_DISACTIVE("Given data is already disactive",HttpStatus.BAD_REQUEST,400),
     NO_PRODUCT_FOUND("no product found for given data", HttpStatus.BAD_REQUEST, 400),
     NOT_FOUND("given data does not found in the system", HttpStatus.BAD_REQUEST, 400),
@@ -32,6 +33,7 @@ public enum ErrorCode {
     NO_METADATAFIELD_EXIST("Given metadata field doesn't exist in the database",HttpStatus.BAD_REQUEST,400),
     ALREADY_ACTIVE("Already active",HttpStatus.BAD_REQUEST,400),
     NOT_ACTIVE("given data is not active",HttpStatus.BAD_REQUEST,400),
+    NO_VARIATION_FOUND("Product Variation not found for the given data",HttpStatus.BAD_REQUEST,400),
     USER_IS_ADMIN("Cannot make changes, this user is Admin", HttpStatus.BAD_REQUEST, 400);
 
 

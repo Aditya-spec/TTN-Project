@@ -1,9 +1,12 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.enums.Label;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.CustomerImpl;
+import com.Bootcamp.Project.Application.services.ImageImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.validation.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -14,9 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,6 +33,8 @@ public class CustomerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    ImageImpl imageImpl;
     @Autowired
     MessageDTO messageDTO;
     @Autowired
@@ -73,6 +80,17 @@ public class CustomerController {
         messageDTO.setMessage("Address can't be deleted");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
+        String email=request.getUserPrincipal().getName();
+        try {
+            return imageImpl.uploadImage(imageFile, email);
+        } catch (IOException e) {
+            throw new EcommerceException(ErrorCode.IMAGE_NOT_UPLOADED);
+        }
+    }
+
 
     @PatchMapping("/update-profile")
     public ResponseEntity<MessageDTO> updateCustomer(HttpServletRequest request, @Valid @RequestBody CustomerProfileDTO customerProfileDto) {

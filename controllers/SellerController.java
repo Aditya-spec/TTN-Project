@@ -1,7 +1,10 @@
 package com.Bootcamp.Project.Application.controllers;
 
 import com.Bootcamp.Project.Application.dtos.*;
+import com.Bootcamp.Project.Application.enums.ErrorCode;
+import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.services.CategoryImpl;
+import com.Bootcamp.Project.Application.services.ImageImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -12,9 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,6 +32,8 @@ public class SellerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    ImageImpl imageImpl;
     @Autowired
     MessageDTO messageDTO;
 
@@ -52,6 +59,15 @@ public class SellerController {
         messageDTO.setMessage("fields cannot be updated");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
+    @PostMapping("/upload-image")
+    public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
+        String email=request.getUserPrincipal().getName();
+        try {
+            return imageImpl.uploadImage(imageFile, email);
+        } catch (IOException e) {
+            throw new EcommerceException(ErrorCode.IMAGE_NOT_UPLOADED);
+        }
+    }
 
     @PatchMapping("/change-password")
     public ResponseEntity<MessageDTO> changePassword(HttpServletRequest request, @Valid @RequestBody PasswordDTO passwordDto) {
@@ -68,6 +84,8 @@ public class SellerController {
             return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     @PatchMapping("update-address/{id}")
     public ResponseEntity<MessageDTO> updatePassword(HttpServletRequest request, @PathVariable Long id, @Valid @RequestBody AddressUpdateDTO addressUpdateDto) {
@@ -140,6 +158,16 @@ public class SellerController {
         }
         messageDTO.setMessage("product variation cannot be added");
         return new ResponseEntity<>(messageDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/upload-variation-image")
+    public ResponseEntity<MessageDTO> uploadVariationImage(@RequestBody MultipartFile imageFile, HttpServletRequest request,@RequestParam("variationId") long variationId) {
+      String email=request.getUserPrincipal().getName();
+        try {
+            return imageImpl.uploadVariationImage(imageFile,variationId, email);
+        } catch (IOException e) {
+            throw new EcommerceException(ErrorCode.IMAGE_NOT_UPLOADED);
+        }
     }
 
     @PutMapping("/update-productVariation")

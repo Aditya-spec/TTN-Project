@@ -23,26 +23,28 @@ public class EcommerceScheduler {
     @Autowired
     EmailService emailService;
 
-    @Scheduled(cron = "0 0 0 1 * *")//monthly
+    //@Scheduled(cron = "*/10 * * * * *")//("*/10 * * * * *)
+    @Scheduled(cron = "@monthly")
     public void scheduledDelete() {
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
 
         for (Seller seller : sellerList) {
-            List<Product> productList = productRepository.fetchBySellerId(seller.getId(),null);
+            List<Product> productList = productRepository.fetchBySellerId(seller.getId(), null);
             for (Product product : productList) {
                 if (product.getDeleted()) {
-                    Date current=new Date();
+                    Date current = new Date();
                     Date currentTime = new Date();
                     long duration = currentTime.getTime() - product.getLastModified().getTime();
                     long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-                    if(diffInMinutes>1440*31)
-                    productRepository.delete(product);
+                    if (diffInMinutes > 1440 * 31) 
+                        productRepository.delete(product);
+
                 }
             }
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "@midnight")//("*/5 * * * * *")
     public void scheduledMail() {
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
         List<String> updatedProductList = new ArrayList<>();
@@ -56,7 +58,7 @@ public class EcommerceScheduler {
                     long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
 
                     if (diffInMinutes < 1440) {
-                        String productDescription = "Product name:" + product.getName() +","+ "Brand name:" + product.getBrand() + "\n";
+                        String productDescription = "Product name:" + product.getName() + "," + "Brand name:" + product.getBrand() + "\n";
                         updatedProductList.add(productDescription);
                         System.out.println(product.getLastModified().toString());
                     }
