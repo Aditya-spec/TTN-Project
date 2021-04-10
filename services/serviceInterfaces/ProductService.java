@@ -17,7 +17,7 @@ public interface ProductService {
 
     SellerProductShowDTO showSellerProduct(String email, Long id);
 
-    List<SellerProductShowDTO> showAllSellerProducts(String email);
+    List<SellerProductShowDTO> showAllSellerProducts(String email, int offset, int size);
 
     boolean addVariation(String email, ProductVariationDTO productVariationDTO);
 
@@ -26,15 +26,15 @@ public interface ProductService {
 
     ProductVariationResponseDTO showVariation(String email, Long id);
 
-    List<ProductVariationResponseDTO> showProductVariations(String name, Long id);
+    List<ProductVariationResponseDTO> showProductVariations(String email, Long productId, int offset, int size);
 
     AdminCustomerProductResponseDTO showCustomerProduct(Long id);
 
-    List<AdminCustomerProductResponseDTO> showAllAdminProducts();
+    List<AdminCustomerProductResponseDTO> showAdminAllProducts(int offset, int size);
 
     AdminCustomerProductResponseDTO showAdminProduct(Long id);
 
-    List<AdminCustomerProductResponseDTO> viewSimilarProduct(Long id);
+    List<AdminCustomerProductResponseDTO> viewSimilarProduct(Long productId, int offset, int size);
 
     List<AdminCustomerProductResponseDTO> showCustomerProducts(Long categoryId);
 }

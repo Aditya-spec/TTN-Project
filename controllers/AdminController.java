@@ -38,14 +38,16 @@ public class AdminController {
 
 
     @GetMapping("/get/customers")
-    public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomer() {
-        return new ResponseEntity<>(adminImpl.getCustomers(), HttpStatus.OK);
+    public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomer(@RequestParam("offset") int offset,
+                                                                      @RequestParam("size") int size) {
+        return new ResponseEntity<>(adminImpl.getCustomers(offset,size), HttpStatus.OK);
     }
 
 
     @GetMapping("/get/sellers")
-    public ResponseEntity<List<RegisteredSellerDTO>> getAllSeller() {
-        return new ResponseEntity<>(adminImpl.getSellers(), HttpStatus.OK);
+    public ResponseEntity<List<RegisteredSellerDTO>> getAllSeller(@RequestParam("offset") int offset,
+                                                                  @RequestParam("size") int size) {
+        return new ResponseEntity<>(adminImpl.getSellers(offset,size), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/activate-user/{id}")
@@ -75,8 +77,9 @@ public class AdminController {
     }
 
     @GetMapping("/view-metaDataFields")
-    public List<CMDResponseDTO> showMetaDataFields() {
-        return categoryImpl.showMetaData();
+    public List<CMDResponseDTO> showMetaDataFields(@RequestParam("offset") int offset,
+                                                   @RequestParam("size") int size) {
+        return categoryImpl.showMetaData(offset,size);
     }
 
 
@@ -88,8 +91,9 @@ public class AdminController {
     }
 
     @GetMapping("/view-categories")
-    public List<CategoryResponseDTO> viewCategories() {
-        return categoryImpl.showCategories();
+    public List<CategoryResponseDTO> viewCategories(@RequestParam("offset") int offset,
+                                                    @RequestParam("size") int size) {
+        return categoryImpl.showCategories(offset,size);
     }
 
     @GetMapping("/view-category/{id}")
@@ -139,8 +143,9 @@ public class AdminController {
     }
 
     @GetMapping("/view-allProducts")
-    public MappingJacksonValue viewAllProducts() {
-        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.showAllAdminProducts();
+    public MappingJacksonValue viewAllProducts(@RequestParam("offset") int offset,
+                                               @RequestParam("size") int size) {
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.showAdminAllProducts(offset,size);
 
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);

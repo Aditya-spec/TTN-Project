@@ -1,8 +1,11 @@
 package com.Bootcamp.Project.Application.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisteredSellerDTO {
     private Long SellerId;
     private String firstName;

@@ -140,8 +140,9 @@ public class CustomerController {
     }
 
     @GetMapping("/view-similarProducts")
-    public MappingJacksonValue viewSimilarProduct(@RequestParam Long productId) {
-        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(productId);
+    public MappingJacksonValue viewSimilarProduct(@RequestParam Long productId,@RequestParam("offset") int offset,
+                                                  @RequestParam("size") int size) {
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(productId,offset,size);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);

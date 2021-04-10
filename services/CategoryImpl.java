@@ -34,7 +34,9 @@ public class CategoryImpl implements CategoryService {
     ProductRepository productRepository;
 
     ModelMapper modelMapper = new ModelMapper();
-    Pageable sortById = PageRequest.of(0, 10, Sort.by("id"));
+
+    int offset = 0;
+    int size = 10;
 
     @Override
     public String addCategory(CategoryAddDTO categoryAddDTO) {
@@ -62,8 +64,12 @@ public class CategoryImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponseDTO> showCategories() {
-
+    public List<CategoryResponseDTO> showCategories(int offset, int size) {
+        if (size > 0) {
+            this.offset = offset;
+            this.size = size;
+        }
+        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         Optional<List<Category>> categories = categoryRepository.fetchALlCategories(sortById);
         if (categories.isEmpty()) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
@@ -73,8 +79,7 @@ public class CategoryImpl implements CategoryService {
 
         List<CategoryResponseDTO> categoryResponseDTOList = new ArrayList<>();
         for (Category category : categoryList) {
-            CategoryResponseDTO categoryResponseDTO = showCategory(category.getId());
-            categoryResponseDTOList.add(categoryResponseDTO);
+            categoryResponseDTOList.add(getCategoryResponseDTO(category));
         }
         return categoryResponseDTOList;
     }
@@ -87,42 +92,7 @@ public class CategoryImpl implements CategoryService {
         if (category.isEmpty()) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
-
-        List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.get().getId());
-        if (categoryMetadataFieldValuesList.size() == 0) {
-            throw new EcommerceException(ErrorCode.NO_DATA);
-        }
-
-        List<CMDResponseDTO> fieldList = new ArrayList<>();
-
-        for (CategoryMetadataFieldValues c : categoryMetadataFieldValuesList) {
-
-            CMDResponseDTO cmdResponseDTO = new CMDResponseDTO();
-
-            if (c.getCategoryMetaField().getName() != null) {
-                cmdResponseDTO.setName(c.getCategoryMetaField().getName());
-                cmdResponseDTO.setValues(Arrays.asList(c.getFieldValues()));
-                fieldList.add(cmdResponseDTO);
-            }
-        }
-
-
-        List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
-        List<CategoryAddDTO> childrenCategory = findCategoryChildren(id);
-        categoryAddDTOList.addAll(childrenCategory);
-
-        List<CategoryAddDTO> parentCategoryAddDTOList = new ArrayList<>();
-        List<CategoryAddDTO> parentCategory = findCategoryParent(id);
-        parentCategoryAddDTOList.addAll(parentCategory);
-
-        CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
-        categoryResponseDTO.setName(category.get().getName());
-        categoryResponseDTO.setParentId(category.get().getParentId());
-        categoryResponseDTO.setChildCategory(categoryAddDTOList);
-        categoryResponseDTO.setParentCategory(parentCategoryAddDTOList);
-        categoryResponseDTO.setFieldValues(fieldList);
-
-        return categoryResponseDTO;
+        return getCategoryResponseDTO(category.get());
     }
 
 
@@ -139,9 +109,15 @@ public class CategoryImpl implements CategoryService {
         return "Metadata added successfully";
     }
 
-    @Override
-    public List<CMDResponseDTO> showMetaData() {
 
+
+    @Override
+    public List<CMDResponseDTO> showMetaData(int offset, int size) {
+        if (size > 0) {
+            this.offset = offset;
+            this.size = size;
+        }
+        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll(sortById);
         if (metadataFieldList.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -158,9 +134,7 @@ public class CategoryImpl implements CategoryService {
             if (fieldValuesList.size() == 0) {
                 throw new EcommerceException(ErrorCode.NO_DATA);
             }
-
             List<String> collect = fieldValuesList.stream().map(e -> e.getFieldValues()).collect(Collectors.toList());
-
             List<String> metaValues = collect.stream().distinct().collect(Collectors.toList());
 
             metadataFieldDTO.setValues(metaValues);
@@ -229,7 +203,6 @@ public class CategoryImpl implements CategoryService {
         if (metadataField.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
-
         CategoryMetadataFieldValues metadataFieldValues = cmfvRepository.fetchObject(category.get().getId(), metadataField.get().getId());
 
         if (metadataFieldValues == null) {
@@ -281,6 +254,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<CustomerCategoryResponseDTO> showCustomerCategories() {
+        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         List<Category> categoryList = categoryRepository.fetchAllRootCategories(sortById);
         if (categoryList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -348,6 +322,41 @@ public class CategoryImpl implements CategoryService {
     /**
      * Utility Functions
      */
+
+    private CategoryResponseDTO getCategoryResponseDTO(Category category ) {
+
+
+        List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.getId());
+
+        List<CMDResponseDTO> fieldList = new ArrayList<>();
+        if (categoryMetadataFieldValuesList.size() != 0) {
+            for (CategoryMetadataFieldValues c : categoryMetadataFieldValuesList) {
+                CMDResponseDTO cmdResponseDTO = new CMDResponseDTO();
+                if (c.getCategoryMetaField().getName() != null) {
+                    cmdResponseDTO.setName(c.getCategoryMetaField().getName());
+                    cmdResponseDTO.setValues(Arrays.asList(c.getFieldValues()));
+                    fieldList.add(cmdResponseDTO);
+                }
+            }
+        }
+
+        List<CategoryAddDTO> categoryAddDTOList = new ArrayList<>();
+        List<CategoryAddDTO> childrenCategory = findCategoryChildren(category.getId());
+        categoryAddDTOList.addAll(childrenCategory);
+
+        List<CategoryAddDTO> parentCategoryAddDTOList = new ArrayList<>();
+        List<CategoryAddDTO> parentCategory = findCategoryParent(category.getId());
+        parentCategoryAddDTOList.addAll(parentCategory);
+
+        CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
+        categoryResponseDTO.setName(category.getName());
+        categoryResponseDTO.setParentId(category.getParentId());
+        categoryResponseDTO.setChildCategory(categoryAddDTOList);
+        categoryResponseDTO.setParentCategory(parentCategoryAddDTOList);
+        categoryResponseDTO.setFieldValues(fieldList);
+
+        return categoryResponseDTO;
+    }
 
     private List<CategoryAddDTO> findCategoryParent(Long id) {
 

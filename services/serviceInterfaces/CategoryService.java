@@ -8,13 +8,13 @@ public interface CategoryService {
 
     String addCategory(CategoryAddDTO categoryAddDTO);
 
-    List<CategoryResponseDTO> showCategories();
+    List<CategoryResponseDTO> showCategories(int offset, int size);
 
     CategoryResponseDTO showCategory(Long id);
 
     String addMetadata(String metaData);
 
-    List<CMDResponseDTO> showMetaData();
+    List<CMDResponseDTO> showMetaData(int offset, int size);
 
     String addMetadataValues(CategoryMetadataFieldValuesDTO categoryMetadataFieldValuesDTO);
 

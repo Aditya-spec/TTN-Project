@@ -42,8 +42,7 @@ public class EcommerceScheduler {
         }
     }
 
-    /*@Scheduled(cron = "0 0 0 * * *")//dailly
-    */@Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void scheduledMail() {
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
         List<String> updatedProductList = new ArrayList<>();

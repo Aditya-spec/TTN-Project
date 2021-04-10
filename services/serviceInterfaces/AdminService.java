@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface AdminService {
-    public List<RegisteredCustomerDTO> getCustomers();
+    public List<RegisteredCustomerDTO> getCustomers(int offset, int size);
 
-    public List<RegisteredSellerDTO> getSellers();
+    public List<RegisteredSellerDTO> getSellers(int offset, int size);
 
     public ResponseEntity<MessageDTO> activateUser(Long id, Map<Object, Object> fields);
 

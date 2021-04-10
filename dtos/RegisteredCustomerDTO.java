@@ -1,5 +1,8 @@
 package com.Bootcamp.Project.Application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisteredCustomerDTO {
     private Long CustomerId;
 

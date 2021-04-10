@@ -42,10 +42,17 @@ public class AdminImpl implements AdminService {
     @Autowired
     EmailService emailService;
 
-    Pageable sortById = PageRequest.of(0, 5, Sort.by("id"));
+    int offset=0;
+    int size=10;
 
-    public List<RegisteredCustomerDTO> getCustomers() {
-        ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper = new ModelMapper();
+
+    public List<RegisteredCustomerDTO> getCustomers(int offset, int size) {
+        if (size > 0) {
+            this.offset = offset;
+            this.size = size;
+        }
+        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
         if (customerList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -58,8 +65,12 @@ public class AdminImpl implements AdminService {
         return registeredCustomerDTOList;
     }
 
-    public List<RegisteredSellerDTO> getSellers() {
-        ModelMapper modelMapper = new ModelMapper();
+    public List<RegisteredSellerDTO> getSellers(int offset, int size) {
+        if (size > 0) {
+            this.offset = offset;
+            this.size = size;
+        }
+        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
         if (sellerList.size() == 0) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
@@ -143,5 +154,7 @@ public class AdminImpl implements AdminService {
         messageDTO.setMessage("account is deactivated successfully");
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
+
+
 }
 

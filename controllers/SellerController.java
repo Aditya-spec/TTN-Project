@@ -124,9 +124,10 @@ public class SellerController {
     }
 
     @GetMapping("/view-products")
-    public List<SellerProductShowDTO> getProducts(HttpServletRequest request) {
+    public List<SellerProductShowDTO> getProducts(HttpServletRequest request,@RequestParam("offset") int offset,
+                                                  @RequestParam("size") int size) {
         String email = request.getUserPrincipal().getName();
-        return productImpl.showAllSellerProducts(email);
+        return productImpl.showAllSellerProducts(email,offset,size);
     }
 
     @PostMapping("/add-productVariation")
@@ -168,8 +169,9 @@ public class SellerController {
     }
 
     @GetMapping("/view-allVariations/{productId}")
-    public MappingJacksonValue viewVariations(HttpServletRequest request, @PathVariable Long productId) {
-        List<ProductVariationResponseDTO> responseDTOList = productImpl.showProductVariations(request.getUserPrincipal().getName(), productId);
+    public MappingJacksonValue viewVariations(HttpServletRequest request, @PathVariable Long productId,@RequestParam("offset") int offset,
+                                              @RequestParam("size") int size) {
+        List<ProductVariationResponseDTO> responseDTOList = productImpl.showProductVariations(request.getUserPrincipal().getName(), productId,offset,size);
 
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("primaryImageName", "variationId", "quantityAvailable"
                 , "price", "metadata", "active");
