@@ -311,7 +311,7 @@ public class ProductImpl implements ProductService {
         return productVariationList;
     }
 
-    @Override
+
     public AdminCustomerProductResponseDTO showCustomerProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if ((product == null)) {
@@ -323,7 +323,11 @@ public class ProductImpl implements ProductService {
         if (!product.getActive()) {
             throw new EcommerceException(ErrorCode.NOT_ACTIVE);
         }
-        return fetchProductWithVariations(product);
+        AdminCustomerProductResponseDTO responseDTO = fetchProductWithVariations(product);
+        if (responseDTO.getVariationsList().isEmpty()) {
+            throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
+        }
+        return responseDTO;
     }
 
     @Override
@@ -369,7 +373,9 @@ public class ProductImpl implements ProductService {
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         for (Product product : productList) {
             if (!product.getDeleted() && product.getActive()) {
-                adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
+             AdminCustomerProductResponseDTO adminCustomerProductResponseDTO=fetchProductWithVariations(product);
+             if(!adminCustomerProductResponseDTO.getVariationsList().isEmpty())
+             adminCustomerProductResponseDTOList.add(adminCustomerProductResponseDTO);
             }
         }
         return adminCustomerProductResponseDTOList;
@@ -394,8 +400,11 @@ public class ProductImpl implements ProductService {
         }
         List<AdminCustomerProductResponseDTO> responseDTOList = new ArrayList<>();
         for (Product product : productList) {
-            if (!product.getDeleted() && product.getActive())
-                responseDTOList.add(fetchProductWithVariations(product));
+            if (!product.getDeleted() && product.getActive()) {
+                AdminCustomerProductResponseDTO adminCustomerProductResponseDTO = fetchProductWithVariations(product);
+                if (!adminCustomerProductResponseDTO.getVariationsList().isEmpty())
+                    responseDTOList.add(adminCustomerProductResponseDTO);
+            }
         }
         return responseDTOList;
     }
@@ -448,6 +457,7 @@ public class ProductImpl implements ProductService {
         productResponseDTO.setVariationsList(productVariationList);
         return productResponseDTO;
     }
+
 
     private AdminCustomerProductResponseDTO mappingCustomerProduct(Product product, Category category) {
         AdminCustomerProductResponseDTO responseDTO = new AdminCustomerProductResponseDTO();
@@ -534,7 +544,7 @@ public class ProductImpl implements ProductService {
     }
 
     /**
-     *Checks whether the given meta field and meta values exist in the database or not
+     * Checks whether the given meta field and meta values exist in the database or not
      */
 
     private void checkVariation(JSONArray inputMetadata, Product product) {

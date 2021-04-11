@@ -57,9 +57,10 @@ public class ImageImpl implements ImageService {
 
         Seller seller = sellerRepository.findByEmail(email);
         ProductVariation productVariation = productVariationRepository.findById(variationId).orElse(null);
-        if(productVariation==null){
+        if(productVariation==null || productVariation.getDeleted()){
             throw new EcommerceException(ErrorCode.NO_VARIATION_FOUND);
         }
+        
         if(seller.getId()!=productVariation.getProduct().getSeller().getId()){
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }

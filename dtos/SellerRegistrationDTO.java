@@ -30,7 +30,7 @@ public class SellerRegistrationDTO {
     private String lastName;
 
 
-    @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}", message = "enter a valid phone number")
+    @Pattern(regexp = "((\\+*)((0[ -]+)*|(91 )*)(\\d{10}))", message = "enter a valid phone number")
     @NotNull(message = "contact number required")
     private String companyContact;
 
