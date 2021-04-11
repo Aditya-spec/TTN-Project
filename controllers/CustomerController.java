@@ -145,7 +145,6 @@ public class CustomerController {
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTO);
         mapping.setFilters(filters);
         return mapping;
-
     }
 
     @GetMapping("/view-allProducts")
