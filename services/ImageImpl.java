@@ -40,8 +40,6 @@ public class ImageImpl implements ImageService {
 
     @Override
     public ResponseEntity<MessageDTO> uploadImage(MultipartFile image, String email) throws IOException {
-
-
         if (image.isEmpty()) {
             throw new IOException();
         }

@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/seller")
@@ -61,6 +63,11 @@ public class SellerController {
     }
     @PostMapping("/upload-image")
     public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
+        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
+        Matcher m=p.matcher(imageFile.getOriginalFilename());
+        if(!m.matches()){
+            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
+        }
         String email=request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadImage(imageFile, email);
@@ -162,7 +169,12 @@ public class SellerController {
 
     @PostMapping("/upload-variation-image")
     public ResponseEntity<MessageDTO> uploadVariationImage(@RequestBody MultipartFile imageFile, HttpServletRequest request,@RequestParam("variationId") long variationId) {
-      String email=request.getUserPrincipal().getName();
+        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
+        Matcher m=p.matcher(imageFile.getOriginalFilename());
+        if(!m.matches()){
+            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
+        }
+        String email=request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadVariationImage(imageFile,variationId, email);
         } catch (IOException e) {

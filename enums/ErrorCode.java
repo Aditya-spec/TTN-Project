@@ -20,6 +20,7 @@ public enum ErrorCode {
     ALREADY_EXISTS("given data already exists in the system", HttpStatus.BAD_REQUEST, 400),
     PARENT_CATEGORY_NOT_EXISTS("Parent category for given category do not exists", HttpStatus.BAD_REQUEST, 400),
     NO_DATA("No data to show", HttpStatus.NOT_FOUND, 404),
+    IMAGE_PATTERN_NOT_MATCHES("Please provide the valid image format,jpg|jpeg|png|bmp|",HttpStatus.BAD_REQUEST,400),
     IMAGE_NOT_UPLOADED("Image cannot be uploaded",HttpStatus.BAD_REQUEST,400),
     ALREADY_DISACTIVE("Given data is already disactive",HttpStatus.BAD_REQUEST,400),
     NO_PRODUCT_FOUND("no product found for given data", HttpStatus.BAD_REQUEST, 400),

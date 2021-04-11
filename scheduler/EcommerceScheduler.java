@@ -23,7 +23,7 @@ public class EcommerceScheduler {
     @Autowired
     EmailService emailService;
 
-    //@Scheduled(cron = "*/10 * * * * *")//("*/10 * * * * *)
+    //@Scheduled(cron = "*/10 * * * * *")
     @Scheduled(cron = "@monthly")
     public void scheduledDelete() {
         List<Seller> sellerList = sellerRepository.fetchAllSeller();
@@ -36,7 +36,7 @@ public class EcommerceScheduler {
                     Date currentTime = new Date();
                     long duration = currentTime.getTime() - product.getLastModified().getTime();
                     long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-                    if (diffInMinutes > 1440 * 31) 
+                    if (diffInMinutes > 1440 * 31)
                         productRepository.delete(product);
 
                 }
@@ -65,8 +65,8 @@ public class EcommerceScheduler {
                 }
                 String updatedProducts = String.join("", updatedProductList);
                 body = "Here is the list of products you updated today \n" + updatedProducts;
-                //emailService.sendMail(seller.getEmail(), "Products Updated Today", body);
-                System.out.println(body);
+                emailService.sendMail(seller.getEmail(), "Products Updated Today", body);
+                //System.out.println(body);
             }
         }
 
