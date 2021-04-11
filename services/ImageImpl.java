@@ -60,7 +60,7 @@ public class ImageImpl implements ImageService {
         if(productVariation==null || productVariation.getDeleted()){
             throw new EcommerceException(ErrorCode.NO_VARIATION_FOUND);
         }
-        
+
         if(seller.getId()!=productVariation.getProduct().getSeller().getId()){
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
