@@ -14,11 +14,7 @@ public class LogoutService {
     AuthenticatedTokenRepository authenticatedTokenRepository;
 
     public String logout(HttpServletRequest httpServletRequest) {
-        String authorization = httpServletRequest.getHeader("Authorization");
-        String token = null;
-        token = authorization.substring(7);
         String username = httpServletRequest.getUserPrincipal().getName();
-
         AuthenticatedToken loggedInToken = authenticatedTokenRepository.findByUsername(username);
         authenticatedTokenRepository.deleteById(loggedInToken.getId());
         return "logout Successfully";
