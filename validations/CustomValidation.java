@@ -1,4 +1,4 @@
-package com.Bootcamp.Project.Application.validation;
+package com.Bootcamp.Project.Application.validations;
 
 
 import com.Bootcamp.Project.Application.dtos.CustomerRegistrationDTO;
@@ -41,7 +41,6 @@ public class CustomValidation {
 
                 return "error: email id already exist";
             }
-
 
             if (sellerRegistrationDTO.getCompanyContact().equals(seller.getCompanyContact())) {
                 return "error: contactNumber already exist";
@@ -89,13 +88,13 @@ public class CustomValidation {
                 });
     }
 
-    public void imageValidation(MultipartFile imageFile){
-        if(imageFile==null){
+    public void imageValidation(MultipartFile imageFile) {
+        if (imageFile == null) {
             throw new EcommerceException(ErrorCode.INVALID_FIELDS);
         }
         Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
-        Matcher m=p.matcher(imageFile.getOriginalFilename());
-        if(!m.matches()){
+        Matcher m = p.matcher(imageFile.getOriginalFilename());
+        if (!m.matches()) {
             throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
         }
     }

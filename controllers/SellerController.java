@@ -7,7 +7,7 @@ import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.ImageImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
-import com.Bootcamp.Project.Application.validation.CustomValidation;
+import com.Bootcamp.Project.Application.validations.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/seller")
@@ -191,7 +189,7 @@ public class SellerController {
     @GetMapping("/view-variation")
     public MappingJacksonValue viewVariation(HttpServletRequest request, @RequestParam Long id) {
         String email = request.getUserPrincipal().getName();
-        ProductVariationResponseDTO responseDTO = productImpl.showVariation(email, id);
+        ProductVariationResponseDTO responseDTO = productImpl.showSellerProductVariation(email, id);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("primaryImageName", "variationId", "quantityAvailable"
                 , "price", "metadata", "active", "productId", "productDTO");
 
@@ -205,7 +203,7 @@ public class SellerController {
     @GetMapping("/view-allVariations/{productId}")
     public MappingJacksonValue viewVariations(HttpServletRequest request, @PathVariable Long productId,@RequestParam("offset") int offset,
                                               @RequestParam("size") int size) {
-        List<ProductVariationResponseDTO> responseDTOList = productImpl.showProductVariations(request.getUserPrincipal().getName(), productId,offset,size);
+        List<ProductVariationResponseDTO> responseDTOList = productImpl.showSellerProductVariations(request.getUserPrincipal().getName(), productId,offset,size);
 
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("primaryImageName", "variationId", "quantityAvailable"
                 , "price", "metadata", "active");

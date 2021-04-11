@@ -11,7 +11,7 @@ import com.Bootcamp.Project.Application.repositories.RoleRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.RegistrationService;
-import com.Bootcamp.Project.Application.validation.CustomValidation;
+import com.Bootcamp.Project.Application.validations.CustomValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -221,8 +221,8 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);  //to get meta values
-        JSONArray inputMetadata = productVariationDTO.getMetadata();
-        checkVariation(inputMetadata, product);             //check whether the given field and values is present or not
+
+        checkVariation(productVariationDTO.getMetadata(), product);             //check whether the given field and values is present or not
 
         ProductVariation productVariation = new ProductVariation();
         productVariation = addVariationMappingFromDTO(productVariation, productVariationDTO, product);
@@ -265,7 +265,7 @@ public class ProductImpl implements ProductService {
     }
 
     @Override
-    public ProductVariationResponseDTO showVariation(String email, Long variationId) {
+    public ProductVariationResponseDTO showSellerProductVariation(String email, Long variationId) {
 
         ProductVariation productVariation = productVariationRepository.findById(variationId).orElse(null);
         if (productVariation == null) {
@@ -285,7 +285,7 @@ public class ProductImpl implements ProductService {
     }
 
     @Override
-    public List<ProductVariationResponseDTO> showProductVariations(String email, Long productId, int offset, int size) {
+    public List<ProductVariationResponseDTO> showSellerProductVariations(String email, Long productId, int offset, int size) {
         Seller seller = sellerRepository.findByEmail(email);
         Product product = productRepository.findById(productId).orElse(null);
         if (seller.getId() != product.getSeller().getId()) {
@@ -441,7 +441,6 @@ public class ProductImpl implements ProductService {
 
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
-
         Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
         List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
 

@@ -8,7 +8,7 @@ import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.CustomerImpl;
 import com.Bootcamp.Project.Application.services.ImageImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
-import com.Bootcamp.Project.Application.validation.CustomValidation;
+import com.Bootcamp.Project.Application.validations.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -23,8 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/customer")

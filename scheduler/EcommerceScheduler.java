@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class EcommerceScheduler {
+public class  EcommerceScheduler {
     @Autowired
     ProductRepository productRepository;
     @Autowired

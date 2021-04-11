@@ -10,7 +10,7 @@ import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.AddressRepository;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CustomerService;
-import com.Bootcamp.Project.Application.validation.CustomValidation;
+import com.Bootcamp.Project.Application.validations.CustomValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -6,7 +6,7 @@ import com.Bootcamp.Project.Application.dtos.MessageDTO;
 import com.Bootcamp.Project.Application.dtos.SellerRegistrationDTO;
 import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
-import com.Bootcamp.Project.Application.validation.CustomValidation;
+import com.Bootcamp.Project.Application.validations.CustomValidation;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.services.RegistrationImpl;
