@@ -176,7 +176,7 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
         SellerProductShowDTO sellerProductShowDTO = new SellerProductShowDTO();
-        sellerProductShowDTO = showProductMapping(product, sellerProductShowDTO);
+        sellerProductShowDTO = showProductMappingToDTO(product, sellerProductShowDTO);
         return sellerProductShowDTO;
     }
 
@@ -196,7 +196,7 @@ public class ProductImpl implements ProductService {
         for (Product product : productList) {
             if (!product.getDeleted()) {
                 SellerProductShowDTO showDTO = new SellerProductShowDTO();
-                showDTO = showProductMapping(product, showDTO);
+                showDTO = showProductMappingToDTO(product, showDTO);
                 sellerProductShowDTOList.add(showDTO);
             }
         }
@@ -225,7 +225,7 @@ public class ProductImpl implements ProductService {
         checkVariation(inputMetadata, product);             //check whether the given field and values is present or not
 
         ProductVariation productVariation = new ProductVariation();
-        productVariation = showProductMapping(productVariation, productVariationDTO, product);
+        productVariation = addVariationMappingFromDTO(productVariation, productVariationDTO, product);
         productVariationRepository.save(productVariation);
 
         return true;
@@ -426,6 +426,10 @@ public class ProductImpl implements ProductService {
         }
     }
 
+    /**
+     * Fetches all the variations of a product and maps them into DTO
+     */
+
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
 
@@ -502,7 +506,7 @@ public class ProductImpl implements ProductService {
     }
 
 
-    private ProductVariation showProductMapping(ProductVariation productVariation, ProductVariationDTO productVariationDTO, Product product) {
+    private ProductVariation addVariationMappingFromDTO(ProductVariation productVariation, ProductVariationDTO productVariationDTO, Product product) {
         JSONObject metadata = new JSONObject();
         metadata.put("metadata", productVariationDTO.getMetadata());
         productVariation.setMetadata(metadata);
@@ -516,7 +520,7 @@ public class ProductImpl implements ProductService {
     }
 
 
-    private SellerProductShowDTO showProductMapping(Product product, SellerProductShowDTO showDTO) {
+    private SellerProductShowDTO showProductMappingToDTO(Product product, SellerProductShowDTO showDTO) {
         showDTO.setActive(product.getActive());
         showDTO.setBrand(product.getBrand());
         showDTO.setId(product.getId());
@@ -528,6 +532,10 @@ public class ProductImpl implements ProductService {
         showDTO.setName(product.getName());
         return showDTO;
     }
+
+    /**
+     *Checks whether the given meta field and meta values exist in the database or not
+     */
 
     private void checkVariation(JSONArray inputMetadata, Product product) {
 
@@ -552,6 +560,10 @@ public class ProductImpl implements ProductService {
         }
 
     }
+
+    /**
+     *
+     */
 
     private List<Product> getAllProducts(Category category, List<Product> productList, List<Category> allLeafCategory) {
 

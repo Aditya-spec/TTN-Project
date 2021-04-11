@@ -40,9 +40,7 @@ public class ImageImpl implements ImageService {
 
     @Override
     public ResponseEntity<MessageDTO> uploadImage(MultipartFile image, String email) throws IOException {
-        if (image.isEmpty()) {
-            throw new IOException();
-        }
+
         User user = userRepository.findByEmail(email);
         String fileName = image.getOriginalFilename();
         byte[] bytes = image.getBytes();
@@ -64,10 +62,6 @@ public class ImageImpl implements ImageService {
         }
         if(seller.getId()!=productVariation.getProduct().getSeller().getId()){
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
-        }
-
-        if (image.isEmpty()) {
-            throw new IOException();
         }
         String fileName = image.getOriginalFilename();
         byte[] bytes = image.getBytes();

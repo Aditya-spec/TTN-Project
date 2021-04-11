@@ -358,6 +358,9 @@ public class CategoryImpl implements CategoryService {
         return categoryResponseDTO;
     }
 
+    /**
+     * Finds Parent category up to the root node
+     * */
     private List<CategoryAddDTO> findCategoryParent(Long id) {
 
         Category category = categoryRepository.findById(id).get();
@@ -373,6 +376,9 @@ public class CategoryImpl implements CategoryService {
         return categoryAddDTOList;
     }
 
+    /**
+     * Finds immediate children of a category
+     */
 
     private List<CategoryAddDTO> findCategoryChildren(Long id) {
 
@@ -384,6 +390,10 @@ public class CategoryImpl implements CategoryService {
         List<CategoryAddDTO> categoryAddDTOList = categoryList.stream().map(e -> modelMapper.map(e, CategoryAddDTO.class)).collect(Collectors.toList());
         return categoryAddDTOList;
     }
+
+    /**
+     *Compares old meta values to the new meta values and returns union of both
+     */
 
     public String checkFieldValues(String oldValues, String newValues) {
         String[] newValue = newValues.split(",");

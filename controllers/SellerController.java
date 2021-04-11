@@ -7,6 +7,7 @@ import com.Bootcamp.Project.Application.services.CategoryImpl;
 import com.Bootcamp.Project.Application.services.ImageImpl;
 import com.Bootcamp.Project.Application.services.ProductImpl;
 import com.Bootcamp.Project.Application.services.SellerImpl;
+import com.Bootcamp.Project.Application.validation.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -34,6 +35,8 @@ public class SellerController {
     CategoryImpl categoryImpl;
     @Autowired
     ProductImpl productImpl;
+    @Autowired
+    CustomValidation customValidation;
     @Autowired
     ImageImpl imageImpl;
     @Autowired
@@ -63,11 +66,7 @@ public class SellerController {
     }
     @PostMapping("/upload-image")
     public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
-        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
-        Matcher m=p.matcher(imageFile.getOriginalFilename());
-        if(!m.matches()){
-            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
-        }
+        customValidation.imageValidation(imageFile);
         String email=request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadImage(imageFile, email);
@@ -102,7 +101,6 @@ public class SellerController {
 
     @GetMapping("/view-categories")
     public List<SellerCategoryResponseDTO> showCategories() {
-
         return categoryImpl.showSellerCategories();
     }
 
@@ -169,11 +167,7 @@ public class SellerController {
 
     @PostMapping("/upload-variation-image")
     public ResponseEntity<MessageDTO> uploadVariationImage(@RequestBody MultipartFile imageFile, HttpServletRequest request,@RequestParam("variationId") long variationId) {
-        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
-        Matcher m=p.matcher(imageFile.getOriginalFilename());
-        if(!m.matches()){
-            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
-        }
+        customValidation.imageValidation(imageFile);
         String email=request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadVariationImage(imageFile,variationId, email);

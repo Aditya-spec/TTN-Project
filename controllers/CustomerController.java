@@ -85,11 +85,7 @@ public class CustomerController {
 
     @PostMapping("/upload-image")
     public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
-        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
-        Matcher m=p.matcher(imageFile.getOriginalFilename());
-        if(!m.matches()){
-            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
-        }
+        customValidation.imageValidation(imageFile);
         String email=request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadImage(imageFile, email);

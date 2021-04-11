@@ -12,9 +12,12 @@ import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @Component
@@ -84,5 +87,16 @@ public class CustomValidation {
                 .orElseThrow(() -> {
                     throw new EcommerceException(ErrorCode.LABEL_NOT_CORRECT);
                 });
+    }
+
+    public void imageValidation(MultipartFile imageFile){
+        if(imageFile==null){
+            throw new EcommerceException(ErrorCode.INVALID_FIELDS);
+        }
+        Pattern p = Pattern.compile("([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)");
+        Matcher m=p.matcher(imageFile.getOriginalFilename());
+        if(!m.matches()){
+            throw new EcommerceException(ErrorCode.IMAGE_PATTERN_NOT_MATCHES);
+        }
     }
 }
