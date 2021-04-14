@@ -188,7 +188,8 @@ public class CustomerController {
 
     @GetMapping("/view-cart")
     public List<CartResponseDTO> viewCart(HttpServletRequest request) {
-        return null;
+        return cartImpl.viewCart(request.getUserPrincipal().getName());
+
     }
 
     @PutMapping("/update-cart")
@@ -199,7 +200,7 @@ public class CustomerController {
             messageDTO.setMessage("Cart updated successfully");
             return new ResponseEntity<>(messageDTO, HttpStatus.OK);
         }
-        messageDTO.setMessage("cart cannot be updated");
+        messageDTO.setMessage("cart deleted as quantity was 0");
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
@@ -215,7 +216,7 @@ public class CustomerController {
 
     @DeleteMapping("/empty-the-cart")
     public ResponseEntity<MessageDTO> emptyCart(HttpServletRequest request){
-      if(cartImpl.emptyingCart(request.getUserPrincipal().getName())){
+      if(cartImpl.cleanCart(request.getUserPrincipal().getName())){
           messageDTO.setMessage("cart emptied successfully");
           return new ResponseEntity<>(messageDTO,HttpStatus.OK);
       }messageDTO.setMessage("cart cannot be emptied");

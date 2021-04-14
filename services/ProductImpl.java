@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductImpl implements ProductService {
@@ -277,11 +278,12 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
-        for (ProductVariation variation : variationList) {
+        /*for (ProductVariation variation : variationList) {
             ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
             productVariationList.add(responseDTO);
-        }
-        return productVariationList;
+        }*/
+        return variationList.stream().map(e->showVariationMapping(product,e)).collect(Collectors.toList());
+        //return productVariationList;
     }
 
 
@@ -311,10 +313,11 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
-        for (Product product : productList) {
+        /*for (Product product : productList) {
             adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
         }
-        return adminCustomerProductResponseDTOList;
+        return adminCustomerProductResponseDTOList;*/
+        return productList.stream().map(e->fetchProductWithVariations(e)).collect(Collectors.toList());
     }
 
     @Override
