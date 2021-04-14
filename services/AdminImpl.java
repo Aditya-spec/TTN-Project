@@ -13,6 +13,8 @@ import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.AdminService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,22 +40,18 @@ public class AdminImpl implements AdminService {
     UserRepository userRepository;
     @Autowired
     MessageDTO messageDTO;
+    @Autowired
+    PaginationImpl paginationImpl;
 
     @Autowired
     EmailService emailService;
 
-    int offset=0;
-    int size=10;
+    Logger logger= LoggerFactory.getLogger(getClass().getName());
 
     ModelMapper modelMapper = new ModelMapper();
 
     public List<RegisteredCustomerDTO> getCustomers(int offset, int size) {
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Customer> customerList = customerRepository.fetchCustomerByPage(sortById);
+        List<Customer> customerList = customerRepository.fetchCustomerByPage(paginationImpl.pagination(offset,size));
         if (customerList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -66,12 +64,7 @@ public class AdminImpl implements AdminService {
     }
 
     public List<RegisteredSellerDTO> getSellers(int offset, int size) {
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Seller> sellerList = sellerRepository.fetchSellerByPage(sortById);
+        List<Seller> sellerList = sellerRepository.fetchSellerByPage(paginationImpl.pagination(offset,size));
         if (sellerList.size() == 0) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }

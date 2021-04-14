@@ -6,6 +6,8 @@ import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.PasswordService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class PasswordImpl implements PasswordService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     public boolean generatePassword(String email) {
 
@@ -40,7 +43,7 @@ public class PasswordImpl implements PasswordService {
         String body = " Please generate new Password using this link" +
                 " which will be valid for 15 minutes only = \n http://localhost:8080/password/reset?token=" + user.getResetToken();
         emailService.sendMail(user.getEmail(), "Password Generation Link", body);
-        System.out.println(body);
+        logger.info(body);
         return true;
     }
 

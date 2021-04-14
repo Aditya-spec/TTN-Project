@@ -12,6 +12,8 @@ import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CustomerService;
 import com.Bootcamp.Project.Application.validations.CustomValidation;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +37,11 @@ public class CustomerImpl implements CustomerService {
     MessageDTO messageDTO;
     @Autowired
     CustomValidation customValidation;
+    @Autowired
+    PaginationImpl paginationImpl;
 
     ModelMapper modelMapper = new ModelMapper();
+    Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     public CustomerProfileDTO showProfile(String email) {
         Customer customer = customerRepository.findByEmail(email);
@@ -115,6 +120,7 @@ public class CustomerImpl implements CustomerService {
         customerRepository.save(customer);
         String body = "Password has been updated successfully";
         emailService.sendMail(customer.getEmail(), "Password Updated", body);
+        logger.info(body);
         return true;
     }
 

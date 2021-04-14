@@ -11,9 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -47,10 +44,10 @@ public class ProductImpl implements ProductService {
     @Autowired
     CategoryImpl categoryImpl;
 
-    ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    PaginationImpl paginationImpl;
 
-    int offset = 0;
-    int size = 10;
+    ModelMapper modelMapper = new ModelMapper();
 
 
     @Override
@@ -58,7 +55,7 @@ public class ProductImpl implements ProductService {
 
         Seller seller = sellerRepository.findByEmail(email);
 
-        Long categoryId = sellerProductAddDTO.getCategoryId();                  //category is for category_id
+        Long categoryId = sellerProductAddDTO.getCategoryId();
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
@@ -143,23 +140,10 @@ public class ProductImpl implements ProductService {
         if (seller.getId() != product.getSeller().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-
-        if (sellerProductUpdateDTO != null) {
-            checkProductUniqueness(sellerProductUpdateDTO.getName(), product.getBrand(), product.getCategory().getId(), seller.getId());
-            product.setName(sellerProductUpdateDTO.getName());
-        }
-        if (sellerProductUpdateDTO.getCancellable()) {
-            product.setCancellable(sellerProductUpdateDTO.getCancellable());
-        }
-        if (sellerProductUpdateDTO.getReturnable()) {
-            product.setReturnable(sellerProductUpdateDTO.getReturnable());
-        }
-        if (sellerProductUpdateDTO.getDescription() != null) {
-            product.setDescription(sellerProductUpdateDTO.getDescription());
-        }
-        productRepository.save(product);
+        productRepository.save(updateProductMappingFromDTO(product,sellerProductUpdateDTO));
         return true;
     }
+
 
 
     @Override
@@ -183,12 +167,7 @@ public class ProductImpl implements ProductService {
     @Override
     public List<SellerProductShowDTO> showAllSellerProducts(String email, int offset, int size) {
         Seller seller = sellerRepository.findByEmail(email);
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Product> productList = productRepository.fetchBySellerId(seller.getId(), sortById);
+        List<Product> productList = productRepository.fetchBySellerId(seller.getId(), paginationImpl.pagination(offset, size));
         if (productList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -220,9 +199,7 @@ public class ProductImpl implements ProductService {
         if (product.getDeleted()) {
             throw new EcommerceException(ErrorCode.NOT_FOUND);
         }
-        Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);  //to get meta values
-
-        checkVariation(productVariationDTO.getMetadata(), product);             //check whether the given field and values is present or not
+        checkVariation(productVariationDTO.getMetadata(), product);             //checks whether the given field and values are present or not
 
         ProductVariation productVariation = new ProductVariation();
         productVariation = addVariationMappingFromDTO(productVariation, productVariationDTO, product);
@@ -294,12 +271,8 @@ public class ProductImpl implements ProductService {
         if (product.getDeleted()) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
+
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), paginationImpl.pagination(offset, size));
         if (variationList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -332,12 +305,7 @@ public class ProductImpl implements ProductService {
 
     @Override
     public List<AdminCustomerProductResponseDTO> showAdminAllProducts(int offset, int size) {
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Product> productList = productRepository.fetchAllProducts(sortById);
+        List<Product> productList = productRepository.fetchAllProducts(paginationImpl.pagination(offset, size));
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         if (productList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -364,18 +332,16 @@ public class ProductImpl implements ProductService {
         if (givenProduct == null) {
             throw new EcommerceException(ErrorCode.NO_PRODUCT_FOUND);
         }
-
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Product> productList = productRepository.fetchSimilarProducts(givenProduct.getCategory().getId(), sortById);
+        List<Product> productList = productRepository.fetchSimilarProducts(givenProduct.getCategory().getId(), paginationImpl.pagination(offset, size));
         if (productList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
         List<AdminCustomerProductResponseDTO> adminCustomerProductResponseDTOList = new ArrayList<>();
         for (Product product : productList) {
             if (!product.getDeleted() && product.getActive()) {
-             AdminCustomerProductResponseDTO adminCustomerProductResponseDTO=fetchProductWithVariations(product);
-             if(!adminCustomerProductResponseDTO.getVariationsList().isEmpty())
-             adminCustomerProductResponseDTOList.add(adminCustomerProductResponseDTO);
+                AdminCustomerProductResponseDTO adminCustomerProductResponseDTO = fetchProductWithVariations(product);
+                if (!adminCustomerProductResponseDTO.getVariationsList().isEmpty())
+                    adminCustomerProductResponseDTOList.add(adminCustomerProductResponseDTO);
             }
         }
         return adminCustomerProductResponseDTOList;
@@ -424,6 +390,23 @@ public class ProductImpl implements ProductService {
         return product;
     }
 
+    private Product updateProductMappingFromDTO(Product product,SellerProductUpdateDTO sellerProductUpdateDTO){
+        if (sellerProductUpdateDTO != null) {
+            checkProductUniqueness(sellerProductUpdateDTO.getName(), product.getBrand(), product.getCategory().getId(), product.getSeller().getId());
+            product.setName(sellerProductUpdateDTO.getName());
+        }
+        if (sellerProductUpdateDTO.getCancellable()) {
+            product.setCancellable(sellerProductUpdateDTO.getCancellable());
+        }
+        if (sellerProductUpdateDTO.getReturnable()) {
+            product.setReturnable(sellerProductUpdateDTO.getReturnable());
+        }
+        if (sellerProductUpdateDTO.getDescription() != null) {
+            product.setDescription(sellerProductUpdateDTO.getDescription());
+        }
+        return product;
+    }
+
     private void checkProductUniqueness(String name, String brand, Long categoryId, Long sellerId) {
         List<Product> productList = productRepository.fetchProduct(brand, categoryId, sellerId);
         if (productList != null) {
@@ -441,8 +424,7 @@ public class ProductImpl implements ProductService {
 
     private AdminCustomerProductResponseDTO fetchProductWithVariations(Product product) {
         Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), sortById);
+        List<ProductVariation> variationList = productVariationRepository.fetchVariations(product.getId(), paginationImpl.pagination(0, 0));
 
         List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
         if (variationList.size() != 0) {
@@ -591,6 +573,5 @@ public class ProductImpl implements ProductService {
         }
         return productList;
     }
-
 
 }

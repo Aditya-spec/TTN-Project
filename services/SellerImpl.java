@@ -11,6 +11,8 @@ import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.SellerService;
 import com.Bootcamp.Project.Application.validations.CustomValidation;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ public class SellerImpl implements SellerService {
     CustomValidation customValidation;
 
     ModelMapper modelMapper = new ModelMapper();
+    Logger logger= LoggerFactory.getLogger(getClass().getName());
 
     public SellerProfileDTO showProfile(String email) {
 

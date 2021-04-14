@@ -38,14 +38,14 @@ public class AdminController {
 
 
     @GetMapping("/get/customers")
-    public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomer(@RequestParam("offset") int offset,
+    public ResponseEntity<List<RegisteredCustomerDTO>> getAllCustomers(@RequestParam("offset") int offset,
                                                                       @RequestParam("size") int size) {
         return new ResponseEntity<>(adminImpl.getCustomers(offset,size), HttpStatus.OK);
     }
 
 
     @GetMapping("/get/sellers")
-    public ResponseEntity<List<RegisteredSellerDTO>> getAllSeller(@RequestParam("offset") int offset,
+    public ResponseEntity<List<RegisteredSellerDTO>> getAllSellers(@RequestParam("offset") int offset,
                                                                   @RequestParam("size") int size) {
         return new ResponseEntity<>(adminImpl.getSellers(offset,size), HttpStatus.OK);
     }

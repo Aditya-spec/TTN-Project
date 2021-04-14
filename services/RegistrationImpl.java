@@ -13,6 +13,8 @@ import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.RegistrationService;
 import com.Bootcamp.Project.Application.validations.CustomValidation;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +41,7 @@ public class RegistrationImpl implements RegistrationService {
     CustomValidation customValidation;
 
     ModelMapper modelMapper = new ModelMapper();
+    Logger logger= LoggerFactory.getLogger(getClass().getName());
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

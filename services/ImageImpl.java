@@ -11,6 +11,8 @@ import com.Bootcamp.Project.Application.repositories.ProductVariationRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
 import com.Bootcamp.Project.Application.repositories.UserRepository;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.ImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,8 @@ public class ImageImpl implements ImageService {
     SellerRepository sellerRepository;
     @Autowired
     ProductVariationRepository productVariationRepository;
+
+    Logger logger= LoggerFactory.getLogger(getClass().getName());
     final String IMAGE_DIR = "/home/ttn/Ecommerce_Images/";
 
     @Override

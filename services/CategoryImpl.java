@@ -10,6 +10,8 @@ import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.*;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.CategoryService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,11 +34,11 @@ public class CategoryImpl implements CategoryService {
     ProductVariationRepository productVariationRepository;
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    PaginationImpl paginationImpl;
 
     ModelMapper modelMapper = new ModelMapper();
-
-    int offset = 0;
-    int size = 10;
+    Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Override
     public String addCategory(CategoryAddDTO categoryAddDTO) {
@@ -65,12 +67,7 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDTO> showCategories(int offset, int size) {
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        Optional<List<Category>> categories = categoryRepository.fetchALlCategories(sortById);
+        Optional<List<Category>> categories = categoryRepository.fetchALlCategories(paginationImpl.pagination(offset, size));
         if (categories.isEmpty()) {
             throw new EcommerceException(ErrorCode.CATEGORY_NOT_EXIST);
         }
@@ -110,15 +107,11 @@ public class CategoryImpl implements CategoryService {
     }
 
 
-
     @Override
     public List<CMDResponseDTO> showMetaData(int offset, int size) {
-        if (size > 0) {
-            this.offset = offset;
-            this.size = size;
-        }
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll(sortById);
+
+
+        Optional<List<CategoryMetadataField>> metadataFieldList = metadataFieldRepository.fetchAll(paginationImpl.pagination(offset, size));
         if (metadataFieldList.isEmpty()) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -254,8 +247,8 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<CustomerCategoryResponseDTO> showCustomerCategories() {
-        Pageable sortById = PageRequest.of(this.offset, this.size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Category> categoryList = categoryRepository.fetchAllRootCategories(sortById);
+
+        List<Category> categoryList = categoryRepository.fetchAllRootCategories(paginationImpl.pagination(0,10));
         if (categoryList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -323,7 +316,7 @@ public class CategoryImpl implements CategoryService {
      * Utility Functions
      */
 
-    private CategoryResponseDTO getCategoryResponseDTO(Category category ) {
+    private CategoryResponseDTO getCategoryResponseDTO(Category category) {
 
 
         List<CategoryMetadataFieldValues> categoryMetadataFieldValuesList = cmfvRepository.fetchByCategoryId(category.getId());
@@ -360,7 +353,7 @@ public class CategoryImpl implements CategoryService {
 
     /**
      * Finds Parent category up to the root node
-     * */
+     */
     private List<CategoryAddDTO> findCategoryParent(Long id) {
 
         Category category = categoryRepository.findById(id).get();
@@ -392,7 +385,7 @@ public class CategoryImpl implements CategoryService {
     }
 
     /**
-     *Compares old meta values to the new meta values and returns union of both
+     * Compares old meta values to the new meta values and returns union of both
      */
 
     public String checkFieldValues(String oldValues, String newValues) {
