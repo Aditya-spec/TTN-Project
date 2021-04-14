@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Entity
@@ -25,7 +24,7 @@ public class Customer extends User {
     private List<Invoice> invoiceList;
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
-    private Set<Cart> cartSet;
+    private List<Cart> cartList;
 
     private String activationToken;
 
@@ -55,8 +54,8 @@ public class Customer extends User {
         return invoiceList;
     }
 
-    public Set<Cart> getCartSet() {
-        return cartSet;
+    public List<Cart> getCartList() {
+        return cartList;
     }
 
     public String getActivationToken() {
@@ -82,8 +81,8 @@ public class Customer extends User {
         this.contact = contact;
     }
 
-    public void setCartSet(Set<Cart> cartSet) {
-        this.cartSet = cartSet;
+    public void setCartList(List<Cart> cartList) {
+        this.cartList = cartList;
     }
 
     public void setActivationToken(String activationToken) {
@@ -101,11 +100,11 @@ public class Customer extends User {
     }
     public void setCart(Cart cart){
         if(cart !=null){
-            if(cartSet==null){
-                cartSet=new HashSet<>();
+            if(cartList ==null){
+                cartList =new ArrayList<>();
             }
             cart.setCustomer(this);
-            this.getCartSet().add(cart);
+            this.getCartList().add(cart);
         }
     }
 
@@ -121,7 +120,7 @@ public class Customer extends User {
                 "contact=" + contact +
                 ", productReviewSet=" + productReviewSet +
                 ", invoiceList=" + invoiceList +
-                ", cartSet=" + cartSet +
+                ", cartSet=" + cartList +
                 '}';
     }
 }

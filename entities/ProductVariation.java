@@ -8,8 +8,9 @@ import org.hibernate.annotations.TypeDefs;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 
@@ -34,10 +35,10 @@ public class ProductVariation extends BaseDomain {
     private Product product;
 
     @OneToMany(mappedBy = "productVariation")
-    private Set<OrderProduct> orderProductSet;
+    private List<OrderProduct> orderProductList;
 
     @OneToMany(mappedBy = "productVariation", cascade = CascadeType.ALL)
-    private Set<Cart> cartSet;
+    private List<Cart> cartList;
 
     //Constructors
 
@@ -66,8 +67,8 @@ public class ProductVariation extends BaseDomain {
         return quantityAvailable;
     }
 
-    public Set<OrderProduct> getOrderProductSet() {
-        return orderProductSet;
+    public List<OrderProduct> getOrderProductList() {
+        return orderProductList;
     }
 
     public Boolean getActive() {
@@ -77,6 +78,7 @@ public class ProductVariation extends BaseDomain {
     public JSONObject getMetadata() {
         return metadata;
     }
+
 
 
 //Setters
@@ -93,8 +95,8 @@ public class ProductVariation extends BaseDomain {
         this.product = product;
     }
 
-    public void setOrderProductSet(Set<OrderProduct> orderProductSet) {
-        this.orderProductSet = orderProductSet;
+    public void setOrderProductList(List<OrderProduct> orderProductList) {
+        this.orderProductList = orderProductList;
     }
 
     public void setQuantityAvailable(Integer quantityAvailable) {
@@ -109,31 +111,31 @@ public class ProductVariation extends BaseDomain {
         this.metadata = metadata;
     }
 
-    public Set<Cart> getCartSet() {
-        return cartSet;
+    public List<Cart> getCartList() {
+        return cartList;
     }
 
-    public void setCartSet(Set<Cart> cartSet) {
-        this.cartSet = cartSet;
+    public void setCartList(List<Cart> cartList) {
+        this.cartList = cartList;
     }
 
     public void setOrderProduct(OrderProduct orderProduct) {
         if (orderProduct != null) {
-            if (orderProductSet == null) {
-                orderProductSet = new HashSet<>();
+            if (orderProductList == null) {
+                orderProductList = new ArrayList<>();
             }
             orderProduct.setProductVariation(this);
-            orderProductSet.add(orderProduct);
+            orderProductList.add(orderProduct);
         }
     }
 
     public void setCart(Cart cart) {
-        if (cartSet != null) {
-            if (cartSet == null) {
-                cartSet = new HashSet<>();
+        if (cartList != null) {
+            if (cartList == null) {
+                cartList = new ArrayList<>();
             }
             cart.setProductVariation(this);
-            this.getCartSet().add(cart);
+            this.getCartList().add(cart);
         }
     }
 }

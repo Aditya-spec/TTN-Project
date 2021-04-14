@@ -4,10 +4,7 @@ import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.enums.Label;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
-import com.Bootcamp.Project.Application.services.CategoryImpl;
-import com.Bootcamp.Project.Application.services.CustomerImpl;
-import com.Bootcamp.Project.Application.services.ImageImpl;
-import com.Bootcamp.Project.Application.services.ProductImpl;
+import com.Bootcamp.Project.Application.services.*;
 import com.Bootcamp.Project.Application.validations.CustomValidation;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -39,6 +36,8 @@ public class CustomerController {
     MessageDTO messageDTO;
     @Autowired
     CustomValidation customValidation;
+    @Autowired
+    CartImpl cartImpl;
 
     @GetMapping("/home")
     public ResponseEntity<MessageDTO> indexPremium() {
@@ -84,7 +83,7 @@ public class CustomerController {
     @PostMapping("/upload-image")
     public ResponseEntity<MessageDTO> uploadImage(@RequestBody MultipartFile imageFile, HttpServletRequest request) {
         customValidation.imageValidation(imageFile);
-        String email=request.getUserPrincipal().getName();
+        String email = request.getUserPrincipal().getName();
         try {
             return imageImpl.uploadImage(imageFile, email);
         } catch (IOException e) {
@@ -158,9 +157,9 @@ public class CustomerController {
     }
 
     @GetMapping("/view-similarProducts")
-    public MappingJacksonValue viewSimilarProduct(@RequestParam Long productId,@RequestParam("offset") int offset,
+    public MappingJacksonValue viewSimilarProduct(@RequestParam Long productId, @RequestParam("offset") int offset,
                                                   @RequestParam("size") int size) {
-        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(productId,offset,size);
+        List<AdminCustomerProductResponseDTO> responseDTOList = productImpl.viewSimilarProduct(productId, offset, size);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept("productDTO");
         FilterProvider filters = new SimpleFilterProvider().addFilter("responseDTOFilter", filter);
         MappingJacksonValue mapping = new MappingJacksonValue(responseDTOList);
@@ -175,4 +174,51 @@ public class CustomerController {
         return customerCategoryFilterDTO;
     }
 
+    @PostMapping("/add-to-cart")
+    public ResponseEntity<MessageDTO> addProductToCart(@RequestParam("variationId") Long variationId,
+                                                       @RequestParam("quantity") int quantity,
+                                                       HttpServletRequest request) {
+        if (cartImpl.addProduct(variationId, quantity, request.getUserPrincipal().getName())) {
+            messageDTO.setMessage("product variation saved successfully to the cart");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        }
+        messageDTO.setMessage("Product cannot be saved to the cart");
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-cart")
+    public List<CartResponseDTO> viewCart(HttpServletRequest request) {
+        return null;
+    }
+
+    @PutMapping("/update-cart")
+    public ResponseEntity<MessageDTO> updateCart(@RequestParam("variationId") Long variationId,
+                                                 @RequestParam("quantity") int quantity,
+                                                 HttpServletRequest request) {
+        if (cartImpl.updateCart(variationId, quantity, request.getUserPrincipal().getName())) {
+            messageDTO.setMessage("Cart updated successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        }
+        messageDTO.setMessage("cart cannot be updated");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/delete-from-cart")
+    public ResponseEntity<MessageDTO> deleteFromCart(@RequestParam("variationId") Long variationId, HttpServletRequest request) {
+        if (cartImpl.deleteFromCart(variationId, request.getUserPrincipal().getName())) {
+            messageDTO.setMessage("product deleted from cart successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        }
+        messageDTO.setMessage("product couldn't be deleted");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/empty-the-cart")
+    public ResponseEntity<MessageDTO> emptyCart(HttpServletRequest request){
+      if(cartImpl.emptyingCart(request.getUserPrincipal().getName())){
+          messageDTO.setMessage("cart emptied successfully");
+          return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+      }messageDTO.setMessage("cart cannot be emptied");
+        return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+    }
 }

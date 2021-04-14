@@ -1,15 +1,12 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.Bootcamp.Project.Application.entities.BaseDomain;
-import com.Bootcamp.Project.Application.entities.Customer;
-import com.Bootcamp.Project.Application.entities.ProductVariation;
 
 import javax.persistence.*;
 
 @Entity
 public class Cart extends BaseDomain {
 
-   @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
@@ -17,7 +14,7 @@ public class Cart extends BaseDomain {
     @JoinColumn(name = "product_variation_id")
     private ProductVariation productVariation;
 
-    private Boolean wishListItem=false;
+    private Boolean wishListItem = false;
     private int quantity;
 
     //Getters
