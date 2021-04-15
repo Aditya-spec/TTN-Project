@@ -16,9 +16,6 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,11 +82,9 @@ public class AdminImpl implements AdminService {
 
     public ResponseEntity<MessageDTO> activateUser(Long id, Map<Object, Object> fields) {
         User user = userRepository.findById(id).get();
-
         if (user == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
-
         if (user.getActive()) {
             messageDTO.setMessage("User is already active");
             return new ResponseEntity(messageDTO, HttpStatus.BAD_REQUEST);
@@ -102,7 +97,6 @@ public class AdminImpl implements AdminService {
             });
         } catch (RuntimeException e) {
             throw new EcommerceException(ErrorCode.INVALID_FIELDS);
-
         }
         userRepository.save(user);
         String body = "Your account is active now!!";
@@ -115,11 +109,9 @@ public class AdminImpl implements AdminService {
 
     public ResponseEntity<MessageDTO> deactivateUser(Long id, Map<Object, Object> fields) {
         User user = userRepository.findById(id).orElse(null);
-
         if (user == null) {
             throw new EcommerceException(ErrorCode.USER_NOT_FOUND);
         }
-
         List<Role> roles = user.getRoles();
         for (Role role : roles) {
             if (role.getAuthorization().equals("ROLE_ADMIN")) {
@@ -138,7 +130,6 @@ public class AdminImpl implements AdminService {
             });
         } catch (RuntimeException e) {
             throw new EcommerceException(ErrorCode.INVALID_FIELDS);
-
         }
         userRepository.save(user);
         String body = "Your account is deactivated now!!";

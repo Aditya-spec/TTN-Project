@@ -7,6 +7,7 @@ import com.Bootcamp.Project.Application.entities.Customer;
 import com.Bootcamp.Project.Application.entities.Seller;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.enums.Label;
+import com.Bootcamp.Project.Application.enums.PaymentMethod;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.CustomerRepository;
 import com.Bootcamp.Project.Application.repositories.SellerRepository;
@@ -85,6 +86,14 @@ public class CustomValidation {
                 .findFirst()
                 .orElseThrow(() -> {
                     throw new EcommerceException(ErrorCode.LABEL_NOT_CORRECT);
+                });
+    }
+    public PaymentMethod verifyPaymentMethod(String method) {
+        return Stream.of(PaymentMethod.values())
+                .filter(c -> c.toString().equals(method))
+                .findFirst()
+                .orElseThrow(() -> {
+                    throw new EcommerceException(ErrorCode.PAYMENT_METHOD_NOT_CORRECT);
                 });
     }
 

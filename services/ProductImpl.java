@@ -77,7 +77,7 @@ public class ProductImpl implements ProductService {
         String body = "A new Product has been added by Seller: " + seller.getEmail() + "\nCategory: " + category.getName() + "\nBrand: "
                 + newProduct.getBrand() + "please take some action.";
         String topic = "New Product Added!!";
-        emailService.sendMail(seller.getEmail(), topic, body);
+        //emailService.sendMail(seller.getEmail(), topic, body);
 
         return true;
     }
@@ -141,10 +141,9 @@ public class ProductImpl implements ProductService {
         if (seller.getId() != product.getSeller().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-        productRepository.save(updateProductMappingFromDTO(product,sellerProductUpdateDTO));
+        productRepository.save(updateProductMappingFromDTO(product, sellerProductUpdateDTO));
         return true;
     }
-
 
 
     @Override
@@ -282,7 +281,7 @@ public class ProductImpl implements ProductService {
             ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
             productVariationList.add(responseDTO);
         }*/
-        return variationList.stream().map(e->showVariationMapping(product,e)).collect(Collectors.toList());
+        return variationList.stream().map(e -> showVariationMapping(product, e)).collect(Collectors.toList());
         //return productVariationList;
     }
 
@@ -317,7 +316,7 @@ public class ProductImpl implements ProductService {
             adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
         }
         return adminCustomerProductResponseDTOList;*/
-        return productList.stream().map(e->fetchProductWithVariations(e)).collect(Collectors.toList());
+        return productList.stream().map(e -> fetchProductWithVariations(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -385,15 +384,17 @@ public class ProductImpl implements ProductService {
 
     private Product mapProductFromDTO(SellerProductAddDTO sellerProductAddDTO) {
         Product product = new Product();
-        product.setCancellable(sellerProductAddDTO.getCancellable());
         product.setName(sellerProductAddDTO.getName());
         product.setDescription(sellerProductAddDTO.getDescription());
         product.setBrand(sellerProductAddDTO.getBrand());
-        product.setReturnable(sellerProductAddDTO.getReturnable());
+        if (sellerProductAddDTO.getCancellable() != null)
+            product.setCancellable(sellerProductAddDTO.getCancellable());
+        if (sellerProductAddDTO.getReturnable() != null)
+            product.setReturnable(sellerProductAddDTO.getReturnable());
         return product;
     }
 
-    private Product updateProductMappingFromDTO(Product product,SellerProductUpdateDTO sellerProductUpdateDTO){
+    private Product updateProductMappingFromDTO(Product product, SellerProductUpdateDTO sellerProductUpdateDTO) {
         if (sellerProductUpdateDTO != null) {
             checkProductUniqueness(sellerProductUpdateDTO.getName(), product.getBrand(), product.getCategory().getId(), product.getSeller().getId());
             product.setName(sellerProductUpdateDTO.getName());

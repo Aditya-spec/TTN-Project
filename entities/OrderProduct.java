@@ -23,7 +23,7 @@ public class OrderProduct extends BaseDomain {
 
 
     private int quantity;
-    private int price;
+    private Double price;
 
     //Constructors
 
@@ -50,7 +50,7 @@ public class OrderProduct extends BaseDomain {
         return quantity;
     }
 
-    public int getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -74,7 +74,7 @@ public class OrderProduct extends BaseDomain {
         this.quantity = quantity;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

@@ -17,9 +17,12 @@ public enum ErrorCode {
     PASSWORDS_NOT_SAME("Password and Confirm password do not match", HttpStatus.BAD_REQUEST, 400),
     INVALID_FIELDS("Field is not present", HttpStatus.BAD_REQUEST, 400),
     INVALID_TOKEN("Your Token is Invalid, Please enter a valid token", HttpStatus.FORBIDDEN, 403),
-    ALREADY_EXISTS("given data already exists in the system", HttpStatus.BAD_REQUEST, 400),
+    ALREADY_EXISTS("Given data already exists in the system", HttpStatus.BAD_REQUEST, 400),
     PARENT_CATEGORY_NOT_EXISTS("Parent category for given category do not exists", HttpStatus.BAD_REQUEST, 400),
     NO_DATA("No data to show", HttpStatus.NOT_FOUND, 404),
+    NO_ORDER_FOUND("No order found ",HttpStatus.BAD_REQUEST,400),
+    PAYMENT_METHOD_NOT_CORRECT("Payment method should be amongst COD,CARD and WALLET",HttpStatus.BAD_REQUEST,400),
+    ADDRESS_NOT_ADDED("Given address is not added in your address List",HttpStatus.BAD_REQUEST,400),
     IMAGE_PATTERN_NOT_MATCHES("Please provide the valid image format,jpg|jpeg|png|bmp|",HttpStatus.BAD_REQUEST,400),
     IMAGE_NOT_UPLOADED("Image cannot be uploaded",HttpStatus.BAD_REQUEST,400),
     ALREADY_DISACTIVE("Given data is already disactive",HttpStatus.BAD_REQUEST,400),
@@ -37,6 +40,7 @@ public enum ErrorCode {
     NOT_ACTIVE("Given data is not active",HttpStatus.BAD_REQUEST,400),
     NO_VARIATION_FOUND("Product Variation not found for the given data",HttpStatus.BAD_REQUEST,400),
     CART_NOT_FOUND("No cart found for the given data",HttpStatus.BAD_REQUEST,400),
+    NO_ADDRESS_FOUND("Address not found ",HttpStatus.BAD_REQUEST,400),
     USER_IS_ADMIN("Cannot make changes, this user is Admin", HttpStatus.BAD_REQUEST, 400);
 
 

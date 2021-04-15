@@ -12,7 +12,7 @@ public class OrderAddress {
     private String orderState;
     private String orderCountry;
     private String orderAddressLine;
-    private int orderZipCode;
+    private String orderZipCode;
 
     @Enumerated(EnumType.STRING)
     private Label orderLabel;
@@ -35,7 +35,7 @@ public class OrderAddress {
         return orderAddressLine;
     }
 
-    public int getOrderZipCode() {
+    public String getOrderZipCode() {
         return orderZipCode;
     }
 
@@ -62,7 +62,7 @@ public class OrderAddress {
         this.orderAddressLine = orderAddressLine;
     }
 
-    public void setOrderZipCode(int orderZipCode) {
+    public void setOrderZipCode(String orderZipCode) {
         this.orderZipCode = orderZipCode;
     }
 

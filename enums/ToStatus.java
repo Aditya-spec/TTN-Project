@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ToStatus {
 
+    WAITING_FOR_CONFIRMATION,
     CANCELLED,
     ORDER_REJECTED,
     ORDER_CONFIRMED,

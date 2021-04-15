@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 public class Invoice extends BaseDomain {
 
-    private int amountPaid;
+    private Double amountPaid;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
@@ -41,7 +41,7 @@ public class Invoice extends BaseDomain {
         return customer;
     }
 
-    public int getAmountPaid() {
+    public Double getAmountPaid() {
         return amountPaid;
     }
 
@@ -63,7 +63,7 @@ public class Invoice extends BaseDomain {
         this.customer = customer;
     }
 
-    public void setAmountPaid(int amountPaid) {
+    public void setAmountPaid(Double amountPaid) {
         this.amountPaid = amountPaid;
     }
 

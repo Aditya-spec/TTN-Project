@@ -109,7 +109,6 @@ public class CartImpl implements CartService {
 
     /**
      * Utility functions
-     *
      */
 
     private Cart getExistingCart(Long variationId, int quantity, String email) {
@@ -147,7 +146,10 @@ public class CartImpl implements CartService {
 
     private CartResponseDTO showCartMapping(Cart cart) {
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
-        ProductVariation productVariation = variationRepository.findById(cart.getProductVariation().getId()).get();
+        ProductVariation productVariation = variationRepository.findById(cart.getProductVariation().getId()).orElse(null);
+        if (productVariation == null || productVariation.getDeleted()) {
+            return null;
+        }
         Product product = productRepository.findById(productVariation.getProduct().getId()).get();
         if (product.getDeleted() || !product.getActive()) {
             return null;
@@ -160,7 +162,5 @@ public class CartImpl implements CartService {
         cartResponseDTO.setBrandName(product.getBrand());
         cartResponseDTO.setOutOfStock(productVariation.getQuantityAvailable() <= 0);
         return cartResponseDTO;
-
-
     }
 }

@@ -38,6 +38,8 @@ public class CustomerController {
     CustomValidation customValidation;
     @Autowired
     CartImpl cartImpl;
+    @Autowired
+    InvoiceImpl invoiceImpl;
 
     @GetMapping("/home")
     public ResponseEntity<MessageDTO> indexPremium() {
@@ -215,11 +217,41 @@ public class CustomerController {
     }
 
     @DeleteMapping("/empty-the-cart")
-    public ResponseEntity<MessageDTO> emptyCart(HttpServletRequest request){
-      if(cartImpl.cleanCart(request.getUserPrincipal().getName())){
-          messageDTO.setMessage("cart emptied successfully");
-          return new ResponseEntity<>(messageDTO,HttpStatus.OK);
-      }messageDTO.setMessage("cart cannot be emptied");
-        return new ResponseEntity<>(messageDTO,HttpStatus.BAD_REQUEST);
+    public ResponseEntity<MessageDTO> emptyCart(HttpServletRequest request) {
+        if (cartImpl.cleanCart(request.getUserPrincipal().getName())) {
+            messageDTO.setMessage("cart emptied successfully");
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        }
+        messageDTO.setMessage("cart cannot be emptied");
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/order-all-products")
+    public ResponseEntity<MessageDTO> orderAllProducts(@RequestParam("addressId") Long addressID,
+                                                       @RequestParam("paymentMethod") String paymentMethod,
+                                                       HttpServletRequest request) {
+        return invoiceImpl.orderAllProducts(addressID, paymentMethod, request.getUserPrincipal().getName());
+    }
+
+    @PostMapping("/order-partial-products")
+    public ResponseEntity<MessageDTO> orderPartialProducts(@RequestParam("addressId") Long addressId,
+                                                           @RequestBody PartialProductsOrderDTO partialProductsOrderDTO,
+                                                           HttpServletRequest request) {
+        return invoiceImpl.orderPartialProducts(addressId, partialProductsOrderDTO, request.getUserPrincipal().getName());
+    }
+
+    @PostMapping("direct-order")
+    public ResponseEntity<MessageDTO> directOrder(@Valid @RequestBody DirectOrderDTO directOrderDTO, HttpServletRequest request) {
+        return invoiceImpl.directOrder(directOrderDTO, request.getUserPrincipal().getName());
+    }
+
+    @PutMapping("/cancel-order")
+    public ResponseEntity<MessageDTO> cancelOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request){
+        return invoiceImpl.cancelOrder(orderProductId,request.getUserPrincipal().getName());
+    }
+    @PutMapping("/return-order")
+    public ResponseEntity<MessageDTO> returnOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request){
+        return invoiceImpl.returnOrder(orderProductId,request.getUserPrincipal().getName());
+    }
+
 }
