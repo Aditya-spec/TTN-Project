@@ -151,33 +151,31 @@ public class InvoiceImpl implements InvoiceService {
         if (orderProductList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
-        List<OrderProductDTO> orderProductDTOList = orderProductList
-                .stream()
-                .map(e -> showInvoiceOrderProductMapping(e))
-                .collect(Collectors.toList());
-        responseDTO.setOrderProductDTOList(orderProductDTOList);
+        getOrderProductDTOList(orderProductList);
+        responseDTO.setOrderProductDTOList(getOrderProductDTOList(orderProductList));
         return responseDTO;
 
     }
 
+
     @Override
     public List<OrderResponseDTO> viewAllOrders(int offset, int size, String email) {
         User user = userRepository.findByEmail(email);
-        Pageable pagination = paginationImpl.pagination(offset, size);
         if (user.getRoles().size() == 3)
-            return adminViewOrders(email,pagination);
+            return adminViewOrders(email, paginationImpl.pagination(offset, size));
         String role = user.getRoles()
                 .stream()
                 .map(e -> e.getAuthorization())
-                .findFirst().get();
+                .findFirst()
+                .get();
         if (role.equals("ROLE_SELLER"))
-            return sellerViewOrders(email,pagination);
-        return customerViewOrders(email,pagination);
+            return sellerViewOrders(email, paginationImpl.pagination(offset, size));
+        return customerViewOrders(email, paginationImpl.pagination(offset, size));
     }
 
-    private List<OrderResponseDTO> customerViewOrders(String email,Pageable pageable) {
+    private List<OrderResponseDTO> customerViewOrders(String email, Pageable pageable) {
         Customer customer = customerRepository.findByEmail(email);
-        List<Invoice> invoiceList = invoiceRepository.fetchByCustomerId(customer.getId(),pageable);
+        List<Invoice> invoiceList = invoiceRepository.fetchByCustomerId(customer.getId(), pageable);
         if (invoiceList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -185,20 +183,16 @@ public class InvoiceImpl implements InvoiceService {
         for (Invoice invoice : invoiceList) {
             OrderResponseDTO responseDTO = new OrderResponseDTO();
             showInvoiceAddressMapping(invoice, responseDTO);
-            List<OrderProduct> orderProductList = orderProductRepository.fetchByOrderId(invoice.getId(),pageable);
-            List<OrderProductDTO> orderProductDTOList = orderProductList
-                    .stream()
-                    .map(e -> showInvoiceOrderProductMapping(e))
-                    .collect(Collectors.toList());
-            responseDTO.setOrderProductDTOList(orderProductDTOList);
+            List<OrderProduct> orderProductList = orderProductRepository.fetchByOrderId(invoice.getId(), pageable);
+            responseDTO.setOrderProductDTOList(getOrderProductDTOList(orderProductList));
             orderResponseDTOList.add(responseDTO);
         }
         return orderResponseDTOList;
     }
 
-    private List<OrderResponseDTO> sellerViewOrders(String email,Pageable pageable) {
+    private List<OrderResponseDTO> sellerViewOrders(String email, Pageable pageable) {
         Seller seller = sellerRepository.findByEmail(email);
-        List<OrderProduct> orderProductList = orderProductRepository.fetchAllSellerOrders(seller.getId(),pageable);
+        List<OrderProduct> orderProductList = orderProductRepository.fetchAllSellerOrders(seller.getId(), pageable);
         if (orderProductList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
@@ -207,10 +201,7 @@ public class InvoiceImpl implements InvoiceService {
             OrderResponseDTO responseDTO = new OrderResponseDTO();
             responseDTO.setDateCreated(orderProduct.getInvoice().getDateCreated());
             responseDTO.setPaymentMethod(orderProduct.getInvoice().getPaymentMethod().toString());
-            List<OrderProductDTO> orderProductDTOList = orderProductList
-                    .stream()
-                    .map(e -> showInvoiceOrderProductMapping(e))
-                    .collect(Collectors.toList());
+            List<OrderProductDTO> orderProductDTOList = getOrderProductDTOList(orderProductList);
             responseDTO.setOrderProductDTOList(orderProductDTOList);
             for (OrderProductDTO orderProductDTO : orderProductDTOList) {
                 orderProductDTO.setSellerId(null);
@@ -220,7 +211,7 @@ public class InvoiceImpl implements InvoiceService {
         return orderResponseDTOList;
     }
 
-    private List<OrderResponseDTO> adminViewOrders(String email,Pageable pageable) {
+    private List<OrderResponseDTO> adminViewOrders(String email, Pageable pageable) {
         List<OrderProduct> orderProductList = orderProductRepository.fetchAll(pageable);
         if (orderProductList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
@@ -231,14 +222,18 @@ public class InvoiceImpl implements InvoiceService {
             responseDTO.setDateCreated(orderProduct.getInvoice().getDateCreated());
             responseDTO.setPaymentMethod(orderProduct.getInvoice().getPaymentMethod().toString());
             responseDTO.setCustomerId(orderProduct.getInvoice().getCustomer().getId());
-            List<OrderProductDTO> orderProductDTOList = orderProductList
-                    .stream()
-                    .map(e -> showInvoiceOrderProductMapping(e))
-                    .collect(Collectors.toList());
-            responseDTO.setOrderProductDTOList(orderProductDTOList);
+            responseDTO.setOrderProductDTOList(getOrderProductDTOList(orderProductList));
             orderResponseDTOList.add(responseDTO);
         }
         return orderResponseDTOList;
+    }
+
+    private List<OrderProductDTO> getOrderProductDTOList(List<OrderProduct> orderProductList) {
+        List<OrderProductDTO> orderProductDTOList = orderProductList
+                .stream()
+                .map(e -> showInvoiceOrderProductMapping(e))
+                .collect(Collectors.toList());
+        return orderProductDTOList;
     }
 
     private void showInvoiceAddressMapping(Invoice invoice, OrderResponseDTO responseDTO) {
