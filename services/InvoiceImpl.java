@@ -1,8 +1,6 @@
 package com.Bootcamp.Project.Application.services;
 
-import com.Bootcamp.Project.Application.dtos.DirectOrderDTO;
-import com.Bootcamp.Project.Application.dtos.MessageDTO;
-import com.Bootcamp.Project.Application.dtos.PartialProductsOrderDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.*;
 import com.Bootcamp.Project.Application.enums.ErrorCode;
 import com.Bootcamp.Project.Application.enums.FromStatus;
@@ -12,13 +10,17 @@ import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.*;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.InvoiceService;
 import com.Bootcamp.Project.Application.validations.CustomValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceImpl implements InvoiceService {
@@ -37,9 +39,17 @@ public class InvoiceImpl implements InvoiceService {
     @Autowired
     OrderStatusRepository orderStatusRepository;
     @Autowired
+    SellerRepository sellerRepository;
+    @Autowired
     MessageDTO messageDTO;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     CustomValidation customValidation;
+    @Autowired
+    PaginationImpl paginationImpl;
+
+    Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Override
     public ResponseEntity<MessageDTO> orderAllProducts(Long addressID, String paymentMethod, String email) {
@@ -124,51 +134,147 @@ public class InvoiceImpl implements InvoiceService {
         return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
 
-    private ResponseEntity<MessageDTO> checkOrderReturnable(Customer customer, OrderProduct orderProduct) {
-        if (orderProduct == null) {
-            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
+    @Override
+    public OrderResponseDTO viewOrder(Long orderId, String email) {
+        Customer customer = customerRepository.findByEmail(email);
+        Invoice invoice = invoiceRepository.findById(orderId).orElse(null);
+        if (invoice == null) {
+            throw new EcommerceException(ErrorCode.ORDER_NOT_FOUND);
         }
-        if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
+        if (customer.getId() != invoice.getCustomer().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.RETURN_REQUESTED) {
-            messageDTO.setMessage("Return is already requested");
-            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+        OrderResponseDTO responseDTO = new OrderResponseDTO();
+        showInvoiceAddressMapping(invoice, responseDTO);
+        Pageable pageable = paginationImpl.pagination(0, 0);
+        List<OrderProduct> orderProductList = orderProductRepository.fetchByOrderId(orderId, pageable);
+        if (orderProductList.size() == 0) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
         }
-        if (!orderProduct.getProductVariation().getProduct().getReturnable() ||
-                orderProduct.getOrderStatus().getFromStatus() != FromStatus.DELIVERED) {
-            messageDTO.setMessage("Order cannot be returned");
-        }
-        orderProduct.getOrderStatus().setToStatus(ToStatus.RETURN_REQUESTED);
-        orderStatusRepository.save(orderProduct.getOrderStatus());
-        return null;
+        List<OrderProductDTO> orderProductDTOList = orderProductList
+                .stream()
+                .map(e -> showInvoiceOrderProductMapping(e))
+                .collect(Collectors.toList());
+        responseDTO.setOrderProductDTOList(orderProductDTOList);
+        return responseDTO;
+
     }
 
-    private ResponseEntity<MessageDTO> checkOrderCancellable(Customer customer, OrderProduct orderProduct) {
-
-        if (orderProduct == null) {
-            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
-        }
-        if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
-            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
-        }
-        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.CANCELLED) {
-            messageDTO.setMessage("Order is already cancelled");
-            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
-        }
-        if (!orderProduct.getProductVariation().getProduct().getCancellable() ||
-                orderProduct.getOrderStatus().getFromStatus() != FromStatus.ORDER_PLACED) {
-            messageDTO.setMessage("Order cannot be cancelled ");
-            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
-        }
-        orderProduct.getOrderStatus().setToStatus(ToStatus.CANCELLED);
-        orderProduct.getOrderStatus().setTransitionComment("Order is cancelled by the customer");
-        int newQuantity = orderProduct.getQuantity() + orderProduct.getProductVariation().getQuantityAvailable();
-        orderProduct.getProductVariation().setQuantityAvailable(newQuantity);
-        variationRepository.save(orderProduct.getProductVariation());
-        orderStatusRepository.save(orderProduct.getOrderStatus());
-        return null;
+    @Override
+    public List<OrderResponseDTO> viewAllOrders(int offset, int size, String email) {
+        User user = userRepository.findByEmail(email);
+        Pageable pagination = paginationImpl.pagination(offset, size);
+        if (user.getRoles().size() == 3)
+            return adminViewOrders(email,pagination);
+        String role = user.getRoles()
+                .stream()
+                .map(e -> e.getAuthorization())
+                .findFirst().get();
+        if (role.equals("ROLE_SELLER"))
+            return sellerViewOrders(email,pagination);
+        return customerViewOrders(email,pagination);
     }
+
+    private List<OrderResponseDTO> customerViewOrders(String email,Pageable pageable) {
+        Customer customer = customerRepository.findByEmail(email);
+        List<Invoice> invoiceList = invoiceRepository.fetchByCustomerId(customer.getId(),pageable);
+        if (invoiceList.size() == 0) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for (Invoice invoice : invoiceList) {
+            OrderResponseDTO responseDTO = new OrderResponseDTO();
+            showInvoiceAddressMapping(invoice, responseDTO);
+            List<OrderProduct> orderProductList = orderProductRepository.fetchByOrderId(invoice.getId(),pageable);
+            List<OrderProductDTO> orderProductDTOList = orderProductList
+                    .stream()
+                    .map(e -> showInvoiceOrderProductMapping(e))
+                    .collect(Collectors.toList());
+            responseDTO.setOrderProductDTOList(orderProductDTOList);
+            orderResponseDTOList.add(responseDTO);
+        }
+        return orderResponseDTOList;
+    }
+
+    private List<OrderResponseDTO> sellerViewOrders(String email,Pageable pageable) {
+        Seller seller = sellerRepository.findByEmail(email);
+        List<OrderProduct> orderProductList = orderProductRepository.fetchAllSellerOrders(seller.getId(),pageable);
+        if (orderProductList.size() == 0) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for (OrderProduct orderProduct : orderProductList) {
+            OrderResponseDTO responseDTO = new OrderResponseDTO();
+            responseDTO.setDateCreated(orderProduct.getInvoice().getDateCreated());
+            responseDTO.setPaymentMethod(orderProduct.getInvoice().getPaymentMethod().toString());
+            List<OrderProductDTO> orderProductDTOList = orderProductList
+                    .stream()
+                    .map(e -> showInvoiceOrderProductMapping(e))
+                    .collect(Collectors.toList());
+            responseDTO.setOrderProductDTOList(orderProductDTOList);
+            for (OrderProductDTO orderProductDTO : orderProductDTOList) {
+                orderProductDTO.setSellerId(null);
+            }
+            orderResponseDTOList.add(responseDTO);
+        }
+        return orderResponseDTOList;
+    }
+
+    private List<OrderResponseDTO> adminViewOrders(String email,Pageable pageable) {
+        List<OrderProduct> orderProductList = orderProductRepository.fetchAll(pageable);
+        if (orderProductList.size() == 0) {
+            throw new EcommerceException(ErrorCode.NO_DATA);
+        }
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        for (OrderProduct orderProduct : orderProductList) {
+            OrderResponseDTO responseDTO = new OrderResponseDTO();
+            responseDTO.setDateCreated(orderProduct.getInvoice().getDateCreated());
+            responseDTO.setPaymentMethod(orderProduct.getInvoice().getPaymentMethod().toString());
+            responseDTO.setCustomerId(orderProduct.getInvoice().getCustomer().getId());
+            List<OrderProductDTO> orderProductDTOList = orderProductList
+                    .stream()
+                    .map(e -> showInvoiceOrderProductMapping(e))
+                    .collect(Collectors.toList());
+            responseDTO.setOrderProductDTOList(orderProductDTOList);
+            orderResponseDTOList.add(responseDTO);
+        }
+        return orderResponseDTOList;
+    }
+
+    private void showInvoiceAddressMapping(Invoice invoice, OrderResponseDTO responseDTO) {
+        AddressDTO addressDTO = new AddressDTO();
+        addressDTO.setAddressLine(invoice.getOrderAddress().getOrderAddressLine());
+        addressDTO.setCity(invoice.getOrderAddress().getOrderCity());
+        addressDTO.setState(invoice.getOrderAddress().getOrderState());
+        addressDTO.setZipCode(invoice.getOrderAddress().getOrderZipCode());
+        addressDTO.setLabel(invoice.getOrderAddress().getOrderLabel().toString());
+        addressDTO.setCountry(invoice.getOrderAddress().getOrderCountry());
+        responseDTO.setAddress(addressDTO);
+        responseDTO.setCustomerId(invoice.getCustomer().getId());
+        responseDTO.setCustomerEmail(invoice.getCustomer().getEmail());
+        responseDTO.setOrderId(invoice.getId());
+        responseDTO.setDateCreated(invoice.getDateCreated());
+        responseDTO.setTotalAmount(invoice.getAmountPaid());
+        responseDTO.setPaymentMethod(invoice.getPaymentMethod().toString());
+    }
+
+    private OrderProductDTO showInvoiceOrderProductMapping(OrderProduct orderProduct) {
+        OrderProductDTO orderProductDTO = new OrderProductDTO();
+        orderProductDTO.setOrderProductId(orderProduct.getId());
+        orderProductDTO.setQuantity(orderProduct.getQuantity());
+        orderProductDTO.setPrice(orderProduct.getPrice());
+        orderProductDTO.setProductName(orderProduct.getProductVariation().getProduct().getName());
+        orderProductDTO.setBrandName(orderProduct.getProductVariation().getProduct().getBrand());
+        orderProductDTO.setVariationId(orderProduct.getProductVariation().getId());
+        orderProductDTO.setSellerId(orderProduct.getProductVariation().getProduct().getSeller().getId());
+        orderProductDTO.setMetaData((List<Object>) orderProduct.getProductVariation().getMetadata().get("metadata"));
+
+        OrderStatusDTO orderStatusDTO = new OrderStatusDTO();
+        orderStatusDTO.setToStatus(orderProduct.getOrderStatus().getToStatus().toString());
+        orderProductDTO.setOrderStatusDTO(orderStatusDTO);
+        return orderProductDTO;
+    }
+
 
     private ResponseEntity<MessageDTO> commonInvoiceMethod(List<Cart> cartList, Customer customer, Address address, String paymentMethod) {
         Double totalAmount = 0.0;
@@ -266,5 +372,51 @@ public class InvoiceImpl implements InvoiceService {
         orderStatus.setToStatus(ToStatus.WAITING_FOR_CONFIRMATION);
         orderStatus.setTransitionComment("Order has been placed, waiting for confirmation from the seller");
         orderStatusRepository.save(orderStatus);
+    }
+
+    private ResponseEntity<MessageDTO> checkOrderCancellable(Customer customer, OrderProduct orderProduct) {
+
+        if (orderProduct == null) {
+            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
+        }
+        if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.CANCELLED) {
+            messageDTO.setMessage("Order is already cancelled");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+        }
+        if (!orderProduct.getProductVariation().getProduct().getCancellable() ||
+                orderProduct.getOrderStatus().getFromStatus() != FromStatus.ORDER_PLACED) {
+            messageDTO.setMessage("Order cannot be cancelled ");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+        }
+        orderProduct.getOrderStatus().setToStatus(ToStatus.CANCELLED);
+        orderProduct.getOrderStatus().setTransitionComment("Order is cancelled by the customer");
+        int newQuantity = orderProduct.getQuantity() + orderProduct.getProductVariation().getQuantityAvailable();
+        orderProduct.getProductVariation().setQuantityAvailable(newQuantity);
+        variationRepository.save(orderProduct.getProductVariation());
+        orderStatusRepository.save(orderProduct.getOrderStatus());
+        return null;
+    }
+
+    private ResponseEntity<MessageDTO> checkOrderReturnable(Customer customer, OrderProduct orderProduct) {
+        if (orderProduct == null) {
+            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
+        }
+        if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.RETURN_REQUESTED) {
+            messageDTO.setMessage("Return is already requested");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+        }
+        if (!orderProduct.getProductVariation().getProduct().getReturnable() ||
+                orderProduct.getOrderStatus().getFromStatus() != FromStatus.DELIVERED) {
+            messageDTO.setMessage("Order cannot be returned");
+        }
+        orderProduct.getOrderStatus().setToStatus(ToStatus.RETURN_REQUESTED);
+        orderStatusRepository.save(orderProduct.getOrderStatus());
+        return null;
     }
 }

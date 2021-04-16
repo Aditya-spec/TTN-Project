@@ -246,12 +246,18 @@ public class CustomerController {
     }
 
     @PutMapping("/cancel-order")
-    public ResponseEntity<MessageDTO> cancelOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request){
-        return invoiceImpl.cancelOrder(orderProductId,request.getUserPrincipal().getName());
+    public ResponseEntity<MessageDTO> cancelOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request) {
+        return invoiceImpl.cancelOrder(orderProductId, request.getUserPrincipal().getName());
     }
+
     @PutMapping("/return-order")
-    public ResponseEntity<MessageDTO> returnOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request){
-        return invoiceImpl.returnOrder(orderProductId,request.getUserPrincipal().getName());
+    public ResponseEntity<MessageDTO> returnOrder(@RequestParam("orderProductId") Long orderProductId, HttpServletRequest request) {
+        return invoiceImpl.returnOrder(orderProductId, request.getUserPrincipal().getName());
+    }
+
+    @GetMapping("view-order")
+    public OrderResponseDTO viewOrder(@RequestParam("orderId") Long orderId, HttpServletRequest request) {
+        return invoiceImpl.viewOrder(orderId, request.getUserPrincipal().getName());
     }
 
 }
