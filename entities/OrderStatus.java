@@ -1,7 +1,8 @@
 package com.Bootcamp.Project.Application.entities;
 
-import com.Bootcamp.Project.Application.enums.FromStatus;
-import com.Bootcamp.Project.Application.enums.ToStatus;
+
+import com.Bootcamp.Project.Application.enums.OrderStatusEnum;
+
 
 import javax.persistence.*;
 
@@ -15,10 +16,10 @@ public class OrderStatus extends BaseDomain {
     private String transitionComment;
 
     @Enumerated(EnumType.STRING)
-    private FromStatus fromStatus;
+    private OrderStatusEnum fromStatus;
 
     @Enumerated(EnumType.STRING)
-    private ToStatus toStatus;
+    private OrderStatusEnum toStatus;
 
     //Constructors
 
@@ -39,11 +40,11 @@ public class OrderStatus extends BaseDomain {
         return transitionComment;
     }
 
-    public FromStatus getFromStatus() {
+    public OrderStatusEnum getFromStatus() {
         return fromStatus;
     }
 
-    public ToStatus getToStatus() {
+    public OrderStatusEnum getToStatus() {
         return toStatus;
     }
 
@@ -57,11 +58,11 @@ public class OrderStatus extends BaseDomain {
         this.transitionComment = transitionComment;
     }
 
-    public void setFromStatus(FromStatus fromStatus) {
+    public void setFromStatus(OrderStatusEnum fromStatus) {
         this.fromStatus = fromStatus;
     }
 
-    public void setToStatus(ToStatus toStatus) {
+    public void setToStatus(OrderStatusEnum toStatus) {
         this.toStatus = toStatus;
     }
 }

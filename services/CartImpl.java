@@ -93,7 +93,8 @@ public class CartImpl implements CartService {
         if (cartList.size() == 0) {
             throw new EcommerceException(ErrorCode.CART_NOT_FOUND);
         }
-        cartList.stream().forEach(e -> cartRepository.delete(e));
+        cartList.stream()
+                .forEach(e -> cartRepository.delete(e));
         return true;
     }
 
@@ -104,7 +105,10 @@ public class CartImpl implements CartService {
         if (cartList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
-        return cartList.stream().map(e -> showCartMapping(e)).filter(e -> e != null).collect(Collectors.toList());
+        return cartList.stream()
+                .map(e -> showCartMapping(e))
+                .filter(e -> e != null)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -280,13 +280,9 @@ public class ProductImpl implements ProductService {
         if (variationList.size() == 0) {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
-        List<ProductVariationResponseDTO> productVariationList = new ArrayList<>();
-        /*for (ProductVariation variation : variationList) {
-            ProductVariationResponseDTO responseDTO = showVariationMapping(product, variation);
-            productVariationList.add(responseDTO);
-        }*/
-        return variationList.stream().map(e -> showVariationMapping(product, e)).collect(Collectors.toList());
-        //return productVariationList;
+        return variationList.stream()
+                .map(e -> showVariationMapping(product, e))
+                .collect(Collectors.toList());
     }
 
 
@@ -316,11 +312,9 @@ public class ProductImpl implements ProductService {
             throw new EcommerceException(ErrorCode.NO_DATA);
         }
 
-        /*for (Product product : productList) {
-            adminCustomerProductResponseDTOList.add(fetchProductWithVariations(product));
-        }
-        return adminCustomerProductResponseDTOList;*/
-        return productList.stream().map(e -> fetchProductWithVariations(e)).collect(Collectors.toList());
+        return productList.stream()
+                .map(e -> fetchProductWithVariations(e))
+                .collect(Collectors.toList());
     }
 
     @Override

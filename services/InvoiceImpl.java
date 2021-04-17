@@ -2,10 +2,7 @@ package com.Bootcamp.Project.Application.services;
 
 import com.Bootcamp.Project.Application.dtos.*;
 import com.Bootcamp.Project.Application.entities.*;
-import com.Bootcamp.Project.Application.enums.ErrorCode;
-import com.Bootcamp.Project.Application.enums.FromStatus;
-import com.Bootcamp.Project.Application.enums.PaymentMethod;
-import com.Bootcamp.Project.Application.enums.ToStatus;
+import com.Bootcamp.Project.Application.enums.*;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.repositories.*;
 import com.Bootcamp.Project.Application.services.serviceInterfaces.InvoiceService;
@@ -164,10 +161,10 @@ public class InvoiceImpl implements InvoiceService {
         if (user.getRoles().size() == 3)
             return adminViewOrders(email, paginationImpl.pagination(offset, size));
         String role = user.getRoles()
-                .stream()
-                .map(e -> e.getAuthorization())
-                .findFirst()
-                .get();
+                                .stream()
+                                .map(e -> e.getAuthorization())
+                                .findFirst()
+                                .get();
         if (role.equals("ROLE_SELLER"))
             return sellerViewOrders(email, paginationImpl.pagination(offset, size));
         return customerViewOrders(email, paginationImpl.pagination(offset, size));
@@ -345,7 +342,7 @@ public class InvoiceImpl implements InvoiceService {
     private void mapOrderProductAndStatus(List<Cart> cartList, Invoice invoice) {
         for (Cart cart : cartList) {
             setOrderProduct(cart, invoice);
-            /*cartRepository.delete(cart);*/
+            /*cartRepository.delete(cart);*/ //uncomment it
         }
     }
 
@@ -363,8 +360,8 @@ public class InvoiceImpl implements InvoiceService {
     private void setOrderStatus(OrderProduct orderProduct) {
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setOrderProduct(orderProduct);
-        orderStatus.setFromStatus(FromStatus.ORDER_PLACED);
-        orderStatus.setToStatus(ToStatus.WAITING_FOR_CONFIRMATION);
+        orderStatus.setFromStatus(OrderStatusEnum.ORDER_PLACED);
+        orderStatus.setToStatus(OrderStatusEnum.WAITING_FOR_CONFIRMATION);
         orderStatus.setTransitionComment("Order has been placed, waiting for confirmation from the seller");
         orderStatusRepository.save(orderStatus);
     }
@@ -377,16 +374,16 @@ public class InvoiceImpl implements InvoiceService {
         if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.CANCELLED) {
+        if (orderProduct.getOrderStatus().getToStatus() == OrderStatusEnum.CANCELLED) {
             messageDTO.setMessage("Order is already cancelled");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (!orderProduct.getProductVariation().getProduct().getCancellable() ||
-                orderProduct.getOrderStatus().getFromStatus() != FromStatus.ORDER_PLACED) {
+                orderProduct.getOrderStatus().getFromStatus() != OrderStatusEnum.ORDER_PLACED) {
             messageDTO.setMessage("Order cannot be cancelled ");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
-        orderProduct.getOrderStatus().setToStatus(ToStatus.CANCELLED);
+        orderProduct.getOrderStatus().setToStatus(OrderStatusEnum.CANCELLED);
         orderProduct.getOrderStatus().setTransitionComment("Order is cancelled by the customer");
         int newQuantity = orderProduct.getQuantity() + orderProduct.getProductVariation().getQuantityAvailable();
         orderProduct.getProductVariation().setQuantityAvailable(newQuantity);
@@ -402,15 +399,15 @@ public class InvoiceImpl implements InvoiceService {
         if (customer.getId() != orderProduct.getInvoice().getCustomer().getId()) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
-        if (orderProduct.getOrderStatus().getToStatus() == ToStatus.RETURN_REQUESTED) {
+        if (orderProduct.getOrderStatus().getToStatus() == OrderStatusEnum.RETURN_REQUESTED) {
             messageDTO.setMessage("Return is already requested");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (!orderProduct.getProductVariation().getProduct().getReturnable() ||
-                orderProduct.getOrderStatus().getFromStatus() != FromStatus.DELIVERED) {
+                orderProduct.getOrderStatus().getFromStatus() != OrderStatusEnum.DELIVERED) {
             messageDTO.setMessage("Order cannot be returned");
         }
-        orderProduct.getOrderStatus().setToStatus(ToStatus.RETURN_REQUESTED);
+        orderProduct.getOrderStatus().setToStatus(OrderStatusEnum.RETURN_REQUESTED);
         orderStatusRepository.save(orderProduct.getOrderStatus());
         return null;
     }

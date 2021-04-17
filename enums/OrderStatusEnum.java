@@ -1,8 +1,6 @@
 package com.Bootcamp.Project.Application.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-public enum FromStatus {
+public enum OrderStatusEnum {
     ORDER_PLACED,
     CANCELLED,
     ORDER_REJECTED,
@@ -15,5 +13,7 @@ public enum FromStatus {
     PICKUP_INITIATED,
     PICKUP_COMPLETED,
     REFUND_INITIATED,
-    REFUND_COMPLETED
+    REFUND_COMPLETED,
+    WAITING_FOR_CONFIRMATION,
+    CLOSED
 }
