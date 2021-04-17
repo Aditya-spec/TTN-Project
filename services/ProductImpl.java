@@ -110,7 +110,7 @@ public class ProductImpl implements ProductService {
             return false;
         }
         if (!product.getActive()) {
-            throw new EcommerceException(ErrorCode.ALREADY_DISACTIVE);
+            throw new EcommerceException(ErrorCode.ALREADY_DEACTIVE);
         }
         product.setActive(false);
         productRepository.save(product);

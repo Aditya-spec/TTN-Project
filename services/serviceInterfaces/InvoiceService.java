@@ -1,9 +1,6 @@
 package com.Bootcamp.Project.Application.services.serviceInterfaces;
 
-import com.Bootcamp.Project.Application.dtos.DirectOrderDTO;
-import com.Bootcamp.Project.Application.dtos.MessageDTO;
-import com.Bootcamp.Project.Application.dtos.OrderResponseDTO;
-import com.Bootcamp.Project.Application.dtos.PartialProductsOrderDTO;
+import com.Bootcamp.Project.Application.dtos.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -22,4 +19,7 @@ public interface InvoiceService {
     OrderResponseDTO viewOrder(Long orderId, String email);
 
     List<OrderResponseDTO> viewAllOrders(int offset, int size, String email);
+
+    ResponseEntity<MessageDTO> changeOrderStatus(ChangeOrderStatusDTO changeOrderStatusDTO, String email
+    );
 }

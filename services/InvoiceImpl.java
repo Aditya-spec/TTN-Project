@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -161,13 +162,70 @@ public class InvoiceImpl implements InvoiceService {
         if (user.getRoles().size() == 3)
             return adminViewOrders(email, paginationImpl.pagination(offset, size));
         String role = user.getRoles()
-                                .stream()
-                                .map(e -> e.getAuthorization())
-                                .findFirst()
-                                .get();
+                .stream()
+                .map(e -> e.getAuthorization())
+                .findFirst()
+                .get();
         if (role.equals("ROLE_SELLER"))
             return sellerViewOrders(email, paginationImpl.pagination(offset, size));
         return customerViewOrders(email, paginationImpl.pagination(offset, size));
+    }
+
+    @Override
+    public ResponseEntity<MessageDTO> changeOrderStatus(ChangeOrderStatusDTO changeOrderStatusDTO, String email) {
+        User user = userRepository.findByEmail(email);
+        if (user.getRoles().size() == 3)
+            return adminChangeStatus(email, changeOrderStatusDTO);
+        String role = user.getRoles()
+                .stream()
+                .map(e -> e.getAuthorization())
+                .findFirst()
+                .get();
+        if (role.equals("ROLE_SELLER"))
+            return sellerChangeStatus(email, changeOrderStatusDTO);
+        throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+    }
+
+    private ResponseEntity<MessageDTO> sellerChangeStatus(String email, ChangeOrderStatusDTO changeOrderStatusDTO) {
+        Seller seller = sellerRepository.findByEmail(email);
+        OrderProduct orderProduct = orderProductRepository.findById(changeOrderStatusDTO.getOrderProductId()).orElse(null);
+        if (orderProduct == null) {
+            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
+        }
+        if (seller.getId() != orderProduct.getProductVariation().getProduct().getSeller().getId()) {
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        return updateStatus(orderProduct, changeOrderStatusDTO);
+    }
+
+    private ResponseEntity<MessageDTO> adminChangeStatus(String email, ChangeOrderStatusDTO changeOrderStatusDTO) {
+        OrderProduct orderProduct = orderProductRepository.findById(changeOrderStatusDTO.getOrderProductId()).orElse(null);
+        if (orderProduct == null) {
+            throw new EcommerceException(ErrorCode.NO_ORDER_FOUND);
+        }
+        return updateStatus(orderProduct, changeOrderStatusDTO);
+    }
+
+    private ResponseEntity<MessageDTO> updateStatus(OrderProduct orderProduct, ChangeOrderStatusDTO changeOrderStatusDTO) {
+        OrderStatusEnum fromStatus = customValidation.verifyOrderStatus(changeOrderStatusDTO.getFromStatus());
+        OrderStatusEnum toStatus = customValidation.verifyOrderStatus(changeOrderStatusDTO.getToStatus());
+        List<OrderStatusEnum> customerSpecificStatusList = Arrays.asList(OrderStatusEnum.ORDER_PLACED, OrderStatusEnum.CANCELLED, OrderStatusEnum.RETURN_REQUESTED);
+        if(customerSpecificStatusList.contains(toStatus)){
+            throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
+        }
+        if (orderProduct.getOrderStatus().getToStatus() != fromStatus) {
+            throw new EcommerceException(ErrorCode.STATUS_CHANGE_INVALID);
+        }
+        orderProduct.getOrderStatus().setFromStatus(fromStatus);
+        for (FromStatus status : toStatus.getFromStatusList()) {
+            if (fromStatus.toString().equals(status.toString())) {
+                orderProduct.getOrderStatus().setToStatus(toStatus);
+                orderStatusRepository.save(orderProduct.getOrderStatus());
+                messageDTO.setMessage("Status changed successfully");
+                return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+            }
+        }
+        throw new EcommerceException(ErrorCode.STATUS_CHANGE_INVALID);
     }
 
     private List<OrderResponseDTO> customerViewOrders(String email, Pageable pageable) {
