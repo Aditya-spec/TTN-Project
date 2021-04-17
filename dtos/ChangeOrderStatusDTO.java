@@ -1,6 +1,7 @@
 package com.Bootcamp.Project.Application.dtos;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class ChangeOrderStatusDTO {
     @NotNull(message = "orderId cannot be null")
@@ -9,6 +10,17 @@ public class ChangeOrderStatusDTO {
     private String fromStatus;
     @NotNull(message = "toStatus is mandatory")
     private String toStatus;
+    @NotNull(message = "transition comment cannot be null")
+    @Size(min = 3,max = 30,message = "must have character from 3 to 30")
+    private String transitionComment;
+
+    public String getTransitionComment() {
+        return transitionComment;
+    }
+
+    public void setTransitionComment(String transitionComment) {
+        this.transitionComment = transitionComment;
+    }
 
     public Long getOrderProductId() {
         return orderProductId;

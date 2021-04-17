@@ -159,8 +159,6 @@ public class InvoiceImpl implements InvoiceService {
     @Override
     public List<OrderResponseDTO> viewAllOrders(int offset, int size, String email) {
         User user = userRepository.findByEmail(email);
-        if (user.getRoles().size() == 3)
-            return adminViewOrders(email, paginationImpl.pagination(offset, size));
         String role = user.getRoles()
                 .stream()
                 .map(e -> e.getAuthorization())
@@ -168,14 +166,14 @@ public class InvoiceImpl implements InvoiceService {
                 .get();
         if (role.equals("ROLE_SELLER"))
             return sellerViewOrders(email, paginationImpl.pagination(offset, size));
+        if (role.equals("ROLE_ADMIN"))
+            return adminViewOrders(email, paginationImpl.pagination(offset, size));
         return customerViewOrders(email, paginationImpl.pagination(offset, size));
     }
 
     @Override
     public ResponseEntity<MessageDTO> changeOrderStatus(ChangeOrderStatusDTO changeOrderStatusDTO, String email) {
         User user = userRepository.findByEmail(email);
-        if (user.getRoles().size() == 3)
-            return adminChangeStatus(email, changeOrderStatusDTO);
         String role = user.getRoles()
                 .stream()
                 .map(e -> e.getAuthorization())
@@ -183,6 +181,8 @@ public class InvoiceImpl implements InvoiceService {
                 .get();
         if (role.equals("ROLE_SELLER"))
             return sellerChangeStatus(email, changeOrderStatusDTO);
+        else if (role.equals("ROLE_ADMIN"))
+            return adminChangeStatus(email, changeOrderStatusDTO);
         throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
     }
 
@@ -210,7 +210,7 @@ public class InvoiceImpl implements InvoiceService {
         OrderStatusEnum fromStatus = customValidation.verifyOrderStatus(changeOrderStatusDTO.getFromStatus());
         OrderStatusEnum toStatus = customValidation.verifyOrderStatus(changeOrderStatusDTO.getToStatus());
         List<OrderStatusEnum> customerSpecificStatusList = Arrays.asList(OrderStatusEnum.ORDER_PLACED, OrderStatusEnum.CANCELLED, OrderStatusEnum.RETURN_REQUESTED);
-        if(customerSpecificStatusList.contains(toStatus)){
+        if (customerSpecificStatusList.contains(toStatus)) {
             throw new EcommerceException(ErrorCode.NOT_AUTHORISED);
         }
         if (orderProduct.getOrderStatus().getToStatus() != fromStatus) {
@@ -400,7 +400,7 @@ public class InvoiceImpl implements InvoiceService {
     private void mapOrderProductAndStatus(List<Cart> cartList, Invoice invoice) {
         for (Cart cart : cartList) {
             setOrderProduct(cart, invoice);
-            /*cartRepository.delete(cart);*/ //uncomment it
+            /*cartRepository.delete(cart);*/    //uncomment this
         }
     }
 
@@ -436,9 +436,15 @@ public class InvoiceImpl implements InvoiceService {
             messageDTO.setMessage("Order is already cancelled");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
-        if (!orderProduct.getProductVariation().getProduct().getCancellable() ||
-                orderProduct.getOrderStatus().getFromStatus() != OrderStatusEnum.ORDER_PLACED) {
+        List<OrderStatusEnum> orderStatusEnumList = Arrays.asList(OrderStatusEnum.ORDER_PLACED,
+                OrderStatusEnum.ORDER_CONFIRMED, OrderStatusEnum.ORDER_SHIPPED, OrderStatusEnum.ORDER_CONFIRMED);
+
+        if (!orderProduct.getProductVariation().getProduct().getCancellable()) {
             messageDTO.setMessage("Order cannot be cancelled ");
+            return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+        }
+        if (!orderStatusEnumList.contains(orderProduct.getOrderStatus().getFromStatus())) {
+            messageDTO.setMessage("Order is already delivered, cannot cancel the order");
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         orderProduct.getOrderStatus().setToStatus(OrderStatusEnum.CANCELLED);
@@ -462,9 +468,10 @@ public class InvoiceImpl implements InvoiceService {
             return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
         }
         if (!orderProduct.getProductVariation().getProduct().getReturnable() ||
-                orderProduct.getOrderStatus().getFromStatus() != OrderStatusEnum.DELIVERED) {
+                orderProduct.getOrderStatus().getToStatus() != OrderStatusEnum.DELIVERED) {
             messageDTO.setMessage("Order cannot be returned");
         }
+        orderProduct.getOrderStatus().setFromStatus(OrderStatusEnum.DELIVERED);
         orderProduct.getOrderStatus().setToStatus(OrderStatusEnum.RETURN_REQUESTED);
         orderStatusRepository.save(orderProduct.getOrderStatus());
         return null;

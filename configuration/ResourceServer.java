@@ -3,6 +3,7 @@ package com.Bootcamp.Project.Application.configuration;
 
 import com.Bootcamp.Project.Application.configuration.filters.FilterExceptionHandler;
 import com.Bootcamp.Project.Application.configuration.filters.JwtFilter;
+import com.Bootcamp.Project.Application.dtos.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +37,6 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtFilter jwtFilter;
-
 
     @Bean
     public TokenProvider tokenProvider() {
@@ -75,6 +78,7 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/password/**").permitAll()
                 .antMatchers("/oauth").permitAll()
+                .antMatchers("/order/**").permitAll()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/seller/**/**").hasAnyRole("SELLER")
                 .antMatchers("/customer/**/**").hasAnyRole("CUSTOMER")
