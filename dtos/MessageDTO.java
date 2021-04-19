@@ -1,12 +1,23 @@
 package com.Bootcamp.Project.Application.dtos;
 
 
-import org.springframework.stereotype.Component;
-
-@Component
+/*@Component*/
 public class MessageDTO {
-    private String message;
 
+    private String message;
+    private String time;
+
+    public MessageDTO(String time) {
+        this.time = time;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getMessage() {
         return message;

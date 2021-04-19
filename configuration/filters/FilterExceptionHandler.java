@@ -3,6 +3,7 @@ package com.Bootcamp.Project.Application.configuration.filters;
 import com.Bootcamp.Project.Application.exceptionHandling.EcommerceException;
 import com.Bootcamp.Project.Application.exceptionHandling.ExceptionResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,24 +16,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FilterExceptionHandler extends OncePerRequestFilter {
 
-
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        }
-        catch (EcommerceException e) {
+        } catch (EcommerceException e) {
             response.setContentType("application/json");
             response.setStatus(e.errorCode.getCode());
-            ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),e.errorCode.getErrorDesc(), e.errorCode.getStatusCode());
+            ExceptionResponse exceptionResponse = new ExceptionResponse(simpleDateFormat.format(new Date()), e.errorCode.getErrorDesc(), e.errorCode.getStatusCode());
             ObjectMapper objectMapper = new ObjectMapper();
             response.getWriter().write(objectMapper.writeValueAsString(exceptionResponse));
         }

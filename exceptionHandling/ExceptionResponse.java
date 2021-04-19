@@ -2,18 +2,16 @@ package com.Bootcamp.Project.Application.exceptionHandling;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.Date;
-
 public class ExceptionResponse {
 
     private String errorDesc;
     private HttpStatus status;
-    private Date date;
+    private String dateTime;
 
-    public ExceptionResponse(Date date,String errorDesc, HttpStatus status) {
+    public ExceptionResponse(String dateTime, String errorDesc, HttpStatus status) {
         this.errorDesc = errorDesc;
         this.status = status;
-        this.date=date;
+        this.dateTime = dateTime;
     }
 
     public String getErrorDesc() {
@@ -32,11 +30,11 @@ public class ExceptionResponse {
         this.status = status;
     }
 
-    public Date getDate() {
-        return date;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

@@ -43,6 +43,14 @@ public class ResourceServer extends WebSecurityConfigurerAdapter {
         return new TokenProvider(secret, duration);
     }
 
+    @Bean
+    public MessageDTO returnMessageDTO(){
+        Date date=new Date();
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        String dateFormat = simpleDateFormat.format(date);
+        return new MessageDTO(dateFormat);
+    }
+
 
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
