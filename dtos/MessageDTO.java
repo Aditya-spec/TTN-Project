@@ -1,22 +1,21 @@
 package com.Bootcamp.Project.Application.dtos;
 
 
-/*@Component*/
 public class MessageDTO {
 
     private String message;
-    private String time;
+    private String dateTime;
 
-    public MessageDTO(String time) {
-        this.time = time;
+    public MessageDTO(String dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public String getTime() {
-        return time;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getMessage() {

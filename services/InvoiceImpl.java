@@ -81,6 +81,7 @@ public class InvoiceImpl implements InvoiceService {
         if (cartList.size() == 0) {
             throw new EcommerceException(ErrorCode.CART_NOT_FOUND);
         }
+
         return commonInvoiceMethod(cartList, customer, address, partialOrderDTO.getPaymentMethod());
     }
 

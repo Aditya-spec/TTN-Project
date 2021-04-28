@@ -26,6 +26,7 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> eCommerceException(EcommerceException exception) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(simpleDateFormat.format(new Date()), exception.errorCode.getErrorDesc(), exception.errorCode.getStatusCode());
         return new ResponseEntity(exceptionResponse, exception.errorCode.getStatusCode());
+
     }
 
     @Override
